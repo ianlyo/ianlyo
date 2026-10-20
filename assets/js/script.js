@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Dynamically update contribution graph base color
             if (graphImg) {
                 const accentColor = isDark ? '2dd4bf' : '0d9488';
-                graphImg.src = `https://ghchart.rshah.org/${accentColor}/ian20040409`;
+                graphImg.src = `https://ghchart.rshah.org/${accentColor}/ianlyo`;
             }
         }
 
@@ -220,7 +220,7 @@ async function initializeProjects() {
         if (isCacheValid) {
             reposData = JSON.parse(cachedData);
         } else {
-            const response = await fetch('https://api.github.com/users/ian20040409/repos?type=owner&sort=updated&per_page=100');
+            const response = await fetch('https://api.github.com/users/ianlyo/repos?type=owner&sort=updated&per_page=100');
             if (!response.ok) throw new Error('API rate limit or network error');
             reposData = await response.json();
             try {
@@ -237,7 +237,7 @@ async function initializeProjects() {
             reposData = JSON.parse(cachedData);
         } else {
             if (status) {
-                status.innerHTML = 'Repositories could not be loaded right now. <a href="https://github.com/ian20040409?tab=repositories" target="_blank" rel="noopener" class="text-accent" style="color: inherit; text-decoration: underline;">View all public repositories on GitHub.</a>';
+                status.innerHTML = 'Repositories could not be loaded right now. <a href="https://github.com/ianlyo?tab=repositories" target="_blank" rel="noopener" class="text-accent" style="color: inherit; text-decoration: underline;">View all public repositories on GitHub.</a>';
                 status.classList.add('is-error');
             }
             const heroStats = document.querySelector('.hero-stats');
