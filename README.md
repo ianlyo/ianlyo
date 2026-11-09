@@ -27,9 +27,6 @@
   <img src="https://github-stats-extended.vercel.app/api/top-langs/?username=ianlyo&layout=compact&theme=radical&hide_border=true&langs_count=6" alt="Top Languages" />
 </p>
 
-### 🎯 Current Vibe
-
-Make random apps • Build small tools • Obsess over spacing • Code with music
 
 <br/>
 
