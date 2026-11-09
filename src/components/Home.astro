@@ -1,0 +1,169 @@
+---
+import { getCollection } from 'astro:content';
+import { t, localePath, type Lang } from '../i18n/ui';
+import { sortPosts, readingTime, formatDate } from '../utils/blog';
+import AppCard from './AppCard.astro';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const ui = t(lang);
+const apps = (await getCollection('apps')).filter((a) => !a.data.hidden && a.data.status !== 'paused').slice(0, 3);
+const posts = sortPosts(await getCollection('blog')).slice(0, 3);
+const f = ui.filters;
+---
+<section id="home" class="hero-section">
+  <div class="container">
+    <div class="row align-items-center hero-grid">
+      <div class="col-12 hero-copy">
+        <h1 class="hero-title">{ui.hero.title1}<br /><em>{ui.hero.title2}</em></h1>
+        <p class="lead">{ui.hero.lead}</p>
+        <div class="hero-stats" aria-label="GitHub activity">
+          <div class="stat-box">
+            <span class="material-symbols-rounded stat-icon" aria-hidden="true">folder_code</span>
+            <div class="stat-box-info">
+              <strong id="repo-stat">--</strong>
+              <span>{ui.stats.repos}</span>
+            </div>
+          </div>
+          <div class="stat-box">
+            <span class="material-symbols-rounded stat-icon" aria-hidden="true">star</span>
+            <div class="stat-box-info">
+              <strong id="star-stat">--</strong>
+              <span>{ui.stats.stars}</span>
+            </div>
+          </div>
+          <div class="stat-box">
+            <span class="material-symbols-rounded stat-icon" aria-hidden="true">code_blocks</span>
+            <div class="stat-box-info">
+              <strong id="language-stat">--</strong>
+              <span>{ui.stats.langs}</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-actions">
+          <a href={localePath(lang, '/beta/')} class="btn btn-primary d-inline-flex align-items-center gap-2">
+            <span>{ui.hero.cta1}</span>
+            <span class="material-symbols-rounded icon-sm" aria-hidden="true">arrow_forward</span>
+          </a>
+          <a href="/blog/" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
+            <span class="material-symbols-rounded icon-sm" aria-hidden="true">article</span>
+            <span>{ui.hero.cta2}</span>
+          </a>
+          <a href="https://github.com/ianlyo?tab=repositories" target="_blank" rel="noopener" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
+            <span>{ui.hero.cta3}</span>
+            <span class="material-symbols-rounded icon-sm" aria-hidden="true">open_in_new</span>
+          </a>
+        </div>
+      </div>
+      <div class="col-12 hero-contribution">
+        <div class="contribution-card">
+          <div class="contribution-header justify-content-end">
+            <a href="https://github.com/ianlyo?tab=repositories" target="_blank" rel="noopener" class="contribution-github-link"><i class="bi bi-github"></i><span>ianlyo</span></a>
+          </div>
+          <div class="contribution-graph-wrapper">
+            <img class="contribution-graph" id="contribution-graph-img" src="https://ghchart.rshah.org/0d9488/ianlyo" alt="ianlyo GitHub contribution graph" loading="lazy" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main>
+  <section class="section-block" id="beta-preview">
+    <div class="container">
+      <p class="eyebrow mb-2">{ui.home.betaEyebrow}</p>
+      <div class="d-flex justify-content-between align-items-end mb-3 flex-wrap gap-2">
+        <h2 class="block-title mb-0">
+          <span class="material-symbols-rounded text-accent" aria-hidden="true">science</span>
+          <span>{ui.home.betaTitle}</span>
+        </h2>
+        <a href={localePath(lang, '/beta/')} class="d-inline-flex align-items-center gap-1 font-weight-semibold">
+          <span>{ui.home.betaAll}</span>
+          <span class="material-symbols-rounded icon-sm" aria-hidden="true">arrow_forward</span>
+        </a>
+      </div>
+      <div class="card-grid">{apps.map((app) => <AppCard app={app} lang={lang} />)}</div>
+    </div>
+  </section>
+
+  {posts.length > 0 && (
+    <section class="section-block" id="blog-preview">
+      <div class="container">
+        <p class="eyebrow mb-2">{ui.home.blogEyebrow}</p>
+        <div class="d-flex justify-content-between align-items-end mb-3 flex-wrap gap-2">
+          <h2 class="block-title mb-0">
+            <span class="material-symbols-rounded text-accent" aria-hidden="true">article</span>
+            <span>{ui.home.blogTitle}</span>
+          </h2>
+          <a href="/blog/" class="d-inline-flex align-items-center gap-1 font-weight-semibold">
+            <span>{ui.home.blogAll}</span>
+            <span class="material-symbols-rounded icon-sm" aria-hidden="true">arrow_forward</span>
+          </a>
+        </div>
+        <div class="card-grid">
+          {posts.map((p) => (
+            <a class="surface-card" href={`/blog/${p.id}/`}>
+              <h3>{p.data.title}</h3>
+              <p>{p.data.description}</p>
+              <div class="meta mt-2">
+                <span><span class="material-symbols-rounded icon-xs" aria-hidden="true">calendar_today</span>{formatDate(p.data.pubDate, lang)}</span>
+                <span><span class="material-symbols-rounded icon-xs" aria-hidden="true">schedule</span>{readingTime(p.body)} {ui.blog.readingTime}</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section id="projects" class="projects-section">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow mb-2">{ui.home.browse}</p>
+          <h2 id="projects-title" class="d-flex align-items-center gap-2">
+            <span class="material-symbols-rounded text-accent" aria-hidden="true">code</span>
+            <span>{ui.home.explore}</span>
+          </h2>
+        </div>
+        <span id="project-count" class="section-count">…</span>
+      </div>
+      <div class="capabilities-grid mb-4">
+        {[
+          ['all', 'dashboard', '01', f.all],
+          ['mobile', 'smartphone', '02', f.mobile],
+          ['python', 'terminal', '03', f.cli],
+          ['web', 'devices', '04', f.web],
+        ].map(([key, icon, num, text]) => (
+          <button class:list={['capability-item', 'category-filter', { 'is-active': key === 'all' }]} type="button" data-category={key}>
+            <div class="capability-header">
+              <span class="capability-number">{num}</span>
+              <div class="capability-icon"><span class="material-symbols-rounded" aria-hidden="true">{icon}</span></div>
+            </div>
+            <strong class="capability-title">{(text as readonly string[])[0]}</strong>
+            <p class="capability-desc">{(text as readonly string[])[1]}</p>
+          </button>
+        ))}
+      </div>
+      <div class="project-tools" role="search">
+        <label class="visually-hidden" for="project-search">Search projects</label>
+        <div class="project-search-wrapper">
+          <span class="material-symbols-rounded project-search-icon" aria-hidden="true">search</span>
+          <input id="project-search" type="search" placeholder="Search projects…" autocomplete="off" />
+        </div>
+        <label class="visually-hidden" for="language-filter">Filter by language</label>
+        <div class="language-filter-wrapper">
+          <span class="material-symbols-rounded language-filter-icon" aria-hidden="true">tune</span>
+          <select id="language-filter"><option value="">All languages</option></select>
+        </div>
+        <button id="clear-filters" class="clear-filters" type="button" hidden>
+          <span class="material-symbols-rounded icon-sm" aria-hidden="true">close</span>
+          <span>Clear filters</span>
+        </button>
+      </div>
+      <div id="projects-grid" class="row project-grid" aria-live="polite"></div>
+      <p id="projects-status" class="projects-status">Loading public repositories…</p>
+      <div class="text-center"><button id="show-more-projects" class="show-more-projects" type="button" hidden>Show all repositories</button></div>
+    </div>
+  </section>
+</main>

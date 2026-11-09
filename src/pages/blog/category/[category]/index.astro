@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../../../layouts/Base.astro';
+import PostCard from '../../../../components/PostCard.astro';
+import { BLOG_CATEGORIES } from '../../../../content.config';
+import { sortPosts, slugify } from '../../../../utils/blog';
+import { t } from '../../../../i18n/ui';
+
+export async function getStaticPaths() {
+  const posts = sortPosts(await getCollection('blog'));
+  // Every defined category gets a page, even if empty.
+  return BLOG_CATEGORIES.map((c) => ({
+    params: { category: slugify(c) },
+    props: { name: c, posts: posts.filter((p) => p.data.category === c) },
+  }));
+}
+const { name, posts } = Astro.props;
+const ui = t('zh-Hant').blog;
+---
+<Base title={`${ui.categories}: ${name}`} description={`${name}`} altPath={null}>
+  <main class="page"><div class="container page-narrow">
+    <header class="page-head mb-4">
+      <p class="meta">
+        <a href="/blog/" class="d-inline-flex align-items-center gap-1 back-link">
+          <span class="material-symbols-rounded icon-sm" aria-hidden="true">arrow_back</span>
+          <span>{ui.title}</span>
+        </a>
+      </p>
+      <h1 class="d-flex align-items-center gap-2">
+        <span class="material-symbols-rounded text-accent" aria-hidden="true">folder_open</span>
+        <span>{name}</span>
+      </h1>
+    </header>
+    {posts.length ? <div class="d-grid gap-3">{posts.map((p) => <PostCard post={p} />)}</div> : <p>{ui.noPosts}</p>}
+  </div></main>
+</Base>

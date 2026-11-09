@@ -1,0 +1,66 @@
+# ──────────────────────────────────────────────────────────────
+# Health Debug - app config
+# Everything marked PLACEHOLDER must be replaced with real info.
+# Empty URL ("") = "not set yet" (the site shows a disabled button).
+# ──────────────────────────────────────────────────────────────
+name: Health Debug
+packageName: com.example.PLACEHOLDER        # PLACEHOLDER: real Android package name
+icon: ""                                     # e.g. /apps/health-debug/icon.png (put file in public/apps/health-debug/)
+status: closed-beta                          # closed-beta | open-beta | released | coming-soon | paused
+version: "0.0.0"                             # PLACEHOLDER: current release version
+minAndroid: "14"                             # PLACEHOLDER: Health Connect is built in from Android 14 - confirm
+targetAndroid: ""
+
+tagline:
+  zh: 用於開發與測試 Android Health Connect 寫入功能的小工具。
+  en: A small developer tool for testing Android Health Connect writes.
+description:
+  zh: |
+    Health Debug 是一個開發與測試用的 Android App，可將步數、運動紀錄、距離、總消耗熱量與速度等資料寫入 Google Health Connect，方便開發者驗證健康資料流程。
+    [佔位] 更完整的產品介紹請之後補上。
+  en: |
+    Health Debug is a development and testing app for Android that writes steps, exercise sessions, distance, total calories burned and speed to Google Health Connect, so developers can verify health-data flows.
+    [PLACEHOLDER] Add a fuller product introduction later.
+
+features:
+  - title: { zh: 寫入步數, en: Write steps }
+    description: { zh: "[佔位] 請補充功能說明。", en: "[PLACEHOLDER] Describe this feature." }
+  - title: { zh: 運動紀錄, en: Exercise sessions }
+    description: { zh: "[佔位] 請補充功能說明。", en: "[PLACEHOLDER] Describe this feature." }
+  - title: { zh: 距離、熱量與速度, en: Distance, calories and speed }
+    description: { zh: "[佔位] 請補充功能說明。", en: "[PLACEHOLDER] Describe this feature." }
+
+screenshots: []
+# screenshots:
+#   - src: /apps/health-debug/screenshot-1.png
+#     alt: { zh: 主畫面, en: Home screen }
+
+specs:
+  - label: { zh: 整合, en: Integration }
+    value: Google Health Connect
+tech:
+  - Android
+  - Health Connect
+
+faq:
+  - q: { zh: 我需要什麼才能參加測試？, en: What do I need to join the beta? }
+    a:
+      zh: 一個 Google 帳號（與 Google Play 商店相同），以及符合最低版本需求的 Android 裝置。
+      en: A Google account (the same one used for the Play Store) and an Android device that meets the minimum version.
+  - q: { zh: 這個 App 會收集我的資料嗎？, en: Does the app collect my data? }
+    a:
+      zh: 請參閱隱私權政策。
+      en: Please read the privacy policy.
+
+changelog:
+  - version: "0.0.0"
+    date: "PLACEHOLDER"
+    notes:
+      - { zh: "[佔位] 尚未發布。", en: "[PLACEHOLDER] Not released yet." }
+
+googleGroupUrl: ""      # PLACEHOLDER: Google Groups testers community
+optInUrl: ""            # PLACEHOLDER: Google Play testing opt-in link
+playStoreUrl: ""        # PLACEHOLDER: Play Store listing
+githubUrl: ""           # PLACEHOLDER: GitHub repo (optional)
+feedbackUrl: ""         # PLACEHOLDER: where to send feedback (Play private feedback / issues)
+privacyUrl: "/myfiles/privacy/Health-Debug/"

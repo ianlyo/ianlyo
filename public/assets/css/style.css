@@ -309,23 +309,31 @@ select:focus-visible {
     transform: translateY(0) scale(0.95);
 }
 
-.theme-toggle i {
-    font-size: 1.05rem;
+.theme-toggle i,
+.theme-toggle .material-symbols-rounded {
+    font-size: 1.25rem;
     color: var(--theme-toggle-color);
     transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease;
 }
 
-.theme-toggle:hover i {
+.theme-toggle:hover i,
+.theme-toggle:hover .material-symbols-rounded {
     color: var(--accent-primary);
-    transform: rotate(15deg);
+    transform: rotate(20deg);
 }
 
-.theme-toggle .bi-sun-fill {
-    color: #fbbf24 !important;
+.theme-toggle .bi-sun-fill,
+.theme-icon-light {
+    color: #f59e0b !important;
 }
 
-[data-bs-theme="dark"] .theme-toggle .bi-sun-fill {
+[data-bs-theme="dark"] .theme-toggle .bi-sun-fill,
+[data-bs-theme="dark"] .theme-icon-light {
     color: #fde047 !important;
+}
+
+.theme-icon-dark {
+    color: #38bdf8 !important;
 }
 
 /* ==========================================================================
@@ -396,13 +404,15 @@ select:focus-visible {
 
 .stat-box {
     display: flex;
-    flex-direction: column;
-    padding: 14px 22px;
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
-    min-width: 130px;
+    min-width: 140px;
     transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -410,6 +420,24 @@ select:focus-visible {
     transform: translateY(-3px);
     border-color: var(--accent-primary);
     box-shadow: var(--shadow-md);
+}
+
+.stat-box .stat-icon {
+    font-size: 1.85rem;
+    color: var(--accent-primary);
+    opacity: 0.85;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    flex-shrink: 0;
+}
+
+.stat-box:hover .stat-icon {
+    transform: scale(1.12);
+    opacity: 1;
+}
+
+.stat-box-info {
+    display: flex;
+    flex-direction: column;
 }
 
 .stat-box strong {
@@ -674,6 +702,10 @@ select:focus-visible {
     transition: all 0.25s ease;
 }
 
+.capability-icon .material-symbols-rounded {
+    font-size: 1.25rem;
+}
+
 .category-filter:hover .capability-icon,
 .category-filter.is-active .capability-icon {
     background: var(--accent-subtle);
@@ -846,6 +878,47 @@ select:focus-visible {
     flex-wrap: wrap;
 }
 
+.project-search-wrapper,
+.language-filter-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.project-search-wrapper {
+    flex: 1;
+    min-width: 240px;
+}
+
+.project-search-icon,
+.language-filter-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--text-muted);
+    pointer-events: none;
+    font-size: 1.25rem;
+    transition: color 0.2s ease;
+    z-index: 1;
+}
+
+.project-search-wrapper input {
+    width: 100%;
+    padding-left: 44px !important;
+}
+
+.project-search-wrapper:focus-within .project-search-icon {
+    color: var(--accent-primary);
+}
+
+.language-filter-wrapper select {
+    width: 195px;
+    padding-left: 42px !important;
+}
+
+.language-filter-wrapper:focus-within .language-filter-icon {
+    color: var(--accent-primary);
+}
+
 .project-tools input,
 .project-tools select {
     min-height: 46px;
@@ -858,16 +931,6 @@ select:focus-visible {
     font-size: 0.92rem;
     box-shadow: var(--shadow-sm);
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.project-tools input {
-    flex: 1;
-    min-width: 240px;
-}
-
-.project-tools select {
-    width: 180px;
-    cursor: pointer;
 }
 
 .project-tools input::placeholder {
@@ -883,6 +946,9 @@ select:focus-visible {
 }
 
 .clear-filters {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     min-height: 46px;
     padding: 10px 18px;
     background: var(--bg-surface);
@@ -1065,6 +1131,7 @@ select:focus-visible {
 }
 
 .projects-toggle-icon {
+    font-size: 1.25em;
     width: 1.1em;
     height: 1.1em;
     stroke: currentColor;
@@ -1199,7 +1266,12 @@ select:focus-visible {
     .stat-box {
         flex: 1;
         min-width: 100px;
-        padding: 10px 14px;
+        padding: 10px 12px;
+        gap: 8px;
+    }
+    
+    .stat-box .stat-icon {
+        font-size: 1.4rem;
     }
     
     .stat-box strong {

@@ -1,0 +1,216 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { t, localePath, pick, type Lang } from '../i18n/ui';
+interface Props { app: CollectionEntry<'apps'>; lang: Lang }
+const { app, lang } = Astro.props;
+const ui = t(lang).beta;
+const d = app.data;
+const desc = pick(d.description, lang);
+const tagline = pick(d.tagline, lang);
+const ogImage = d.screenshots[0]?.src ? d.screenshots[0].src : '/og/default.png';
+
+const steps = [
+  { s: ui.step1, url: d.googleGroupUrl, label: ui.groupBtn, optional: true, icon: 'groups' },
+  { s: ui.step2, url: d.optInUrl, label: ui.optInBtn, optional: false, icon: 'how_to_reg' },
+  { s: ui.step3, url: d.playStoreUrl, label: ui.playBtn, optional: false, icon: 'download_for_offline' },
+  { s: ui.step4, url: d.feedbackUrl, label: ui.feedbackBtn, optional: false, icon: 'rate_review' },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: d.name,
+  applicationCategory: 'MobileApplication',
+  operatingSystem: `Android ${d.minAndroid}+`,
+  softwareVersion: d.version,
+  description: desc,
+  inLanguage: lang,
+  ...(d.playStoreUrl ? { downloadUrl: d.playStoreUrl } : {}),
+};
+const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/beta/${app.id}/`);
+---
+<Base lang={lang} title={`${d.name} - ${ui.title}`} description={tagline} image={ogImage} imageAlt={`${d.name} preview`} jsonLd={jsonLd} altPath={altPath}>
+  <main class="page">
+    <div class="container page-narrow">
+      <a href={localePath(lang, '/beta/')} class="meta mb-3 back-link">
+        <span class="material-symbols-rounded icon-sm" aria-hidden="true">arrow_back</span>
+        <span>{ui.back}</span>
+      </a>
+
+      <!-- 1. Hero -->
+      <header class="app-hero mb-3">
+        {d.icon
+          ? <img class="app-icon" src={d.icon} alt={`${d.name} icon`} width="96" height="96" />
+          : <div class="app-icon app-icon-fallback" aria-hidden="true">{d.name.charAt(0)}</div>}
+        <div>
+          <h1 class="mb-1" style="font-weight:800">{d.name}</h1>
+          <p class="mb-2" style="color:var(--text-secondary)">{tagline}</p>
+          <div class="meta">
+            <span class={`status-badge s-${d.status}`}>
+              {d.status === 'released' && <span class="material-symbols-rounded icon-xs" aria-hidden="true">check_circle</span>}
+              {(d.status === 'closed-beta' || d.status === 'open-beta') && <span class="material-symbols-rounded icon-xs" aria-hidden="true">science</span>}
+              {d.status === 'coming-soon' && <span class="material-symbols-rounded icon-xs" aria-hidden="true">hourglass_empty</span>}
+              {d.status === 'paused' && <span class="material-symbols-rounded icon-xs" aria-hidden="true">pause_circle</span>}
+              <span>{ui.statusLabels[d.status]}</span>
+            </span>
+            <span><span class="material-symbols-rounded icon-xs" aria-hidden="true">sell</span><span>{ui.version} {d.version}</span></span>
+            <span><span class="material-symbols-rounded icon-xs" aria-hidden="true">android</span><span>Android {d.minAndroid}+</span></span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Prominent install buttons -->
+      <div class="cta-row mb-2">
+        {d.optInUrl
+          ? <a class="btn-install" href={d.optInUrl} target="_blank" rel="noopener"><i class="bi bi-google-play"></i> {ui.join}</a>
+          : <span class="btn-install is-placeholder" aria-disabled="true"><i class="bi bi-google-play"></i> {ui.join}</span>}
+        {d.githubUrl && <a class="btn-ghost" href={d.githubUrl} target="_blank" rel="noopener"><i class="bi bi-github"></i> {ui.githubBtn}</a>}
+      </div>
+      {!d.optInUrl && <p class="placeholder-note">{ui.placeholder}</p>}
+
+      <!-- 2. Introduction -->
+      <section class="section-block">
+        <div class="prose"><p set:html={desc.replace(/\n/g, '<br />')} /></div>
+      </section>
+
+      <!-- 3. Screenshots -->
+      <section class="section-block">
+        <h2 class="block-title">
+          <span class="material-symbols-rounded text-accent" aria-hidden="true">photo_library</span>
+          <span>{ui.screenshots}</span>
+        </h2>
+        {d.screenshots.length
+          ? <div class="shots">{d.screenshots.map((s) => <img src={s.src} alt={pick(s.alt, lang)} loading="lazy" />)}</div>
+          : <div class="shot-empty">Screenshots placeholder - add images to <code>public/apps/{app.id}/</code></div>}
+      </section>
+
+      <!-- 4. Features -->
+      {d.features.length > 0 && (
+        <section class="section-block">
+          <h2 class="block-title">
+            <span class="material-symbols-rounded text-accent" aria-hidden="true">auto_awesome</span>
+            <span>{ui.features}</span>
+          </h2>
+          <div class="card-grid">
+            {d.features.map((f) => (
+              <div class="surface-card"><h3>{pick(f.title, lang)}</h3><p>{pick(f.description, lang)}</p></div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- 5. Specs -->
+      <section class="section-block">
+        <h2 class="block-title">
+          <span class="material-symbols-rounded text-accent" aria-hidden="true">fact_check</span>
+          <span>{ui.specs}</span>
+        </h2>
+        <table class="spec-table">
+          <tbody>
+            <tr><th><span class="material-symbols-rounded icon-xs" aria-hidden="true">inventory_2</span>Package</th><td><code>{d.packageName}</code></td></tr>
+            <tr><th><span class="material-symbols-rounded icon-xs" aria-hidden="true">sell</span>{ui.version}</th><td>{d.version}</td></tr>
+            <tr><th><span class="material-symbols-rounded icon-xs" aria-hidden="true">android</span>{ui.minAndroid}</th><td>Android {d.minAndroid}</td></tr>
+            {d.targetAndroid && <tr><th><span class="material-symbols-rounded icon-xs" aria-hidden="true">smartphone</span>Target Android</th><td>Android {d.targetAndroid}</td></tr>}
+            {d.specs.map((s) => <tr><th>{pick(s.label, lang)}</th><td>{s.value}</td></tr>)}
+          </tbody>
+        </table>
+        {d.tech.length > 0 && <div class="chip-row mt-3">{d.tech.map((x) => <span class="chip chip-muted">{x}</span>)}</div>}
+      </section>
+
+      <!-- 6 & 7. Installation + beta instructions -->
+      <section class="section-block" id="install">
+        <h2 class="block-title">
+          <span class="material-symbols-rounded text-accent" aria-hidden="true">checklist</span>
+          <span>{ui.stepsTitle}</span>
+        </h2>
+        <ol class="steps">
+          {steps.map((st) => (
+            <li>
+              <div>
+                <h3>
+                  <span class="material-symbols-rounded step-icon" aria-hidden="true">{st.icon}</span>
+                  <span>{st.s[0]}</span>
+                  {st.optional && <span class="chip chip-muted">{ui.optional}</span>}
+                </h3>
+                <p>{st.s[1]}</p>
+                {st.url
+                  ? <a class="btn-ghost" href={st.url} target="_blank" rel="noopener"><span>{st.label}</span> <span class="material-symbols-rounded icon-sm" aria-hidden="true">open_in_new</span></a>
+                  : <span class="btn-ghost is-placeholder" aria-disabled="true">{st.label}</span>}
+                {!st.url && <div class="placeholder-note">{ui.placeholder}</div>}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <!-- 8. FAQ -->
+      {d.faq.length > 0 && (
+        <section class="section-block">
+          <h2 class="block-title">
+            <span class="material-symbols-rounded text-accent" aria-hidden="true">help</span>
+            <span>{ui.faq}</span>
+          </h2>
+          {d.faq.map((x) => (
+            <details class="faq">
+              <summary>
+                <span>{pick(x.q, lang)}</span>
+                <span class="material-symbols-rounded faq-arrow" aria-hidden="true">expand_more</span>
+              </summary>
+              <p>{pick(x.a, lang)}</p>
+            </details>
+          ))}
+        </section>
+      )}
+
+      <!-- 9. Changelog -->
+      <section class="section-block">
+        <h2 class="block-title">
+          <span class="material-symbols-rounded text-accent" aria-hidden="true">history</span>
+          <span>{ui.changelog}</span>
+        </h2>
+        {d.changelog.map((c) => (
+          <div class="changelog-entry">
+            <h3 class="d-flex align-items-center gap-2">
+              <span class="material-symbols-rounded icon-xs text-accent" aria-hidden="true">commit</span>
+              <span>{c.version}</span>
+              <span class="meta d-inline">{c.date}</span>
+            </h3>
+            <ul>{c.notes.map((n) => <li>{pick(n, lang)}</li>)}</ul>
+          </div>
+        ))}
+      </section>
+
+      <!-- 10. Feedback and links -->
+      <section class="section-block">
+        <h2 class="block-title">
+          <span class="material-symbols-rounded text-accent" aria-hidden="true">link</span>
+          <span>{ui.links}</span>
+        </h2>
+        <p style="color:var(--text-secondary)">{ui.feedbackHow}</p>
+        <div class="cta-row">
+          {d.githubUrl ? (
+            <a class="btn-ghost" href={d.githubUrl} target="_blank" rel="noopener">
+              <i class="bi bi-github"></i>
+              <span>{ui.githubBtn}</span>
+              <span class="material-symbols-rounded icon-xs" aria-hidden="true">open_in_new</span>
+            </a>
+          ) : <span class="btn-ghost is-placeholder">{ui.githubBtn}</span>}
+          {d.playStoreUrl && (
+            <a class="btn-ghost" href={d.playStoreUrl} target="_blank" rel="noopener">
+              <i class="bi bi-google-play"></i>
+              <span>{ui.playBtn}</span>
+              <span class="material-symbols-rounded icon-xs" aria-hidden="true">open_in_new</span>
+            </a>
+          )}
+          {d.privacyUrl && (
+            <a class="btn-ghost" href={d.privacyUrl}>
+              <span class="material-symbols-rounded icon-sm" aria-hidden="true">policy</span>
+              <span>{ui.privacy}</span>
+            </a>
+          )}
+        </div>
+      </section>
+    </div>
+  </main>
+</Base>

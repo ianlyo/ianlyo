@@ -1,0 +1,144 @@
+---
+import { t, localePath, switchLangPath, type Lang } from '../i18n/ui';
+
+interface Props {
+  title?: string;
+  description?: string;
+  lang?: Lang;
+  image?: string;
+  imageAlt?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  publishedTime?: Date;
+  /** Path of the equivalent page in the other language (if it exists). Defaults to the language-swapped path. */
+  altPath?: string | null;
+}
+
+const {
+  lang = 'zh-Hant',
+  title,
+  description,
+  image = '/og/default.png',
+  imageAlt = 'ianlyo - Android Developer Blog & Beta Testing Hub',
+  type = 'website',
+  noindex = false,
+  jsonLd,
+  publishedTime,
+  altPath,
+} = Astro.props;
+
+const ui = t(lang);
+const site = Astro.site!;
+const pageTitle = title ? `${title} | ianlyo` : ui.siteTitle;
+const pageDesc = description ?? ui.siteDescription;
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogImage = new URL(image, site).href;
+const otherLang: Lang = lang === 'en' ? 'zh-Hant' : 'en';
+const otherPath = altPath === undefined ? switchLangPath(Astro.url.pathname, otherLang) : altPath;
+const zhPath = lang === 'en' ? otherPath : Astro.url.pathname;
+const enPath = lang === 'en' ? Astro.url.pathname : otherPath;
+const path = Astro.url.pathname;
+const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/';
+---
+<!doctype html>
+<html lang={lang} data-bs-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{pageTitle}</title>
+  <meta name="description" content={pageDesc} />
+  <link rel="canonical" href={canonical} />
+  {noindex && <meta name="robots" content="noindex" />}
+
+  <link rel="icon" type="image/png" href="https://github.com/ianlyo.png" />
+  <link rel="apple-touch-icon" href="https://github.com/ianlyo.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#0d9488" />
+  <link rel="alternate" type="application/rss+xml" title="ianlyo blog" href="/rss.xml" />
+  {zhPath && <link rel="alternate" hreflang="zh-Hant" href={new URL(zhPath, site).href} />}
+  {enPath && <link rel="alternate" hreflang="en" href={new URL(enPath, site).href} />}
+
+  <meta property="og:site_name" content="ianlyo" />
+  <meta property="og:type" content={type} />
+  <meta property="og:title" content={pageTitle} />
+  <meta property="og:description" content={pageDesc} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:image:alt" content={imageAlt} />
+  <meta property="og:locale" content={lang === 'en' ? 'en_US' : 'zh_TW'} />
+  {publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={pageTitle} />
+  <meta name="twitter:description" content={pageDesc} />
+  <meta name="twitter:image" content={ogImage} />
+  <meta name="twitter:image:alt" content={imageAlt} />
+  {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+
+  <!-- Anti-FOUC theme script (same logic as the original site) -->
+  <script is:inline>
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = !saved || saved === 'auto' ? (prefersDark ? 'dark' : 'light') : saved;
+        document.documentElement.setAttribute('data-bs-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+  <link rel="stylesheet" href="/assets/css/style.css?v=2.0" />
+  <link rel="stylesheet" href="/assets/css/site.css?v=2.0" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <nav class="site-nav" aria-label="Main navigation">
+    <a class="brand-mark" href={localePath(lang, '/')} aria-label="ianlyo home">IAN<span>.</span></a>
+    <div class="nav-links">
+      <a href={localePath(lang, '/beta/')} class:list={[{ active: isActive('/beta') }]}>{ui.nav.beta}</a>
+      <a href="/blog/" class:list={[{ active: path.startsWith('/blog') }]}>{ui.nav.blog}</a>
+      <a href={localePath(lang, '/') + '#projects'} class="d-none d-md-inline">{ui.nav.projects}</a>
+      <a href="/search/" aria-label={ui.nav.search} title={ui.nav.search}><span class="material-symbols-rounded" aria-hidden="true">search</span></a>
+      <a href="https://github.com/ianlyo?tab=repositories" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub" class="d-none d-sm-inline-flex">
+        <i class="bi bi-github" aria-hidden="true"></i>
+      </a>
+      {otherPath && (
+        <a href={otherPath} hreflang={otherLang} class="lang-switch">
+          <span class="material-symbols-rounded icon-xs" aria-hidden="true">translate</span>
+          <span>{ui.langSwitch}</span>
+        </a>
+      )}
+    </div>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme">
+      <span class="material-symbols-rounded" aria-hidden="true">contrast</span>
+    </button>
+  </nav>
+
+  <div id="main"><slot /></div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <p class="footer-copy">
+          <a href="https://github.com/ianlyo?tab=repositories" target="_blank" rel="noopener" class="footer-repo-btn" aria-label="GitHub"><i class="bi bi-github" aria-hidden="true"></i></a>
+          © <span id="current-year"></span> ianlyo · {ui.footer.built}
+        </p>
+        <div class="footer-links">
+          <a href="/rss.xml" class="d-inline-flex align-items-center gap-1"><span class="material-symbols-rounded icon-xs" aria-hidden="true">rss_feed</span><span>{ui.footer.rss}</span></a>
+          <a href="#main" class="d-inline-flex align-items-center gap-1"><span>{ui.footer.top}</span><span class="material-symbols-rounded icon-xs" aria-hidden="true">arrow_upward</span></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script is:inline src="/assets/js/script.js?v=2.0"></script>
+</body>
+</html>

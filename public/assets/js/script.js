@@ -68,18 +68,21 @@ document.addEventListener('DOMContentLoaded', function() {
             root.setAttribute('data-bs-theme', effectiveTheme);
 
             // Icon and title indicating current mode & next action
-            let iconClass = 'bi-circle-half';
+            let iconName = 'contrast';
+            let iconClass = '';
             let titleText = 'Theme: System (Click to switch to Light mode)';
 
             if (mode === 'light') {
-                iconClass = 'bi-sun-fill';
+                iconName = 'light_mode';
+                iconClass = 'filled theme-icon-light';
                 titleText = 'Theme: Light (Click to switch to Dark mode)';
             } else if (mode === 'dark') {
-                iconClass = 'bi-moon-fill';
+                iconName = 'dark_mode';
+                iconClass = 'filled theme-icon-dark';
                 titleText = 'Theme: Dark (Click to switch to System)';
             }
 
-            toggle.innerHTML = `<i class="bi ${iconClass}" aria-hidden="true"></i>`;
+            toggle.innerHTML = `<span class="material-symbols-rounded ${iconClass}" aria-hidden="true">${iconName}</span>`;
             toggle.setAttribute('aria-label', titleText);
             toggle.setAttribute('title', titleText);
 
@@ -388,7 +391,7 @@ function renderProjects() {
 
     if (showMoreButton) {
         showMoreButton.hidden = visibleProjects.length <= 6;
-        showMoreButton.innerHTML = `${showAllProjects ? 'Show less' : 'Show all repositories'} <svg class="projects-toggle-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>`;
+        showMoreButton.innerHTML = `${showAllProjects ? 'Show less' : 'Show all repositories'} <span class="material-symbols-rounded projects-toggle-icon" aria-hidden="true">expand_more</span>`;
         showMoreButton.setAttribute('aria-expanded', String(showAllProjects));
     }
 
@@ -413,8 +416,9 @@ function createProjectCard(repo) {
                             <span class="language-dot" style="background-color: ${color}"></span>
                             ${escapeHtml(language)}
                         </small>
-                        <a href="${repo.html_url}" class="btn btn-outline-primary" target="_blank" rel="noopener" aria-label="Open ${escapeHtml(repo.name)} on GitHub">
-                            ${githubIcon} View
+                        <a href="${repo.html_url}" class="btn btn-outline-primary d-inline-flex align-items-center gap-1" target="_blank" rel="noopener" aria-label="Open ${escapeHtml(repo.name)} on GitHub">
+                            ${githubIcon} <span>View</span>
+                            <span class="material-symbols-rounded icon-xs" aria-hidden="true">open_in_new</span>
                         </a>
                     </div>
                 </div>

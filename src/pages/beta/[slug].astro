@@ -1,0 +1,10 @@
+---
+import { getCollection } from 'astro:content';
+import AppPage from '../../components/AppPage.astro';
+export async function getStaticPaths() {
+  const apps = (await getCollection('apps')).filter((a) => !a.data.hidden);
+  return apps.map((app) => ({ params: { slug: app.id }, props: { app } }));
+}
+const { app } = Astro.props;
+---
+<AppPage app={app} lang="zh-Hant" />

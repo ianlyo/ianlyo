@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import AppCard from './AppCard.astro';
+import { t, type Lang } from '../i18n/ui';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const ui = t(lang).beta;
+const apps = (await getCollection('apps')).filter((a) => !a.data.hidden);
+const active = apps.filter((a) => ['closed-beta', 'open-beta'].includes(a.data.status));
+const others = apps.filter((a) => !active.includes(a));
+---
+<Base lang={lang} title={ui.title} description={ui.lead}>
+  <main class="page">
+    <div class="container">
+      <header class="page-head mb-4">
+        <h1 class="d-flex align-items-center gap-2">
+          <span class="material-symbols-rounded text-accent" aria-hidden="true">science</span>
+          <span>{ui.title}</span>
+        </h1>
+        <p class="lead">{ui.lead}</p>
+      </header>
+      {active.length ? <div class="card-grid">{active.map((a) => <AppCard app={a} lang={lang} />)}</div> : <p class="d-inline-flex align-items-center gap-2 text-muted"><span class="material-symbols-rounded" aria-hidden="true">inbox</span><span>{ui.empty}</span></p>}
+      {others.length > 0 && (
+        <div class="section-block">
+          <div class="card-grid">{others.map((a) => <AppCard app={a} lang={lang} />)}</div>
+        </div>
+      )}
+    </div>
+  </main>
+</Base>

@@ -1,0 +1,195 @@
+export type Lang = 'zh-Hant' | 'en';
+export const defaultLang: Lang = 'zh-Hant';
+
+export const ui = {
+  'zh-Hant': {
+    siteTitle: 'ianlyo - Android 開發者部落格與 Beta 測試中心',
+    siteDescription: '把日常問題變成 App 與工具。Android 開發作品集、技術部落格與封閉測試中心。',
+    nav: { home: '首頁', projects: '專案', beta: 'Beta 測試', blog: '部落格', search: '搜尋', github: 'GitHub' },
+    hero: {
+      title1: '把日常問題',
+      title2: '變成 App 與工具。',
+      lead: '我是 Ian，專注於 Android 與跨平台 App 開發。這裡是我的作品集、技術筆記，以及正在招募測試者的 App。',
+      cta1: '加入 Beta 測試',
+      cta2: '閱讀部落格',
+      cta3: '查看 GitHub',
+    },
+    stats: { repos: '公開儲存庫', stars: '星星', langs: '程式語言' },
+    activity: { eyebrow: '開源活動', heading: '公開寫程式，一次一個 commit。' },
+    home: {
+      betaEyebrow: 'Beta 測試中心',
+      betaTitle: '正在招募測試者的 App',
+      betaAll: '查看全部 App',
+      blogEyebrow: '技術部落格',
+      blogTitle: '最新文章',
+      blogAll: '所有文章',
+      browse: '依領域與技術瀏覽',
+      explore: '探索專案',
+    },
+    filters: {
+      all: ['所有專案', '瀏覽所有公開專案與工具'],
+      mobile: ['行動與跨平台', '將解決方案帶到 iOS、Android 與跨平台裝置'],
+      cli: ['自動化與工具', '腳本、CLI 與提升效率的小工具'],
+      web: ['網頁與系統', '網頁介面、系統架構與硬體整合'],
+    },
+    beta: {
+      title: 'Android App Beta 測試中心',
+      lead: '以下是目前開放測試的 Android App。依照步驟加入，就能在 Google Play 搶先體驗並回報意見。',
+      empty: '目前沒有開放測試的 App。',
+      details: '查看詳情',
+      join: '加入測試',
+      version: '版本',
+      minAndroid: '最低 Android',
+      status: '測試狀態',
+      notSet: '尚未設定',
+      placeholder: '（佔位）連結尚未提供',
+      install: '安裝與測試',
+      stepsTitle: '四步驟加入 Beta',
+      step1: ['加入 Google 群組', '先加入測試社群（若有設定），這樣才有資格加入測試。'],
+      step2: ['開啟 Google Play 測試頁面', '請使用與 Play 商店相同的 Google 帳號。'],
+      step3: ['加入測試並安裝', '在測試頁面按「成為測試人員」，接著從 Google Play 安裝 App。'],
+      step4: ['測試並回饋', '使用 App 並透過 Google Play 提交私人意見回饋。'],
+      groupBtn: '加入 Google 群組',
+      optInBtn: '開啟測試頁面',
+      playBtn: 'Google Play 商店',
+      githubBtn: 'GitHub 儲存庫',
+      feedbackBtn: '回報意見',
+      optional: '（選用）',
+      features: '主要功能',
+      screenshots: '截圖',
+      specs: '技術規格',
+      faq: '常見問題',
+      changelog: '更新紀錄',
+      links: '意見回饋與連結',
+      feedbackHow: '請在 Google Play 的測試頁面或 App 商店頁面使用「私人意見回饋」；若有 GitHub 儲存庫，也可開 Issue 回報。',
+      privacy: '隱私權政策',
+      back: '返回 Beta 中心',
+      statusLabels: { 'closed-beta': '封閉測試', 'open-beta': '公開測試', released: '已發布', 'coming-soon': '即將推出', paused: '暫停' },
+    },
+    blog: {
+      title: '技術部落格',
+      lead: 'Android、Kotlin、Jetpack Compose、自訂 ROM 與開發筆記。',
+      readingTime: '分鐘閱讀',
+      toc: '目錄',
+      related: '相關文章',
+      archive: '文章列表',
+      categories: '分類',
+      tags: '標籤',
+      newer: '較新',
+      older: '較舊',
+      searchPlaceholder: '搜尋文章…',
+      noPosts: '還沒有文章。',
+      updated: '更新於',
+    },
+    footer: { top: '回到頂端', rss: 'RSS', built: '以 Astro 建置' },
+    langSwitch: 'English',
+    notice: '部落格文章目前以繁體中文為主。',
+  },
+  en: {
+    siteTitle: 'ianlyo - Android Developer Blog & Beta Testing Hub',
+    siteDescription: 'Turning everyday problems into apps & tools. Android portfolio, technical blog and closed-beta testing hub.',
+    nav: { home: 'Home', projects: 'Projects', beta: 'Beta Testing', blog: 'Blog', search: 'Search', github: 'GitHub' },
+    hero: {
+      title1: 'Turning everyday problems',
+      title2: 'into apps & tools.',
+      lead: "I'm Ian, building Android and cross-platform apps. This is my portfolio, my technical notes, and the apps currently looking for beta testers.",
+      cta1: 'Join the beta',
+      cta2: 'Read the blog',
+      cta3: 'View GitHub',
+    },
+    stats: { repos: 'repositories', stars: 'stars', langs: 'languages' },
+    activity: { eyebrow: 'Open source activity', heading: 'Code in public, one commit at a time.' },
+    home: {
+      betaEyebrow: 'Beta Testing Hub',
+      betaTitle: 'Apps looking for testers',
+      betaAll: 'View all apps',
+      blogEyebrow: 'Technical Blog',
+      blogTitle: 'Latest articles',
+      blogAll: 'All articles',
+      browse: 'Browse by focus',
+      explore: 'Explore by Domain & Technology',
+    },
+    filters: {
+      all: ['All Projects', 'Browse every public project and tool'],
+      mobile: ['Mobile & Cross-Platform', 'Bringing solutions to iOS, Android and cross-platform devices'],
+      cli: ['Automation & Tools', 'Scripts, CLIs and small productivity tools'],
+      web: ['Web & Systems', 'Web UI, system architecture and hardware integration'],
+    },
+    beta: {
+      title: 'Android App Beta Testing Hub',
+      lead: 'These Android apps are currently open for testing. Follow the steps to join on Google Play and send feedback.',
+      empty: 'No apps are accepting testers right now.',
+      details: 'View details',
+      join: 'Join the beta',
+      version: 'Version',
+      minAndroid: 'Min Android',
+      status: 'Testing status',
+      notSet: 'Not set yet',
+      placeholder: '(Placeholder) link not provided yet',
+      install: 'Install & test',
+      stepsTitle: 'Join the beta in 4 steps',
+      step1: ['Join the Google Group', 'Join the testing community first (if configured) to become eligible.'],
+      step2: ['Open the Google Play testing page', 'Use the same Google account as your Play Store.'],
+      step3: ['Join the program and install', 'Tap "Become a tester", then install the app from Google Play.'],
+      step4: ['Test and send feedback', 'Use the app and submit private feedback through Google Play.'],
+      groupBtn: 'Join Google Group',
+      optInBtn: 'Open testing page',
+      playBtn: 'Google Play listing',
+      githubBtn: 'GitHub repository',
+      feedbackBtn: 'Send feedback',
+      optional: '(optional)',
+      features: 'Key features',
+      screenshots: 'Screenshots',
+      specs: 'Technical specifications',
+      faq: 'FAQ',
+      changelog: 'Changelog',
+      links: 'Feedback & links',
+      feedbackHow: 'Use "private feedback" on the Google Play testing page or store listing. If a GitHub repository exists, you can also open an issue.',
+      privacy: 'Privacy policy',
+      back: 'Back to Beta Hub',
+      statusLabels: { 'closed-beta': 'Closed beta', 'open-beta': 'Open beta', released: 'Released', 'coming-soon': 'Coming soon', paused: 'Paused' },
+    },
+    blog: {
+      title: 'Technical Blog',
+      lead: 'Android, Kotlin, Jetpack Compose, custom ROMs and development notes.',
+      readingTime: 'min read',
+      toc: 'On this page',
+      related: 'Related articles',
+      archive: 'Articles',
+      categories: 'Categories',
+      tags: 'Tags',
+      newer: 'Newer',
+      older: 'Older',
+      searchPlaceholder: 'Search articles…',
+      noPosts: 'No articles yet.',
+      updated: 'Updated',
+    },
+    footer: { top: 'Back to top', rss: 'RSS', built: 'Built with Astro' },
+    langSwitch: '繁體中文',
+    notice: 'Blog articles are currently written mainly in Traditional Chinese.',
+  },
+} as const;
+
+export function t(lang: Lang) {
+  return ui[lang];
+}
+
+/** Prefix a path with the language. zh-Hant is the default (no prefix). */
+export function localePath(lang: Lang, path: string) {
+  const clean = path.startsWith('/') ? path : `/${path}`;
+  return lang === 'en' ? `/en${clean}` : clean;
+}
+
+/** Pick localized text with fallback to Chinese. */
+export function pick(value: { zh: string; en?: string }, lang: Lang) {
+  return lang === 'en' && value.en ? value.en : value.zh;
+}
+
+/** Given the current path and the TARGET language to switch to, return the equivalent path. */
+export function switchLangPath(currentPath: string, targetLang: Lang) {
+  const base = currentPath.replace(/^\/en(?=\/|$)/, '') || '/';
+  if (targetLang === 'en') {
+    return base === '/' ? '/en/' : `/en${base.endsWith('/') ? base : base + '/'}`;
+  }
+  return base.endsWith('/') ? base : `${base}/`;
+}

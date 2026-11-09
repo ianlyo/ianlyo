@@ -1,0 +1,73 @@
+import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
+
+/** Text with a Traditional Chinese (required) and English (optional) version. */
+const localized = z.object({
+  zh: z.string(),
+  en: z.string().optional(),
+});
+
+/** Optional URL: empty string means "not set yet" (the UI shows a placeholder). */
+const optionalUrl = z.union([z.literal(''), z.string().url()]).default('');
+
+export const BLOG_CATEGORIES = [
+  'Android Development',
+  'Android Custom ROMs',
+  'Kotlin / Java',
+  'Jetpack Compose',
+  'System Modification',
+  'Open Source Projects',
+  'Tutorials & Guides',
+  'Development Notes',
+] as const;
+
+const blog = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    pubDate: z.coerce.date(),
+    updatedDate: z.coerce.date().optional(),
+    category: z.enum(BLOG_CATEGORIES),
+    tags: z.array(z.string()).default([]),
+    draft: z.boolean().default(false),
+    cover: z.string().optional(),
+    coverAlt: z.string().optional(),
+    lang: z.enum(['zh-Hant', 'en']).default('zh-Hant'),
+  }),
+});
+
+const apps = defineCollection({
+  loader: glob({ pattern: '*.{yaml,yml}', base: './src/content/apps' }),
+  schema: z.object({
+    name: z.string(),
+    /** Android package name, e.g. com.example.app */
+    packageName: z.string(),
+    /** Path under /public, e.g. /apps/my-app/icon.png (placeholder icon is used if empty) */
+    icon: z.string().default(''),
+    status: z.enum(['closed-beta', 'open-beta', 'released', 'coming-soon', 'paused']),
+    version: z.string(),
+    minAndroid: z.string(),
+    targetAndroid: z.string().default(''),
+    tagline: localized,
+    description: localized,
+    features: z.array(z.object({ title: localized, description: localized })).default([]),
+    screenshots: z.array(z.object({ src: z.string(), alt: localized })).default([]),
+    specs: z.array(z.object({ label: localized, value: z.string() })).default([]),
+    tech: z.array(z.string()).default([]),
+    faq: z.array(z.object({ q: localized, a: localized })).default([]),
+    changelog: z
+      .array(z.object({ version: z.string(), date: z.string(), notes: z.array(localized) }))
+      .default([]),
+    googleGroupUrl: optionalUrl,
+    optInUrl: optionalUrl,
+    playStoreUrl: optionalUrl,
+    githubUrl: optionalUrl,
+    feedbackUrl: optionalUrl,
+    privacyUrl: z.string().default(''),
+    /** Set true to hide the app from listings. */
+    hidden: z.boolean().default(false),
+  }),
+});
+
+export const collections = { blog, apps };

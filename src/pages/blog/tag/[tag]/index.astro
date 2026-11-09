@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../../../layouts/Base.astro';
+import PostCard from '../../../../components/PostCard.astro';
+import { sortPosts, slugify } from '../../../../utils/blog';
+import { t } from '../../../../i18n/ui';
+
+export async function getStaticPaths() {
+  const posts = sortPosts(await getCollection('blog'));
+  const tags = [...new Set(posts.flatMap((p) => p.data.tags))];
+  return tags.map((tag) => ({
+    params: { tag: slugify(tag) },
+    props: { tag, posts: posts.filter((p) => p.data.tags.includes(tag)) },
+  }));
+}
+const { tag, posts } = Astro.props;
+const ui = t('zh-Hant').blog;
+---
+<Base title={`#${tag}`} description={`#${tag}`} altPath={null}>
+  <main class="page"><div class="container page-narrow">
+    <header class="page-head mb-4">
+      <p class="meta">
+        <a href="/blog/" class="d-inline-flex align-items-center gap-1 back-link">
+          <span class="material-symbols-rounded icon-sm" aria-hidden="true">arrow_back</span>
+          <span>{ui.title}</span>
+        </a>
+      </p>
+      <h1 class="d-flex align-items-center gap-2">
+        <span class="material-symbols-rounded text-accent" aria-hidden="true">tag</span>
+        <span>{tag}</span>
+      </h1>
+    </header>
+    <div class="d-grid gap-3">{posts.map((p) => <PostCard post={p} />)}</div>
+  </div></main>
+</Base>

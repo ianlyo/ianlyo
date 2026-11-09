@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';
+import Home from '../components/Home.astro';
+import { t } from '../i18n/ui';
+const ui = t('zh-Hant');
+const jsonLd = [
+  { '@context': 'https://schema.org', '@type': 'WebSite', name: 'ianlyo', url: 'https://linnu.dpdns.org/', inLanguage: 'zh-Hant' },
+  { '@context': 'https://schema.org', '@type': 'Person', name: 'Ian', url: 'https://linnu.dpdns.org/', sameAs: ['https://github.com/ianlyo'] },
+];
+---
+<Base lang="zh-Hant" jsonLd={jsonLd}><Home lang="zh-Hant" /></Base>

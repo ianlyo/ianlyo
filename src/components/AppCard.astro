@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { t, localePath, pick, type Lang } from '../i18n/ui';
+interface Props { app: CollectionEntry<'apps'>; lang: Lang }
+const { app, lang } = Astro.props;
+const ui = t(lang).beta;
+const d = app.data;
+const href = localePath(lang, `/beta/${app.id}/`);
+---
+<a class="surface-card" href={href}>
+  <div class="d-flex gap-3 align-items-center mb-3">
+    {d.icon
+      ? <img class="app-icon app-icon-sm" src={d.icon} alt={`${d.name} icon`} width="56" height="56" loading="lazy" />
+      : <div class="app-icon app-icon-sm app-icon-fallback" aria-hidden="true">{d.name.charAt(0)}</div>}
+    <div>
+      <h3 class="mb-1">{d.name}</h3>
+      <span class={`status-badge s-${d.status}`}>
+        {d.status === 'released' && <span class="material-symbols-rounded icon-xs" aria-hidden="true">check_circle</span>}
+        {(d.status === 'closed-beta' || d.status === 'open-beta') && <span class="material-symbols-rounded icon-xs" aria-hidden="true">science</span>}
+        {d.status === 'coming-soon' && <span class="material-symbols-rounded icon-xs" aria-hidden="true">hourglass_empty</span>}
+        {d.status === 'paused' && <span class="material-symbols-rounded icon-xs" aria-hidden="true">pause_circle</span>}
+        <span>{ui.statusLabels[d.status]}</span>
+      </span>
+    </div>
+  </div>
+  <p>{pick(d.tagline, lang)}</p>
+  <div class="meta mt-3">
+    <span><span class="material-symbols-rounded icon-xs" aria-hidden="true">sell</span><span>{ui.version} {d.version}</span></span>
+    <span><span class="material-symbols-rounded icon-xs" aria-hidden="true">android</span><span>Android {d.minAndroid}+</span></span>
+  </div>
+</a>

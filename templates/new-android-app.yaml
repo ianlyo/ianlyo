@@ -1,0 +1,49 @@
+# Copy this file to src/content/apps/<your-app-id>.yaml  (the file name becomes the URL: /beta/<your-app-id>/)
+# Then put images in public/apps/<your-app-id>/  (icon.png, screenshot-1.png ...)
+# Leave a URL as "" if you don't have it yet - the site shows a clearly marked disabled button.
+name: My App Name
+packageName: com.yourname.app
+icon: /apps/my-app/icon.png
+status: closed-beta            # closed-beta | open-beta | released | coming-soon | paused
+version: "1.0.0"
+minAndroid: "8.0"
+targetAndroid: "15"
+
+tagline:
+  zh: 一句話介紹
+  en: One-line pitch            # optional - falls back to Chinese
+description:
+  zh: |
+    產品介紹。
+  en: |
+    Product introduction.
+
+features:
+  - title: { zh: 功能一, en: Feature one }
+    description: { zh: 說明, en: Description }
+
+screenshots:
+  - src: /apps/my-app/screenshot-1.png
+    alt: { zh: 主畫面, en: Home screen }
+
+specs:
+  - label: { zh: 架構, en: Architecture }
+    value: MVVM
+tech: [Kotlin, Jetpack Compose]
+
+faq:
+  - q: { zh: 問題？, en: Question? }
+    a: { zh: 回答。, en: Answer. }
+
+changelog:                       # newest first
+  - version: "1.0.0"
+    date: "2026-01-01"
+    notes:
+      - { zh: 初次釋出, en: First release }
+
+googleGroupUrl: ""               # Google Groups testers community (optional)
+optInUrl: ""                     # Google Play testing opt-in link
+playStoreUrl: ""
+githubUrl: ""
+feedbackUrl: ""
+privacyUrl: ""                   # e.g. /myfiles/privacy/My-App/

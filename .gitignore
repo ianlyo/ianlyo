@@ -42,3 +42,6 @@ build/
 
 # Generated documents
 *.pdf
+
+# Astro
+.astro/

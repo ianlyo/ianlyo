@@ -1,0 +1,38 @@
+---
+import type { Post } from '../utils/blog';
+import { readingTime, formatDate, slugify } from '../utils/blog';
+import { t, type Lang } from '../i18n/ui';
+interface Props { post: Post; lang?: Lang }
+const { post, lang = 'zh-Hant' } = Astro.props;
+const ui = t(lang).blog;
+---
+<article class="surface-card">
+  <a href={`/blog/${post.id}/`} style="color:inherit">
+    <h2>{post.data.title}</h2>
+    <p>{post.data.description}</p>
+  </a>
+  <div class="meta mt-3">
+    <time datetime={post.data.pubDate.toISOString()} class="d-inline-flex align-items-center gap-1">
+      <span class="material-symbols-rounded icon-xs" aria-hidden="true">calendar_today</span>
+      <span>{formatDate(post.data.pubDate, lang)}</span>
+    </time>
+    <span class="d-inline-flex align-items-center gap-1">
+      <span class="material-symbols-rounded icon-xs" aria-hidden="true">schedule</span>
+      <span>{readingTime(post.body)} {ui.readingTime}</span>
+    </span>
+    <a class="chip d-inline-flex align-items-center gap-1" href={`/blog/category/${slugify(post.data.category)}/`}>
+      <span class="material-symbols-rounded icon-xs" aria-hidden="true">folder_open</span>
+      <span>{post.data.category}</span>
+    </a>
+  </div>
+  {post.data.tags.length > 0 && (
+    <div class="chip-row mt-2">
+      {post.data.tags.map((tg) => (
+        <a class="chip chip-muted d-inline-flex align-items-center gap-1" href={`/blog/tag/${slugify(tg)}/`}>
+          <span class="material-symbols-rounded icon-xs" aria-hidden="true">tag</span>
+          <span>{tg}</span>
+        </a>
+      ))}
+    </div>
+  )}
+</article>
