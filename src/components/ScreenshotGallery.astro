@@ -198,6 +198,8 @@ const serializedScreenshots = screenshots.map((s) => ({
     overflow: hidden;
     box-sizing: border-box;
     --gallery-gutter: clamp(2.5rem, 8vw, 7rem);
+    --card-height: clamp(440px, 62vh, 580px);
+    --card-width: calc(var(--card-height) * 1080 / 2400);
   }
 
   .gallery-header-wrap,
@@ -225,6 +227,9 @@ const serializedScreenshots = screenshots.map((s) => ({
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
+    scroll-padding-left: var(--gallery-gutter);
+    scroll-padding-right: var(--gallery-gutter);
+    scroll-padding-inline: var(--gallery-gutter);
     scrollbar-width: none;
     padding-top: 1rem;
     padding-bottom: 1.5rem;
@@ -239,16 +244,22 @@ const serializedScreenshots = screenshots.map((s) => ({
 
   .gallery-slide {
     flex: 0 0 auto;
+    width: var(--card-width);
+    max-width: 85vw;
     scroll-snap-align: start;
     scroll-snap-stop: normal;
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
   }
 
   /* Interactive Apple-grade screenshot cards */
   .screenshot-card {
-    height: clamp(440px, 62vh, 580px);
+    width: 100%;
+    height: var(--card-height);
     aspect-ratio: 1080 / 2400;
-    width: auto;
-    border-radius: 24px;
+    max-width: 100%;
+    border-radius: 28px;
     overflow: hidden;
     position: relative;
     background: var(--bg-surface-subtle);
@@ -259,6 +270,9 @@ const serializedScreenshots = screenshots.map((s) => ({
     padding: 0;
     display: block;
     outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
   }
 
   :global([data-bs-theme='light']) .screenshot-card {
@@ -279,11 +293,13 @@ const serializedScreenshots = screenshots.map((s) => ({
   .screenshot-card img {
     width: 100%;
     height: 100%;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
     display: block;
     user-select: none;
     -webkit-user-drag: none;
-    border-radius: 22px;
+    border-radius: 26px;
   }
 
   .zoom-badge {
@@ -561,6 +577,7 @@ const serializedScreenshots = screenshots.map((s) => ({
   .lightbox-img {
     max-width: 90vw;
     max-height: calc(100vh - 120px);
+    max-height: calc(100dvh - 120px);
     width: auto;
     height: auto;
     object-fit: contain;
@@ -581,9 +598,10 @@ const serializedScreenshots = screenshots.map((s) => ({
   @media (max-width: 768px) {
     .screenshot-gallery-section {
       --gallery-gutter: 1.25rem;
+      --card-height: clamp(380px, 58vh, 480px);
+      --card-width: calc(var(--card-height) * 1080 / 2400);
     }
     .screenshot-card {
-      height: clamp(380px, 58vh, 480px);
       border-radius: 16px;
       box-shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.45);
     }
@@ -608,6 +626,7 @@ const serializedScreenshots = screenshots.map((s) => ({
     .lightbox-img {
       max-width: 94vw;
       max-height: calc(100vh - 110px);
+      max-height: calc(100dvh - 110px);
     }
     .lightbox-img.is-zoomed {
       transform: scale(1.85);
@@ -790,7 +809,7 @@ const serializedScreenshots = screenshots.map((s) => ({
         if (!slide) return 300;
         const style = window.getComputedStyle(track);
         const gap = parseFloat(style.columnGap || style.gap || '24') || 24;
-        return slide.offsetWidth + gap;
+        return (slide.getBoundingClientRect().width || slide.offsetWidth) + gap;
       };
 
       const updateControls = () => {
