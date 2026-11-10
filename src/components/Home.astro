@@ -1,4 +1,5 @@
 ---
+import { Icon } from 'astro-icon/components';
 import { getCollection } from 'astro:content';
 import { t, localePath, type Lang } from '../i18n/ui';
 import { SITE } from '../config/site';
@@ -19,21 +20,21 @@ const f = ui.filters;
         <p class="lead">{ui.hero.lead}</p>
         <div class="hero-stats" aria-label="GitHub activity">
           <div class="stat-box">
-            <span class="material-symbols-rounded stat-icon" aria-hidden="true">folder_code</span>
+            <Icon name="material-symbols:folder-open" class="material-symbols-rounded stat-icon" aria-hidden="true" />
             <div class="stat-box-info">
               <strong id="repo-stat">--</strong>
               <span>{ui.stats.repos}</span>
             </div>
           </div>
           <div class="stat-box">
-            <span class="material-symbols-rounded stat-icon" aria-hidden="true">star</span>
+            <Icon name="material-symbols:star" class="material-symbols-rounded stat-icon" aria-hidden="true" />
             <div class="stat-box-info">
               <strong id="star-stat">--</strong>
               <span>{ui.stats.stars}</span>
             </div>
           </div>
           <div class="stat-box">
-            <span class="material-symbols-rounded stat-icon" aria-hidden="true">code_blocks</span>
+            <Icon name="material-symbols:code" class="material-symbols-rounded stat-icon" aria-hidden="true" />
             <div class="stat-box-info">
               <strong id="language-stat">--</strong>
               <span>{ui.stats.langs}</span>
@@ -43,15 +44,15 @@ const f = ui.filters;
         <div class="hero-actions">
           <a href={localePath(lang, '/beta/')} class="btn btn-primary d-inline-flex align-items-center gap-2">
             <span>{ui.hero.cta1}</span>
-            <span class="material-symbols-rounded icon-sm" aria-hidden="true">arrow_forward</span>
+            <Icon name="material-symbols:arrow-forward" class="material-symbols-rounded icon-sm" aria-hidden="true" />
           </a>
           <a href="/blog/" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
-            <span class="material-symbols-rounded icon-sm" aria-hidden="true">article</span>
+            <Icon name="material-symbols:article" class="material-symbols-rounded icon-sm" aria-hidden="true" />
             <span>{ui.hero.cta2}</span>
           </a>
           <a href={SITE.github.reposUrl} target="_blank" rel="noopener" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
             <span>{ui.hero.cta3}</span>
-            <span class="material-symbols-rounded icon-sm" aria-hidden="true">open_in_new</span>
+            <Icon name="material-symbols:open-in-new" class="material-symbols-rounded icon-sm" aria-hidden="true" />
           </a>
         </div>
       </div>
@@ -75,12 +76,12 @@ const f = ui.filters;
       <p class="eyebrow mb-2">{ui.home.betaEyebrow}</p>
       <div class="d-flex justify-content-between align-items-end mb-3 flex-wrap gap-2">
         <h2 class="block-title mb-0">
-          <span class="material-symbols-rounded text-accent" aria-hidden="true">science</span>
+          <Icon name="material-symbols:science" class="material-symbols-rounded text-accent" aria-hidden="true" />
           <span>{ui.home.betaTitle}</span>
         </h2>
         <a href={localePath(lang, '/beta/')} class="d-inline-flex align-items-center gap-1 font-weight-semibold">
           <span>{ui.home.betaAll}</span>
-          <span class="material-symbols-rounded icon-sm" aria-hidden="true">arrow_forward</span>
+          <Icon name="material-symbols:arrow-forward" class="material-symbols-rounded icon-sm" aria-hidden="true" />
         </a>
       </div>
       <div class="card-grid">{apps.map((app) => <AppCard app={app} lang={lang} />)}</div>
@@ -93,12 +94,12 @@ const f = ui.filters;
         <p class="eyebrow mb-2">{ui.home.blogEyebrow}</p>
         <div class="d-flex justify-content-between align-items-end mb-3 flex-wrap gap-2">
           <h2 class="block-title mb-0">
-            <span class="material-symbols-rounded text-accent" aria-hidden="true">article</span>
+            <Icon name="material-symbols:article" class="material-symbols-rounded text-accent" aria-hidden="true" />
             <span>{ui.home.blogTitle}</span>
           </h2>
           <a href="/blog/" class="d-inline-flex align-items-center gap-1 font-weight-semibold">
             <span>{ui.home.blogAll}</span>
-            <span class="material-symbols-rounded icon-sm" aria-hidden="true">arrow_forward</span>
+            <Icon name="material-symbols:arrow-forward" class="material-symbols-rounded icon-sm" aria-hidden="true" />
           </a>
         </div>
         <div class="card-grid">
@@ -107,8 +108,8 @@ const f = ui.filters;
               <h3>{p.data.title}</h3>
               <p>{p.data.description}</p>
               <div class="meta mt-2">
-                <span><span class="material-symbols-rounded icon-xs" aria-hidden="true">calendar_today</span>{formatDate(p.data.pubDate, lang)}</span>
-                <span><span class="material-symbols-rounded icon-xs" aria-hidden="true">schedule</span>{readingTime(p.body)} {ui.blog.readingTime}</span>
+                <span><Icon name="material-symbols:calendar-today" class="material-symbols-rounded icon-xs" aria-hidden="true" />{formatDate(p.data.pubDate, lang)}</span>
+                <span><Icon name="material-symbols:schedule" class="material-symbols-rounded icon-xs" aria-hidden="true" />{readingTime(p.body)} {ui.blog.readingTime}</span>
               </div>
             </a>
           ))}
@@ -123,7 +124,7 @@ const f = ui.filters;
         <div>
           <p class="eyebrow mb-2">{ui.home.browse}</p>
           <h2 id="projects-title" class="d-flex align-items-center gap-2">
-            <span class="material-symbols-rounded text-accent" aria-hidden="true">code</span>
+            <Icon name="material-symbols:code" class="material-symbols-rounded text-accent" aria-hidden="true" />
             <span>{ui.home.explore}</span>
           </h2>
         </div>
@@ -139,7 +140,7 @@ const f = ui.filters;
           <button class:list={['capability-item', 'category-filter', { 'is-active': key === 'all' }]} type="button" data-category={key}>
             <div class="capability-header">
               <span class="capability-number">{num}</span>
-              <div class="capability-icon"><span class="material-symbols-rounded" aria-hidden="true">{icon}</span></div>
+              <div class="capability-icon"><Icon name={`material-symbols:${String(icon).replaceAll('_','-')}`} class="material-symbols-rounded" aria-hidden="true" /></div>
             </div>
             <strong class="capability-title">{(text as readonly string[])[0]}</strong>
             <p class="capability-desc">{(text as readonly string[])[1]}</p>
@@ -149,16 +150,16 @@ const f = ui.filters;
       <div class="project-tools" role="search">
         <label class="visually-hidden" for="project-search">{ui.projects.searchLabel}</label>
         <div class="project-search-wrapper">
-          <span class="material-symbols-rounded project-search-icon" aria-hidden="true">search</span>
+          <Icon name="material-symbols:search" class="material-symbols-rounded project-search-icon" aria-hidden="true" />
           <input id="project-search" type="search" placeholder={ui.projects.searchPlaceholder} autocomplete="off" />
         </div>
         <label class="visually-hidden" for="language-filter">{ui.projects.languageLabel}</label>
         <div class="language-filter-wrapper">
-          <span class="material-symbols-rounded language-filter-icon" aria-hidden="true">tune</span>
+          <Icon name="material-symbols:tune" class="material-symbols-rounded language-filter-icon" aria-hidden="true" />
           <select id="language-filter"><option value="">{ui.projects.allLanguages}</option></select>
         </div>
         <button id="clear-filters" class="clear-filters" type="button" hidden>
-          <span class="material-symbols-rounded icon-sm" aria-hidden="true">close</span>
+          <Icon name="material-symbols:close" class="material-symbols-rounded icon-sm" aria-hidden="true" />
           <span>{ui.projects.clearFilters}</span>
         </button>
       </div>

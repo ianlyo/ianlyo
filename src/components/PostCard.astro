@@ -1,4 +1,5 @@
 ---
+import { Icon } from 'astro-icon/components';
 import type { Post } from '../utils/blog';
 import { readingTime, formatDate, slugify } from '../utils/blog';
 import { t, type Lang } from '../i18n/ui';
@@ -13,15 +14,15 @@ const ui = t(lang).blog;
   </a>
   <div class="meta mt-3">
     <time datetime={post.data.pubDate.toISOString()} class="d-inline-flex align-items-center gap-1">
-      <span class="material-symbols-rounded icon-xs" aria-hidden="true">calendar_today</span>
+      <Icon name="material-symbols:calendar-today" class="material-symbols-rounded icon-xs" aria-hidden="true" />
       <span>{formatDate(post.data.pubDate, lang)}</span>
     </time>
     <span class="d-inline-flex align-items-center gap-1">
-      <span class="material-symbols-rounded icon-xs" aria-hidden="true">schedule</span>
+      <Icon name="material-symbols:schedule" class="material-symbols-rounded icon-xs" aria-hidden="true" />
       <span>{readingTime(post.body)} {ui.readingTime}</span>
     </span>
     <a class="chip d-inline-flex align-items-center gap-1" href={`/blog/category/${slugify(post.data.category)}/`}>
-      <span class="material-symbols-rounded icon-xs" aria-hidden="true">folder_open</span>
+      <Icon name="material-symbols:folder-open" class="material-symbols-rounded icon-xs" aria-hidden="true" />
       <span>{post.data.category}</span>
     </a>
   </div>
@@ -29,7 +30,7 @@ const ui = t(lang).blog;
     <div class="chip-row mt-2">
       {post.data.tags.map((tg) => (
         <a class="chip chip-muted d-inline-flex align-items-center gap-1" href={`/blog/tag/${slugify(tg)}/`}>
-          <span class="material-symbols-rounded icon-xs" aria-hidden="true">tag</span>
+          <Icon name="material-symbols:tag" class="material-symbols-rounded icon-xs" aria-hidden="true" />
           <span>{tg}</span>
         </a>
       ))}

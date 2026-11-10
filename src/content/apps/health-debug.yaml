@@ -1,66 +1,105 @@
 # ──────────────────────────────────────────────────────────────
 # Health Debug - app config
-# Everything marked PLACEHOLDER must be replaced with real info.
 # Empty URL ("") = "not set yet" (the site shows a disabled button).
 # ──────────────────────────────────────────────────────────────
 name: Health Debug
-packageName: com.example.PLACEHOLDER        # PLACEHOLDER: real Android package name
+packageName: com.lnu.healthdebug
 icon: ""                                     # e.g. /apps/health-debug/icon.png (put file in public/apps/health-debug/)
 status: closed-beta                          # closed-beta | open-beta | released | coming-soon | paused
-version: "0.0.0"                             # PLACEHOLDER: current release version
-minAndroid: "14"                             # PLACEHOLDER: Health Connect is built in from Android 14 - confirm
-targetAndroid: ""
+version: "2.2.2"                             # versionCode 14
+minAndroid: "7.1"                            # API 25 (per Play Console); Health Connect is built in from Android 14
+targetAndroid: "16"                          # Target SDK 36
 
 tagline:
-  zh: 用於開發與測試 Android Health Connect 寫入功能的小工具。
-  en: A small developer tool for testing Android Health Connect writes.
+  zh: 為開發與測試而生，輕鬆模擬並寫入 Android Health Connect 健康數據。
+  en: Mock and inject structured health data into Android Health Connect.
 description:
   zh: |
-    Health Debug 是一個開發與測試用的 Android App，可將步數、運動紀錄、距離、總消耗熱量與速度等資料寫入 Google Health Connect，方便開發者驗證健康資料流程。
-    [佔位] 更完整的產品介紹請之後補上。
+    Health Debug 是以 Jetpack Compose 與 Material Design 3 打造的 Android 開發測試工具，可輕鬆模擬並寫入結構完整的健康與運動數據到 Android Health Connect。
+    支援所有版本的 Health Connect：Android 13 以下的獨立 APK，到 Android 14+ 內建的 Framework（最高 API 36 / Android 16）。
+    所有資料都只寫入裝置本機的 Health Connect，不會蒐集、上傳或分享。
   en: |
-    Health Debug is a development and testing app for Android that writes steps, exercise sessions, distance, total calories burned and speed to Google Health Connect, so developers can verify health-data flows.
-    [PLACEHOLDER] Add a fuller product introduction later.
+    Health Debug is an Android development and testing tool built with Jetpack Compose and Material Design 3. It lets you easily mock and inject highly structured health and fitness data into Android Health Connect.
+    It supports every Health Connect version, from the standalone APK on Android 13 and lower to the framework built into Android 14+ (up to API 36 / Android 16).
+    All data is written to the on-device Health Connect store. Nothing is collected, uploaded or shared.
 
 features:
-  - title: { zh: 寫入步數, en: Write steps }
-    description: { zh: "[佔位] 請補充功能說明。", en: "[PLACEHOLDER] Describe this feature." }
-  - title: { zh: 運動紀錄, en: Exercise sessions }
-    description: { zh: "[佔位] 請補充功能說明。", en: "[PLACEHOLDER] Describe this feature." }
-  - title: { zh: 距離、熱量與速度, en: Distance, calories and speed }
-    description: { zh: "[佔位] 請補充功能說明。", en: "[PLACEHOLDER] Describe this feature." }
+  - title: { zh: 設定時間與配速, en: Set Duration and Pace }
+    image: /apps/health-debug/live.png
+    description:
+      zh: 即時記錄模式可自訂時、分、秒與每分鐘步數配速，隨時開始模擬健走或跑步。
+      en: In Live Recording, set hours, minutes, seconds and steps-per-minute pace, then start simulating a walk or run.
+  - title: { zh: 即時模擬運動數據, en: Live Session Stats }
+    image: /apps/health-debug/recording.png
+    description:
+      zh: 錄製中即時顯示剩餘時間、步數、距離、速度、配速與卡路里，並自動計算分段與速度變化。
+      en: See remaining time, steps, distance, speed, pace and kcal update live, with segments and speed fluctuation calculated automatically.
+  - title: { zh: 即時通知追蹤進度, en: Live Notifications }
+    zoom: true
+    images:
+      - /apps/health-debug/live-update.png
+      - /apps/health-debug/live-update-expand.png
+    description:
+      zh: 以 ProgressStyle 即時通知顯示剩餘時間、步數、距離與卡路里，離開 App 也能掌握進度。
+      en: A ProgressStyle live notification shows remaining time, steps, distance and kcal while you are away from the app.
+  - title: { zh: 歷史資料直接寫入, en: Direct Historical Write }
+    image: /apps/health-debug/write.png
+    description:
+      zh: 選擇健走、跑步或自行車，依步數與配速手動寫入過去的運動記錄，寫入前先預覽距離、速度與卡路里。
+      en: Pick walking, running or cycling and inject past sessions from step count and pace, previewing distance, speed and kcal before writing.
+  - title: { zh: 檢視健康數據紀錄, en: Browse Health Records }
+    image: /apps/health-debug/records.png
+    description:
+      zh: 依時間範圍、來源 App 與資料類型檢視步數、距離、卡路里與心率，快速驗證寫入結果。
+      en: Filter by time range, source app and data type to verify the steps, distance, calories and heart rate you wrote.
+  - title: { zh: Google Fit 同步讀取, en: Read It in Google Fit }
+    image: /apps/health-debug/googlefit.png
+    description:
+      zh: 寫入 Health Connect 的運動、距離、卡路里、心率與步速，Google Fit 都能直接讀取並顯示，方便驗證你的 App 的資料流程。
+      en: Sessions, distance, calories, heart rate and pace written to Health Connect show up directly in Google Fit, so you can verify your data pipeline end to end.
 
-screenshots: []
-# screenshots:
-#   - src: /apps/health-debug/screenshot-1.png
-#     alt: { zh: 主畫面, en: Home screen }
-
-specs:
-  - label: { zh: 整合, en: Integration }
-    value: Google Health Connect
-tech:
-  - Android
-  - Health Connect
-
+screenshots:
+  - src: /apps/health-debug/live.png
+    alt: { zh: 即時記錄, en: Live recording setup }
+  - src: /apps/health-debug/recording.png
+    alt: { zh: 錄製中, en: Recording in progress }
+  - src: /apps/health-debug/live-update-expand.png
+    alt: { zh: 即時通知, en: Live notification }
+  - src: /apps/health-debug/write.png
+    alt: { zh: 歷史資料直接寫入, en: Direct historical write }
+  - src: /apps/health-debug/records.png
+    alt: { zh: 健康數據紀錄, en: Health data records }
+  - src: /apps/health-debug/googlefit.png
+    alt: { zh: Google Fit 顯示的運動記錄, en: Session shown in Google Fit }
+specs: []
 faq:
   - q: { zh: 我需要什麼才能參加測試？, en: What do I need to join the beta? }
     a:
-      zh: 一個 Google 帳號（與 Google Play 商店相同），以及符合最低版本需求的 Android 裝置。
-      en: A Google account (the same one used for the Play Store) and an Android device that meets the minimum version.
-  - q: { zh: 這個 App 會收集我的資料嗎？, en: Does the app collect my data? }
+      zh: 一個 Google 帳號（與 Google Play 商店相同），以及 Android 7.1（API 25）以上的裝置。Android 13 以下需另外安裝 Health Connect。
+      en: A Google account (the same one used for the Play Store) and a device running Android 7.1 (API 25) or higher. Android 13 and lower also need the Health Connect app.
+  - q: { zh: 這個 App 會蒐集我的資料嗎？, en: Does the app collect my data? }
     a:
-      zh: 請參閱隱私權政策。
-      en: Please read the privacy policy.
+      zh: 不會。所有資料只寫入裝置本機的 Health Connect，不會上傳或分享。詳情請參閱隱私權政策。
+      en: No. All data is written to the on-device Health Connect store and never uploaded or shared. See the privacy policy for details.
 
 changelog:
-  - version: "0.0.0"
-    date: "PLACEHOLDER"
+  - version: "2.2.2"
+    date: "2026-11-10"
     notes:
-      - { zh: "[佔位] 尚未發布。", en: "[PLACEHOLDER] Not released yet." }
+      - { zh: 目標 Android 16（API 36），支援即時記錄、歷史資料寫入與健康數據紀錄。, en: Targets Android 16 (API 36) with live recording, historical write and health data records. }
 
-googleGroupUrl: ""      # PLACEHOLDER: Google Groups testers community
-optInUrl: ""            # PLACEHOLDER: Google Play testing opt-in link
-playStoreUrl: ""        # PLACEHOLDER: Play Store listing
-githubUrl: ""           # PLACEHOLDER: GitHub repo (optional)
-feedbackUrl: ""         # PLACEHOLDER: where to send feedback (Play private feedback / issues)
+googleGroupUrl: "https://groups.google.com/g/testers-community"   # testers-community@googlegroups.com
+extraGroups:
+  - name: testify-dev-community
+    url: https://groups.google.com/g/testify-dev-community
+optInUrl: "https://play.google.com/apps/testing/com.lnu.healthdebug"
+playStoreUrl: "https://play.google.com/store/apps/details?id=com.lnu.healthdebug"
+githubUrl: "https://github.com/linenyou/health-debug"
+feedbackUrl: ""
 privacyUrl: "/myfiles/privacy/Health-Debug/"
+
+
+
+
+
+

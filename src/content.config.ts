@@ -51,7 +51,11 @@ const apps = defineCollection({
     targetAndroid: z.string().default(''),
     tagline: localized,
     description: localized,
-    features: z.array(z.object({ title: localized, description: localized })).default([]),
+    features: z
+      .array(z.object({ title: localized, description: localized, image: z.string().optional(), images: z.array(z.string()).optional(), zoom: z.boolean().optional() }))
+      .default([]),
+    /** Permissions the app requests (shown as chips). */
+    permissions: z.array(z.string()).default([]),
     screenshots: z.array(z.object({ src: z.string(), alt: localized })).default([]),
     specs: z.array(z.object({ label: localized, value: z.string() })).default([]),
     tech: z.array(z.string()).default([]),
@@ -60,6 +64,8 @@ const apps = defineCollection({
       .array(z.object({ version: z.string(), date: z.string(), notes: z.array(localized) }))
       .default([]),
     googleGroupUrl: optionalUrl,
+    /** Additional Google Groups (shown as extra buttons in step 1). */
+    extraGroups: z.array(z.object({ name: z.string(), url: z.string().url() })).default([]),
     optInUrl: optionalUrl,
     playStoreUrl: optionalUrl,
     githubUrl: optionalUrl,
@@ -71,3 +77,5 @@ const apps = defineCollection({
 });
 
 export const collections = { blog, apps };
+
+

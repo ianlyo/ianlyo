@@ -1,4 +1,5 @@
 ---
+import { Icon } from 'astro-icon/components';
 import { t, localePath, switchLangPath, type Lang } from '../i18n/ui';
 import { SITE } from '../config/site';
 
@@ -107,19 +108,19 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
       <a href={localePath(lang, '/beta/')} class:list={[{ active: isActive('/beta') }]}>{ui.nav.beta}</a>
       <a href="/blog/" class:list={[{ active: path.startsWith('/blog') }]}>{ui.nav.blog}</a>
       <a href={localePath(lang, '/') + '#projects'} class="d-none d-md-inline">{ui.nav.projects}</a>
-      <a href="/search/" aria-label={ui.nav.search} title={ui.nav.search}><span class="material-symbols-rounded" aria-hidden="true">search</span></a>
+      <a href="/search/" aria-label={ui.nav.search} title={ui.nav.search}><Icon name="material-symbols:search" class="material-symbols-rounded" aria-hidden="true" /></a>
       <a href={SITE.github.reposUrl} target="_blank" rel="noopener" aria-label="GitHub" title="GitHub" class="d-none d-sm-inline-flex">
         <i class="bi bi-github" aria-hidden="true"></i>
       </a>
       {otherPath && (
         <a href={otherPath} hreflang={otherLang} class="lang-switch">
-          <span class="material-symbols-rounded icon-xs" aria-hidden="true">translate</span>
+          <Icon name="material-symbols:translate" class="material-symbols-rounded icon-xs" aria-hidden="true" />
           <span>{ui.langSwitch}</span>
         </a>
       )}
     </div>
     <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme">
-      <span class="material-symbols-rounded" aria-hidden="true">contrast</span>
+      <Icon name="material-symbols:contrast" class="material-symbols-rounded" aria-hidden="true" />
     </button>
   </nav>
 
@@ -133,8 +134,8 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
           © <span id="current-year"></span> {SITE.name} · {ui.footer.built}
         </p>
         <div class="footer-links">
-          <a href="/rss.xml" class="d-inline-flex align-items-center gap-1"><span class="material-symbols-rounded icon-xs" aria-hidden="true">rss_feed</span><span>{ui.footer.rss}</span></a>
-          <a href="#main" class="d-inline-flex align-items-center gap-1"><span>{ui.footer.top}</span><span class="material-symbols-rounded icon-xs" aria-hidden="true">arrow_upward</span></a>
+          <a href="/rss.xml" class="d-inline-flex align-items-center gap-1"><Icon name="material-symbols:rss-feed" class="material-symbols-rounded icon-xs" aria-hidden="true" /><span>{ui.footer.rss}</span></a>
+          <a href="#main" class="d-inline-flex align-items-center gap-1"><span>{ui.footer.top}</span><Icon name="material-symbols:arrow-upward" class="material-symbols-rounded icon-xs" aria-hidden="true" /></a>
         </div>
       </div>
     </div>

@@ -1,11 +1,15 @@
 ---
 /**
- * ScrollSequence - Apple 風格滾動釘選內容切換。
- * 修改文案：只需編輯 scrollSteps（或由外部傳入 steps prop），畫面與動畫自動對應。
+ * ScrollSequence - Apple-style scroll-pinned content switcher.
+ * The section pins to the viewport; scrolling cross-fades the text on the left
+ * with a phone screenshot on the right (stacked on mobile).
+ * Edit only the steps (pass them via the `steps` prop).
  */
 export interface ScrollStep {
   id: number;
-  image?: string; // 省略時顯示漸層背景
+  image?: string; // optional screenshot shown in the phone frame
+  images?: string[]; // several screenshots shown one after another within this step
+  zoom?: boolean; // zoom the phone in so only the top of the screen is visible
   title: string;
   subtitle: string;
   href?: string;
@@ -13,58 +17,87 @@ export interface ScrollStep {
 
 interface Props {
   steps?: ScrollStep[];
-  /** 每個步驟佔用的捲動距離 (px) */
+  /** Scroll distance (px) per step */
   scrollPerStep?: number;
   label?: string;
 }
 
 const defaultSteps: ScrollStep[] = [
-  { id: 1, image: '/og/default.png', title: '第一個亮點', subtitle: '在這裡寫下第一段說明文字。' },
-  { id: 2, image: '/og/default.png', title: '第二個亮點', subtitle: '在這裡寫下第二段說明文字。' },
-  { id: 3, image: '/og/default.png', title: '第三個亮點', subtitle: '在這裡寫下第三段說明文字。' },
+  { id: 1, image: '/og/default.png', title: 'Step 1', subtitle: 'Describe the first step here.' },
+  { id: 2, image: '/og/default.png', title: 'Step 2', subtitle: 'Describe the second step here.' },
+  { id: 3, image: '/og/default.png', title: 'Step 3', subtitle: 'Describe the third step here.' },
 ];
 
 const { steps: scrollSteps = defaultSteps, scrollPerStep = 1000, label = 'Scroll sequence' } = Astro.props;
 ---
 {scrollSteps.length > 0 && (
   <section class="scroll-sequence" data-scroll-per-step={scrollPerStep} aria-label={label}>
-    <div class="media-layer">
-      {scrollSteps.map((s, i) => (
-        <div class="media-frame" style={i === 0 ? 'opacity:1' : undefined} data-step={s.id}>
-          {s.image && <img src={s.image} alt="" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />}
+    <div class="stage">
+      <div class="text-layer">
+        {scrollSteps.map((s, i) => (
+          <div class="text-step" data-step={s.id} data-zoom={s.zoom ? "1" : undefined} style={i === 0 ? 'opacity:1;transform:none' : undefined}>
+            <span class="step-count">{String(i + 1).padStart(2, '0')} / {String(scrollSteps.length).padStart(2, '0')}</span>
+            <h2>{s.href ? <a href={s.href}>{s.title}</a> : s.title}</h2>
+            <p>{s.subtitle}</p>
+          </div>
+        ))}
+      </div>
+      <div class="media-layer">
+        <div class="phone">
+          <div class="phone-screen">
+            {scrollSteps.map((s, i) => (s.images?.length ? s.images : s.image ? [s.image] : [undefined]).map((src, k) => (
+              <div class="media-frame" style={i === 0 && k === 0 ? 'opacity:1' : undefined} data-step-index={i}>
+                {src && <img src={src} alt={s.title} loading={i === 0 && k === 0 ? 'eager' : 'lazy'} decoding="async" />}
+              </div>
+            )))}
+          </div>
         </div>
-      ))}
-    </div>
-    <div class="text-layer">
-      {scrollSteps.map((s) => (
-        <div class="text-step" data-step={s.id}>
-          <h2>{s.href ? <a href={s.href}>{s.title}</a> : s.title}</h2>
-          <p>{s.subtitle}</p>
-        </div>
-      ))}
+      </div>
     </div>
   </section>
 )}
 
 <style>
-  .scroll-sequence { position: relative; width: 100%; height: 100vh; height: 100svh; overflow: hidden; background: #000; color: #fff; }
-  /* 讓組件突破窄容器，撐滿視窗寬度 */
+  .scroll-sequence { position: relative; width: 100%; height: 100vh; height: 100svh; overflow: hidden; color: #fff;
+    background: radial-gradient(ellipse at 70% 50%, #2a1f1e, #000 70%); }
+  /* Lets the component break out of a narrow container to full viewport width */
   :global(.scroll-bleed) { width: 100vw; margin-left: calc(50% - 50vw); }
-  .media-layer, .text-layer { position: absolute; inset: 0; }
-  .media-frame { position: absolute; inset: 0; opacity: 0; display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(135deg, #1d1d1f, #3a3a3c); will-change: opacity; }
-  .media-frame img { width: 100%; height: 100%; object-fit: cover; opacity: .55; }
-  .text-layer { display: grid; place-items: center; padding: 0 1.5rem; text-align: center; pointer-events: none;
-    background: radial-gradient(ellipse at center, rgb(0 0 0 / .45), transparent 70%); }
-  .text-step { grid-area: 1 / 1; max-width: 42rem; opacity: 0; transform: translateY(40px); will-change: opacity, transform; }
-  .text-step h2 { font-size: clamp(2rem, 6vw, 4.5rem); font-weight: 800; letter-spacing: -.02em; margin: 0 0 1rem; color: #fff; }
-  .text-step h2 a { color: inherit; pointer-events: auto; text-decoration: none; }
-  .text-step p { font-size: clamp(1rem, 2.2vw, 1.5rem); margin: 0; color: rgb(255 255 255 / .85); }
-  /* 無動畫偏好：取消釘選，改為依序堆疊顯示 */
+  .stage { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; align-items: center;
+    gap: 2rem; max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
+  .text-layer { display: grid; align-items: center; }
+  .text-step { grid-area: 1 / 1; opacity: 0; transform: translateY(40px); will-change: opacity, transform; }
+  .step-count { display: block; margin-bottom: .75rem; font-size: .875rem; letter-spacing: .15em; color: rgb(255 255 255 / .5); }
+  .text-step h2 { font-size: clamp(1.75rem, 4.5vw, 3.5rem); font-weight: 800; letter-spacing: -.02em; line-height: 1.1; margin: 0 0 1rem; color: #fff; }
+  .text-step h2 a { color: inherit; text-decoration: none; }
+  .text-step p { font-size: clamp(1rem, 1.8vw, 1.25rem); line-height: 1.6; margin: 0; color: rgb(255 255 255 / .8); }
+  .media-layer { display: flex; justify-content: center; }
+  .phone { transform-origin: 0 0; will-change: transform; }
+  /* Google Pixel 6a: 20:9 flat display, thin bezels, centered punch-hole camera, aluminium rails */
+  .phone { position: relative; height: min(78vh, 46rem); aspect-ratio: 1080 / 2400; border-radius: 2.1rem; padding: .42rem;
+    background: #0c0c0d;
+    box-shadow: 0 0 0 2px #2b2b2d, 0 0 0 3.5px #5b5e63, 0 30px 80px rgb(0 0 0 / .6), inset 0 0 0 1px #1c1c1e; }
+  /* side keys (right edge): power + volume */
+  .phone::before, .phone::after { content: ''; position: absolute; right: -5.5px; width: 3px; border-radius: 0 2px 2px 0; background: #5b5e63; }
+  .phone::before { top: 22%; height: 7%; }
+  .phone::after { top: 32%; height: 11%; }
+  .phone-screen { position: relative; width: 100%; height: 100%; border-radius: 1.75rem; overflow: hidden; background: #1a1110; }
+
+  .media-frame { position: absolute; inset: 0; opacity: 0; will-change: opacity; }
+  .media-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  @media (max-width: 767px) {
+    .stage { grid-template-columns: 1fr; grid-template-rows: auto 1fr; align-content: center; gap: 1rem; padding-top: 4.5rem; }
+    .text-layer { min-height: 11rem; align-items: start; text-align: center; }
+    .media-layer { align-items: flex-start; }
+    .phone { height: min(52vh, 28rem); }
+  }
+
+  /* Reduced motion: no pinning, show every step in order */
   .scroll-sequence.is-static { height: auto; overflow: visible; }
+  .scroll-sequence.is-static .stage { position: static; display: block; padding: 3rem 1.5rem; }
+  .scroll-sequence.is-static .text-layer { display: block; }
   .scroll-sequence.is-static .media-layer { display: none; }
-  .scroll-sequence.is-static .text-layer { position: static; display: block; padding: 3rem 1.5rem; }
-  .scroll-sequence.is-static .text-step { opacity: 1; transform: none; margin: 0 auto 3rem; }
+  .scroll-sequence.is-static .text-step { opacity: 1; transform: none; margin: 0 auto 3rem; max-width: 42rem; }
 </style>
 
 <script>
@@ -80,7 +113,7 @@ const { steps: scrollSteps = defaultSteps, scrollPerStep = 1000, label = 'Scroll
   if (reduce) {
     roots.forEach((r) => r.classList.add('is-static'));
   } else if (roots.length) {
-    // Lenis 平滑滾動，並與 ScrollTrigger 同步
+    // Lenis smooth scrolling, synced with ScrollTrigger
     const lenis = new Lenis();
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => lenis.raf(time * 1000));
@@ -89,14 +122,18 @@ const { steps: scrollSteps = defaultSteps, scrollPerStep = 1000, label = 'Scroll
     roots.forEach((root) => {
       const texts = gsap.utils.toArray<HTMLElement>('.text-step', root);
       const medias = gsap.utils.toArray<HTMLElement>('.media-frame', root);
+      const phone = root.querySelector<HTMLElement>('.phone')!;
       const perStep = Number(root.dataset.scrollPerStep) || 1000;
+      // Zoomed phone: scale up from its top-left corner so only the top of the screen shows (Apple style)
+      const ZOOM = 2.4;
+      const framesOf = (i: number) => medias.filter((m) => Number(m.dataset.stepIndex) === i);
 
       const tl = gsap.timeline({
         defaults: { ease: 'power2.out' },
         scrollTrigger: {
           trigger: root,
           start: 'top top',
-          end: '+=' + texts.length * perStep, // 步驟越多，捲動空間越長
+          end: '+=' + texts.length * perStep,
           pin: true,
           scrub: 1,
           anticipatePin: 1,
@@ -107,18 +144,34 @@ const { steps: scrollSteps = defaultSteps, scrollPerStep = 1000, label = 'Scroll
       texts.forEach((text, i) => {
         const isLast = i === texts.length - 1;
         const label = `step${i}`;
+        const frames = framesOf(i);
+        const prevFrames = i > 0 ? framesOf(i - 1) : [];
+        const zoom = text.dataset.zoom === '1';
+        const prevZoom = i > 0 && texts[i - 1].dataset.zoom === '1';
         tl.addLabel(label);
-        // a. 文字滑入並淡入
+        // a. text slides in and fades in
         tl.to(text, { opacity: 1, y: 0, duration: 1 }, label);
-        // b. 當前圖片淡出，下一張圖片淡入
-        if (medias[i + 1]) {
-          tl.to(medias[i], { opacity: 0, duration: 1 }, label + '+=1');
-          tl.to(medias[i + 1], { opacity: 1, duration: 1 }, label + '+=1');
+        // b. this step's first screenshot replaces the previous step's last one
+        if (i > 0) {
+          tl.to(prevFrames[prevFrames.length - 1], { opacity: 0, duration: 1 }, label);
+          tl.to(frames[0], { opacity: 1, duration: 1 }, label);
         }
-        // 停留一小段，再 c. 文字向上滑出並淡出（最後一個保留）
-        if (!isLast) tl.to(text, { opacity: 0, y: -40, duration: 1 }, label + '+=2');
+        // c. zoom the phone in (or back out) together with the text
+        if (zoom) tl.to(phone, { scale: ZOOM, duration: 1.5, ease: 'power2.inOut' }, label);
+        else if (prevZoom) tl.to(phone, { scale: 1, duration: 1, ease: 'power2.inOut' }, label);
+        // d. further screenshots in the same step cross-fade one by one
+        frames.slice(1).forEach((fr, k) => {
+          tl.to(frames[k], { opacity: 0, duration: 1 }, label + '+=' + (1.5 + k));
+          tl.to(fr, { opacity: 1, duration: 1 }, label + '+=' + (1.5 + k));
+        });
+        // e. hold, then text slides up and fades out (last step stays)
+        if (!isLast) tl.to(text, { opacity: 0, y: -40, duration: 1 }, label + '+=' + (1.5 + frames.length));
         else tl.to({}, { duration: 1 });
-      });
-    });
+      });    });
   }
 </script>
+
+
+
+
+

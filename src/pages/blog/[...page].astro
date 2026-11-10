@@ -1,4 +1,5 @@
 ---
+import { Icon } from 'astro-icon/components';
 import { getCollection } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import Base from '../../layouts/Base.astro';
@@ -36,13 +37,13 @@ const showcase: ScrollStep[] = page.currentPage === 1
           <div class="chip-row">
             {BLOG_CATEGORIES.map((c) => (
               <a class="chip d-inline-flex align-items-center gap-1" href={`/blog/category/${slugify(c)}/`}>
-                <span class="material-symbols-rounded icon-xs" aria-hidden="true">folder_open</span>
+                <Icon name="material-symbols:folder-open" class="material-symbols-rounded icon-xs" aria-hidden="true" />
                 <span>{c}</span>
               </a>
             ))}
           </div>
           <a href="/search/" class="blog-search-link">
-            <span class="material-symbols-rounded icon-sm" aria-hidden="true">search</span>
+            <Icon name="material-symbols:search" class="material-symbols-rounded icon-sm" aria-hidden="true" />
             <span>{ui.searchPlaceholder}</span>
           </a>
         </div>
@@ -56,14 +57,14 @@ const showcase: ScrollStep[] = page.currentPage === 1
       <nav class="pagination-nav" aria-label="Pagination">
         {page.url.prev ? (
           <a class="btn-ghost d-inline-flex align-items-center gap-1" href={page.url.prev}>
-            <span class="material-symbols-rounded icon-sm" aria-hidden="true">arrow_back</span>
+            <Icon name="material-symbols:arrow-back" class="material-symbols-rounded icon-sm" aria-hidden="true" />
             <span>{ui.newer}</span>
           </a>
         ) : <span />}
         {page.url.next ? (
           <a class="btn-ghost d-inline-flex align-items-center gap-1" href={page.url.next}>
             <span>{ui.older}</span>
-            <span class="material-symbols-rounded icon-sm" aria-hidden="true">arrow_forward</span>
+            <Icon name="material-symbols:arrow-forward" class="material-symbols-rounded icon-sm" aria-hidden="true" />
           </a>
         ) : <span />}
       </nav>

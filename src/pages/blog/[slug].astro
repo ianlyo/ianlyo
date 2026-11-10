@@ -1,4 +1,5 @@
 ---
+import { Icon } from 'astro-icon/components';
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
@@ -37,30 +38,30 @@ const jsonLd = {
         <article data-pagefind-body>
           <header class="mb-4">
             <a class="chip mb-2 d-inline-flex align-items-center gap-1" href={`/blog/category/${slugify(d.category)}/`}>
-              <span class="material-symbols-rounded icon-xs" aria-hidden="true">folder_open</span>
+              <Icon name="material-symbols:folder-open" class="material-symbols-rounded icon-xs" aria-hidden="true" />
               <span>{d.category}</span>
             </a>
             <h1 style="font-weight:800;letter-spacing:-.02em">{d.title}</h1>
             <div class="meta">
               <time datetime={d.pubDate.toISOString()} class="d-inline-flex align-items-center gap-1">
-                <span class="material-symbols-rounded icon-xs" aria-hidden="true">calendar_today</span>
+                <Icon name="material-symbols:calendar-today" class="material-symbols-rounded icon-xs" aria-hidden="true" />
                 <span>{formatDate(d.pubDate, d.lang)}</span>
               </time>
               {d.updatedDate && (
                 <span class="d-inline-flex align-items-center gap-1">
-                  <span class="material-symbols-rounded icon-xs" aria-hidden="true">update</span>
+                  <Icon name="material-symbols:update" class="material-symbols-rounded icon-xs" aria-hidden="true" />
                   <span>{ui.updated} {formatDate(d.updatedDate, d.lang)}</span>
                 </span>
               )}
               <span class="d-inline-flex align-items-center gap-1">
-                <span class="material-symbols-rounded icon-xs" aria-hidden="true">schedule</span>
+                <Icon name="material-symbols:schedule" class="material-symbols-rounded icon-xs" aria-hidden="true" />
                 <span>{readingTime(post.body)} {ui.readingTime}</span>
               </span>
             </div>
             <div class="chip-row mt-2" data-pagefind-ignore>
               {d.tags.map((tg) => (
                 <a class="chip chip-muted d-inline-flex align-items-center gap-1" href={`/blog/tag/${slugify(tg)}/`}>
-                  <span class="material-symbols-rounded icon-xs" aria-hidden="true">tag</span>
+                  <Icon name="material-symbols:tag" class="material-symbols-rounded icon-xs" aria-hidden="true" />
                   <span>{tg}</span>
                 </a>
               ))}
@@ -71,7 +72,7 @@ const jsonLd = {
         {toc.length >= 3 && (
           <aside class="toc d-none d-lg-block" data-pagefind-ignore>
             <h2 class="d-flex align-items-center gap-1">
-              <span class="material-symbols-rounded icon-sm" aria-hidden="true">format_list_bulleted</span>
+              <Icon name="material-symbols:format-list-bulleted" class="material-symbols-rounded icon-sm" aria-hidden="true" />
               <span>{ui.toc}</span>
             </h2>
             <ul>{toc.map((h) => <li class={`depth-${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul>
@@ -81,7 +82,7 @@ const jsonLd = {
       {related.length > 0 && (
         <section class="section-block page-narrow" data-pagefind-ignore>
           <h2 class="block-title">
-            <span class="material-symbols-rounded text-accent" aria-hidden="true">recommend</span>
+            <Icon name="material-symbols:recommend" class="material-symbols-rounded text-accent" aria-hidden="true" />
             <span>{ui.related}</span>
           </h2>
           <div class="d-grid gap-3">{related.map((p) => <PostCard post={p} />)}</div>

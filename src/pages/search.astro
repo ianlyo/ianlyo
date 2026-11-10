@@ -1,4 +1,5 @@
 ---
+import { Icon } from 'astro-icon/components';
 import Base from '../layouts/Base.astro';
 import { t } from '../i18n/ui';
 const ui = t('zh-Hant').blog;
@@ -8,7 +9,7 @@ const ui = t('zh-Hant').blog;
   <main class="page"><div class="container page-narrow">
     <header class="page-head mb-4">
       <h1 class="d-flex align-items-center gap-2">
-        <span class="material-symbols-rounded text-accent" aria-hidden="true">search</span>
+        <Icon name="material-symbols:search" class="material-symbols-rounded text-accent" aria-hidden="true" />
         <span>{t('zh-Hant').nav.search}</span>
       </h1>
     </header>

@@ -190,3 +190,5 @@ h2.block-title .material-symbols-rounded { font-size: 1.35rem; }
 .search-box { width: 100%; }
 .site-footer .footer-links { display: flex; gap: 1.2rem; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: currentColor; }
