@@ -40,7 +40,7 @@ features:
     zoom: true
     video: /apps/health-debug/vid/live-notification.mp4
     images:
-      - /apps/health-debug/live-update.png
+      - /apps/health-debug/live-update.jpg
       - /apps/health-debug/live-update-expand.png
     description:
       zh: 透過 Android 16 最新的 Live Update 即時更新功能，以 ProgressStyle 顯示步數、距離與卡路里。即使離開 App，狀態列與通知中心也會持續追蹤最新進度。

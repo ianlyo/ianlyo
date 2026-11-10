@@ -76,7 +76,7 @@ const f = ui.filters;
       <p class="eyebrow mb-2">{ui.home.betaEyebrow}</p>
       <div class="d-flex justify-content-between align-items-end mb-3 flex-wrap gap-2">
         <h2 class="block-title mb-0">
-          <Icon name="material-symbols:science" class="material-symbols-rounded text-accent" aria-hidden="true" />
+          <Icon name="material-symbols:apps" class="material-symbols-rounded text-accent" aria-hidden="true" />
           <span>{ui.home.betaTitle}</span>
         </h2>
         <a href={localePath(lang, '/beta/')} class="section-link font-weight-semibold">
@@ -130,7 +130,8 @@ const f = ui.filters;
         </div>
         <span id="project-count" class="section-count">…</span>
       </div>
-      <div class="capabilities-grid mb-4">
+      <!-- Desktop Capabilities Cards (>= 769px) -->
+      <div class="capabilities-grid mb-4 d-none d-md-grid">
         {[
           ['all', 'dashboard', '01', f.all],
           ['mobile', 'smartphone', '02', f.mobile],
@@ -147,11 +148,23 @@ const f = ui.filters;
           </button>
         ))}
       </div>
+
       <div class="project-tools" role="search">
         <label class="visually-hidden" for="project-search">{ui.projects.searchLabel}</label>
         <div class="project-search-wrapper">
           <Icon name="material-symbols:search" class="material-symbols-rounded project-search-icon" aria-hidden="true" />
           <input id="project-search" type="search" placeholder={ui.projects.searchPlaceholder} autocomplete="off" />
+        </div>
+        <!-- Mobile Category Dropdown (< 768px) -->
+        <label class="visually-hidden" for="mobile-category-filter">{ui.projects.categoryLabel}</label>
+        <div class="category-filter-wrapper d-flex d-md-none">
+          <Icon name="material-symbols:grid-view" class="material-symbols-rounded category-filter-icon" aria-hidden="true" />
+          <select id="mobile-category-filter">
+            <option value="all">{ui.projects.allCategories}</option>
+            <option value="mobile">{f.mobile[0]}</option>
+            <option value="python">{f.cli[0]}</option>
+            <option value="web">{f.web[0]}</option>
+          </select>
         </div>
         <label class="visually-hidden" for="language-filter">{ui.projects.languageLabel}</label>
         <div class="language-filter-wrapper">

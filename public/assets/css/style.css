@@ -899,7 +899,8 @@ a:hover {
 }
 
 .project-search-wrapper,
-.language-filter-wrapper {
+.language-filter-wrapper,
+.category-filter-wrapper {
     position: relative;
     display: flex;
     align-items: center;
@@ -911,7 +912,8 @@ a:hover {
 }
 
 .project-search-icon,
-.language-filter-icon {
+.language-filter-icon,
+.category-filter-icon {
     position: absolute;
     left: 14px;
     color: var(--text-muted);
@@ -930,12 +932,28 @@ a:hover {
     color: var(--accent-primary);
 }
 
-.language-filter-wrapper select {
+.language-filter-wrapper select,
+.category-filter-wrapper select {
     width: 195px;
     padding-left: 42px !important;
+    padding-right: 36px !important;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 20px;
+    cursor: pointer;
 }
 
-.language-filter-wrapper:focus-within .language-filter-icon {
+[data-bs-theme="dark"] .language-filter-wrapper select,
+[data-bs-theme="dark"] .category-filter-wrapper select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+}
+
+.language-filter-wrapper:focus-within .language-filter-icon,
+.category-filter-wrapper:focus-within .category-filter-icon {
     color: var(--accent-primary);
 }
 
@@ -1267,54 +1285,144 @@ a:hover {
     }
     
     .hero-section {
-        padding: 100px 0 60px;
+        padding: 92px 0 48px;
     }
     
     .hero-title {
-        font-size: clamp(2.4rem, 10vw, 3.6rem);
+        font-size: clamp(2.2rem, 9vw, 3.2rem);
+        margin-bottom: 14px;
+    }
+
+    .hero-section .lead {
+        font-size: 1.02rem;
+        margin-bottom: 24px;
+        line-height: 1.6;
     }
     
     .hero-stats {
         gap: 10px;
+        margin-bottom: 24px;
     }
     
     .stat-box {
-        flex: 1;
-        min-width: 100px;
-        padding: 10px 12px;
-        gap: 8px;
+        flex: 1 1 calc(50% - 10px);
+        min-width: 120px;
+        padding: 10px 14px;
+        gap: 10px;
     }
     
     .stat-box .stat-icon {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
     }
     
     .stat-box strong {
-        font-size: 1.4rem;
+        font-size: 1.35rem;
+    }
+
+    .hero-actions {
+        gap: 10px;
+    }
+
+    .hero-actions .btn {
+        padding: 10px 18px;
+        font-size: 0.88rem;
     }
     
     .contribution-card {
-        padding: 20px;
+        padding: 16px;
+        margin-top: 10px;
     }
-    
-    .capabilities-grid {
-        grid-template-columns: 1fr;
+
+    .contribution-header {
+        margin-bottom: 14px;
     }
-    
-    .category-filter {
-        min-height: auto;
+
+    .contribution-graph-wrapper {
+        padding: 12px;
     }
     
     .featured-grid {
         grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .featured-card {
+        min-height: auto;
+        padding: 20px;
+    }
+
+    #projects {
+        padding: 56px 0 80px !important;
+    }
+
+    .section-heading {
+        margin-bottom: 24px;
+    }
+
+    .section-heading h2 {
+        font-size: clamp(1.6rem, 5vw, 2.2rem);
     }
     
     .project-tools {
         flex-direction: column;
+        gap: 10px;
+        margin-bottom: 24px;
+    }
+
+    .project-search-wrapper,
+    .language-filter-wrapper,
+    .category-filter-wrapper {
+        width: 100%;
+        min-width: 100%;
     }
     
-    .project-tools select {
+    .project-tools select,
+    .project-tools input {
+        width: 100% !important;
+        min-height: 48px;
+    }
+
+    .clear-filters {
         width: 100%;
+        justify-content: center;
+        min-height: 44px;
+    }
+
+    .repo-card .card-body {
+        padding: 18px;
+    }
+
+    .repo-card .card-title {
+        font-size: 1.05rem;
+        margin-bottom: 8px;
+    }
+
+    .repo-card .card-text {
+        font-size: 0.88rem;
+        min-height: auto;
+        margin-bottom: 16px;
+    }
+
+    .project-card-footer {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .show-more-projects {
+        width: 100%;
+        max-width: 340px;
+        padding: 12px 20px;
+    }
+
+    .site-footer {
+        padding: 32px 0 40px;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 14px;
     }
 }
 

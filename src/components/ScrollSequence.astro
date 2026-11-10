@@ -23,6 +23,8 @@ interface Props {
   /** Scroll distance (px) per step */
   scrollPerStep?: number;
   label?: string;
+  theme?: 'dark' | 'auto';
+  frameType?: 'phone' | 'card' | 'none';
 }
 
 const defaultSteps: ScrollStep[] = [
@@ -31,10 +33,20 @@ const defaultSteps: ScrollStep[] = [
   { id: 3, image: '/og/default.png', title: 'Step 3', subtitle: 'Describe the third step here.' },
 ];
 
-const { steps: scrollSteps = defaultSteps, scrollPerStep = 1500, label = 'Scroll sequence' } = Astro.props;
+const {
+  steps: scrollSteps = defaultSteps,
+  scrollPerStep = 1500,
+  label = 'Scroll sequence',
+  theme = 'dark',
+  frameType = 'phone'
+} = Astro.props;
 ---
 {scrollSteps.length > 0 && (
-  <section class="scroll-sequence" data-scroll-per-step={scrollPerStep} aria-label={label}>
+  <section
+    class:list={['scroll-sequence', `theme-${theme}`, `frame-${frameType}`]}
+    data-scroll-per-step={scrollPerStep}
+    aria-label={label}
+  >
     <div class="stage">
       <div class="text-layer">
         {scrollSteps.map((s, i) => (
@@ -85,6 +97,51 @@ const { steps: scrollSteps = defaultSteps, scrollPerStep = 1500, label = 'Scroll
     color: #fff;
     background: radial-gradient(ellipse at 70% 50%, #2a1f1e, #000 70%);
     box-sizing: border-box;
+  }
+  .scroll-sequence.theme-auto {
+    background: radial-gradient(ellipse at 70% 50%, var(--bg-surface-subtle), var(--bg-base) 75%);
+    color: var(--text-primary);
+  }
+  :global([data-bs-theme="dark"]) .scroll-sequence.theme-auto {
+    background: radial-gradient(ellipse at 70% 50%, #162432, #0b1118 75%);
+    color: #fff;
+  }
+  .scroll-sequence.theme-auto .text-step h2 {
+    color: var(--text-primary);
+  }
+  .scroll-sequence.theme-auto .text-step p {
+    color: var(--text-secondary);
+  }
+  .scroll-sequence.theme-auto .step-count {
+    color: var(--accent-primary);
+  }
+  .scroll-sequence.frame-card .phone {
+    aspect-ratio: 16 / 10;
+    height: clamp(340px, 60dvh, 560px);
+    border-radius: var(--radius-lg);
+  }
+  .scroll-sequence.frame-card .phone::before,
+  .scroll-sequence.frame-card .phone::after {
+    display: none;
+  }
+  .scroll-sequence.frame-card .phone-screen {
+    aspect-ratio: 16 / 10;
+    border-radius: calc(var(--radius-lg) - 4px);
+    background: var(--bg-surface);
+  }
+  .scroll-sequence.frame-card .media-frame img,
+  .scroll-sequence.frame-card .media-frame video {
+    object-fit: cover;
+  }
+  .scroll-sequence.frame-none .phone {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    padding: 0;
+  }
+  .scroll-sequence.frame-none .phone::before,
+  .scroll-sequence.frame-none .phone::after {
+    display: none;
   }
   /* Apple.com style bottom vignette where the bottom of the phone bleeds off */
   .scroll-sequence::after {

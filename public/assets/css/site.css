@@ -265,6 +265,40 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
   gap: 0.5rem;
 }
 
+@media (max-width: 768px) {
+  .site-nav {
+    padding-top: max(8px, env(safe-area-inset-top, 8px)) !important;
+    padding-left: max(16px, env(safe-area-inset-left, 16px)) !important;
+    padding-right: max(16px, env(safe-area-inset-right, 16px)) !important;
+  }
+
+  .page {
+    padding: 5.5rem 0 3rem;
+  }
+
+  .section-block {
+    padding: 2.25rem 0 0;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .surface-card {
+    padding: 1.1rem;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .site-footer {
+    padding-bottom: max(32px, env(safe-area-inset-bottom, 32px)) !important;
+  }
+}
+
 .nav-hamburger-btn,
 .nav-icon-btn {
   background: transparent;
@@ -330,6 +364,9 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
   flex-direction: column;
   overflow-y: auto;
   border-right: 1px solid var(--border-subtle);
+  padding-top: env(safe-area-inset-top, 0);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  padding-left: env(safe-area-inset-left, 0);
 }
 .nav-drawer.is-open {
   transform: translateX(0);

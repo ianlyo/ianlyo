@@ -273,11 +273,22 @@ function updateGitHubStats() {
     if (languageStat) languageStat.textContent = languages.size;
 }
 
+function syncCategoryFilterUI() {
+    document.querySelectorAll('.category-filter').forEach(item => {
+        const matches = item.dataset.category === activeCategory;
+        item.classList.toggle('is-active', matches);
+    });
+    const mobileCatSelect = document.getElementById('mobile-category-filter');
+    if (mobileCatSelect && mobileCatSelect.value !== activeCategory) {
+        mobileCatSelect.value = activeCategory;
+    }
+}
+
 function initializeCategoryFilters() {
     document.querySelectorAll('.category-filter').forEach(button => {
         button.addEventListener('click', () => {
             activeCategory = button.dataset.category;
-            document.querySelectorAll('.category-filter').forEach(item => item.classList.toggle('is-active', item === button));
+            syncCategoryFilterUI();
             
             const langFilter = document.getElementById('language-filter');
             if (langFilter) langFilter.value = '';
@@ -287,6 +298,21 @@ function initializeCategoryFilters() {
             renderProjects();
         });
     });
+
+    const mobileCatSelect = document.getElementById('mobile-category-filter');
+    if (mobileCatSelect) {
+        mobileCatSelect.addEventListener('change', () => {
+            activeCategory = mobileCatSelect.value;
+            syncCategoryFilterUI();
+
+            const langFilter = document.getElementById('language-filter');
+            if (langFilter) langFilter.value = '';
+
+            showAllProjects = false;
+            updateClearFiltersButton();
+            renderProjects();
+        });
+    }
 }
 
 function populateLanguageFilter() {
@@ -306,7 +332,7 @@ function populateLanguageFilter() {
 
         filter.addEventListener('change', () => {
             activeCategory = 'all';
-            document.querySelectorAll('.category-filter').forEach(item => item.classList.toggle('is-active', item.dataset.category === 'all'));
+            syncCategoryFilterUI();
             updateClearFiltersButton();
             renderProjects();
         });
@@ -339,7 +365,7 @@ function populateLanguageFilter() {
             if (filter) filter.value = '';
             activeCategory = 'all';
             showAllProjects = false;
-            document.querySelectorAll('.category-filter').forEach(item => item.classList.toggle('is-active', item.dataset.category === 'all'));
+            syncCategoryFilterUI();
             updateClearFiltersButton();
             renderProjects();
             if (search) search.focus();

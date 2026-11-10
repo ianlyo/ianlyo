@@ -29,6 +29,8 @@ export const ui = {
     projects: {
       searchLabel: '搜尋專案',
       searchPlaceholder: '搜尋專案…',
+      categoryLabel: '分類篩選',
+      allCategories: '所有分類',
       languageLabel: '依程式語言篩選',
       allLanguages: '所有語言',
       clearFilters: '清除篩選',
@@ -129,6 +131,8 @@ export const ui = {
     projects: {
       searchLabel: 'Search projects',
       searchPlaceholder: 'Search projects…',
+      categoryLabel: 'Filter by category',
+      allCategories: 'All Categories',
       languageLabel: 'Filter by language',
       allLanguages: 'All languages',
       clearFilters: 'Clear filters',
