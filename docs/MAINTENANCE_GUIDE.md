@@ -2,6 +2,8 @@
 
 完全不需要更動任何前端程式碼。所有更新都只需透過新增或編輯 Markdown / YAML 檔案，並 push 到 GitHub，GitHub Actions 就會在約 1–2 分鐘內自動重新建置並發布網站（可在 GitHub 儲存庫的 **Actions** 標籤查看）。
 
+> 修改介面文字或全站設定請見 [EDITING_GUIDE.md](EDITING_GUIDE.md)。
+
 You never need to touch the frontend codebase. Everything is done by adding or editing files, then pushing to GitHub. GitHub Actions rebuilds and publishes the site in 1–2 minutes.
 
 ---

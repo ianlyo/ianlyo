@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
 import { sortPosts, readingTime, relatedPosts, formatDate, slugify } from '../../utils/blog';
 import { t } from '../../i18n/ui';
+import { SITE } from '../../config/site';
 
 export async function getStaticPaths() {
   const posts = sortPosts(await getCollection('blog'));
@@ -22,14 +23,14 @@ const jsonLd = {
   description: d.description,
   datePublished: d.pubDate.toISOString(),
   dateModified: (d.updatedDate ?? d.pubDate).toISOString(),
-  author: { '@type': 'Person', name: 'Ian', url: 'https://github.com/ianlyo' },
+  author: { '@type': 'Person', name: SITE.author, url: SITE.github.profileUrl },
   keywords: d.tags.join(', '),
   inLanguage: d.lang,
   mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
 };
 ---
 <Base title={d.title} description={d.description} type="article" publishedTime={d.pubDate}
-  image={d.cover ?? '/og/default.png'} imageAlt={d.coverAlt ?? d.title} jsonLd={jsonLd} lang={d.lang} altPath={null}>
+  image={d.cover ?? SITE.ogImage} imageAlt={d.coverAlt ?? d.title} jsonLd={jsonLd} lang={d.lang} altPath={null}>
   <main class="page">
     <div class="container">
       <div class:list={['article-layout', { 'has-toc': toc.length >= 3 }]}>

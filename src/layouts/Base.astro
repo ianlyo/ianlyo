@@ -1,5 +1,6 @@
 ---
 import { t, localePath, switchLangPath, type Lang } from '../i18n/ui';
+import { SITE } from '../config/site';
 
 interface Props {
   title?: string;
@@ -19,8 +20,8 @@ const {
   lang = 'zh-Hant',
   title,
   description,
-  image = '/og/default.png',
-  imageAlt = 'ianlyo - Android Developer Blog & Beta Testing Hub',
+  image = SITE.ogImage,
+  imageAlt = SITE.ogImageAlt,
   type = 'website',
   noindex = false,
   jsonLd,
@@ -30,7 +31,7 @@ const {
 
 const ui = t(lang);
 const site = Astro.site!;
-const pageTitle = title ? `${title} | ianlyo` : ui.siteTitle;
+const pageTitle = title ? `${title} | ${SITE.name}` : ui.siteTitle;
 const pageDesc = description ?? ui.siteDescription;
 const canonical = new URL(Astro.url.pathname, site).href;
 const ogImage = new URL(image, site).href;
@@ -51,15 +52,15 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
   <link rel="canonical" href={canonical} />
   {noindex && <meta name="robots" content="noindex" />}
 
-  <link rel="icon" type="image/png" href="https://github.com/ianlyo.png" />
-  <link rel="apple-touch-icon" href="https://github.com/ianlyo.png" />
+  <link rel="icon" type="image/png" href={SITE.github.avatarUrl} />
+  <link rel="apple-touch-icon" href={SITE.github.avatarUrl} />
   <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#0d9488" />
-  <link rel="alternate" type="application/rss+xml" title="ianlyo blog" href="/rss.xml" />
+  <meta name="theme-color" content={SITE.themeColor} />
+  <link rel="alternate" type="application/rss+xml" title={`${SITE.name} blog`} href="/rss.xml" />
   {zhPath && <link rel="alternate" hreflang="zh-Hant" href={new URL(zhPath, site).href} />}
   {enPath && <link rel="alternate" hreflang="en" href={new URL(enPath, site).href} />}
 
-  <meta property="og:site_name" content="ianlyo" />
+  <meta property="og:site_name" content={SITE.name} />
   <meta property="og:type" content={type} />
   <meta property="og:title" content={pageTitle} />
   <meta property="og:description" content={pageDesc} />
@@ -101,13 +102,13 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <nav class="site-nav" aria-label="Main navigation">
-    <a class="brand-mark" href={localePath(lang, '/')} aria-label="ianlyo home">IAN<span>.</span></a>
+    <a class="brand-mark" href={localePath(lang, '/')} aria-label={`${SITE.name} home`}>IAN<span>.</span></a>
     <div class="nav-links">
       <a href={localePath(lang, '/beta/')} class:list={[{ active: isActive('/beta') }]}>{ui.nav.beta}</a>
       <a href="/blog/" class:list={[{ active: path.startsWith('/blog') }]}>{ui.nav.blog}</a>
       <a href={localePath(lang, '/') + '#projects'} class="d-none d-md-inline">{ui.nav.projects}</a>
       <a href="/search/" aria-label={ui.nav.search} title={ui.nav.search}><span class="material-symbols-rounded" aria-hidden="true">search</span></a>
-      <a href="https://github.com/ianlyo?tab=repositories" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub" class="d-none d-sm-inline-flex">
+      <a href={SITE.github.reposUrl} target="_blank" rel="noopener" aria-label="GitHub" title="GitHub" class="d-none d-sm-inline-flex">
         <i class="bi bi-github" aria-hidden="true"></i>
       </a>
       {otherPath && (
@@ -128,8 +129,8 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
     <div class="container">
       <div class="footer-content">
         <p class="footer-copy">
-          <a href="https://github.com/ianlyo?tab=repositories" target="_blank" rel="noopener" class="footer-repo-btn" aria-label="GitHub"><i class="bi bi-github" aria-hidden="true"></i></a>
-          © <span id="current-year"></span> ianlyo · {ui.footer.built}
+          <a href={SITE.github.reposUrl} target="_blank" rel="noopener" class="footer-repo-btn" aria-label="GitHub"><i class="bi bi-github" aria-hidden="true"></i></a>
+          © <span id="current-year"></span> {SITE.name} · {ui.footer.built}
         </p>
         <div class="footer-links">
           <a href="/rss.xml" class="d-inline-flex align-items-center gap-1"><span class="material-symbols-rounded icon-xs" aria-hidden="true">rss_feed</span><span>{ui.footer.rss}</span></a>

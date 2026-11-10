@@ -5,7 +5,7 @@
 使用 [Astro](https://astro.build) 構建，由 GitHub Actions 自動部署至 GitHub Pages。  
 Built with [Astro](https://astro.build), deployed to GitHub Pages by GitHub Actions.
 
-> 新手維護指南 / Beginner guide: [`docs/MAINTENANCE_GUIDE.md`](MAINTENANCE_GUIDE.md)
+> 新手維護指南 / Beginner guide: [`docs/MAINTENANCE_GUIDE.md`](MAINTENANCE_GUIDE.md) · 文字與內容編輯 / Editing text & content: [`docs/EDITING_GUIDE.md`](EDITING_GUIDE.md)
 
 ---
 
@@ -15,6 +15,7 @@ Built with [Astro](https://astro.build), deployed to GitHub Pages by GitHub Acti
 src/content/blog/*.md        部落格文章 (Markdown + frontmatter)
 src/content/apps/*.yaml      Android App 資料檔 → 自動生成專屬詳情頁面
 src/content.config.ts        Typed 結構定義（欄位格式錯誤會在建置時明確報錯）
+src/config/site.ts           全站設定（名稱 / 作者 / GitHub / 主題色）
 src/i18n/ui.ts               介面多語系字串，繁體中文 (預設) + 英文
 src/layouts/Base.astro       基底版面配置（SEO / OG / Twitter / 語系 / 主題切換）
 src/components/              Home, BetaHub, AppPage, AppCard, PostCard

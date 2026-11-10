@@ -1,0 +1,124 @@
+---
+/**
+ * ScrollSequence - Apple 風格滾動釘選內容切換。
+ * 修改文案：只需編輯 scrollSteps（或由外部傳入 steps prop），畫面與動畫自動對應。
+ */
+export interface ScrollStep {
+  id: number;
+  image?: string; // 省略時顯示漸層背景
+  title: string;
+  subtitle: string;
+  href?: string;
+}
+
+interface Props {
+  steps?: ScrollStep[];
+  /** 每個步驟佔用的捲動距離 (px) */
+  scrollPerStep?: number;
+  label?: string;
+}
+
+const defaultSteps: ScrollStep[] = [
+  { id: 1, image: '/og/default.png', title: '第一個亮點', subtitle: '在這裡寫下第一段說明文字。' },
+  { id: 2, image: '/og/default.png', title: '第二個亮點', subtitle: '在這裡寫下第二段說明文字。' },
+  { id: 3, image: '/og/default.png', title: '第三個亮點', subtitle: '在這裡寫下第三段說明文字。' },
+];
+
+const { steps: scrollSteps = defaultSteps, scrollPerStep = 1000, label = 'Scroll sequence' } = Astro.props;
+---
+{scrollSteps.length > 0 && (
+  <section class="scroll-sequence" data-scroll-per-step={scrollPerStep} aria-label={label}>
+    <div class="media-layer">
+      {scrollSteps.map((s, i) => (
+        <div class="media-frame" style={i === 0 ? 'opacity:1' : undefined} data-step={s.id}>
+          {s.image && <img src={s.image} alt="" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />}
+        </div>
+      ))}
+    </div>
+    <div class="text-layer">
+      {scrollSteps.map((s) => (
+        <div class="text-step" data-step={s.id}>
+          <h2>{s.href ? <a href={s.href}>{s.title}</a> : s.title}</h2>
+          <p>{s.subtitle}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+)}
+
+<style>
+  .scroll-sequence { position: relative; width: 100%; height: 100vh; height: 100svh; overflow: hidden; background: #000; color: #fff; }
+  /* 讓組件突破窄容器，撐滿視窗寬度 */
+  :global(.scroll-bleed) { width: 100vw; margin-left: calc(50% - 50vw); }
+  .media-layer, .text-layer { position: absolute; inset: 0; }
+  .media-frame { position: absolute; inset: 0; opacity: 0; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #1d1d1f, #3a3a3c); will-change: opacity; }
+  .media-frame img { width: 100%; height: 100%; object-fit: cover; opacity: .55; }
+  .text-layer { display: grid; place-items: center; padding: 0 1.5rem; text-align: center; pointer-events: none;
+    background: radial-gradient(ellipse at center, rgb(0 0 0 / .45), transparent 70%); }
+  .text-step { grid-area: 1 / 1; max-width: 42rem; opacity: 0; transform: translateY(40px); will-change: opacity, transform; }
+  .text-step h2 { font-size: clamp(2rem, 6vw, 4.5rem); font-weight: 800; letter-spacing: -.02em; margin: 0 0 1rem; color: #fff; }
+  .text-step h2 a { color: inherit; pointer-events: auto; text-decoration: none; }
+  .text-step p { font-size: clamp(1rem, 2.2vw, 1.5rem); margin: 0; color: rgb(255 255 255 / .85); }
+  /* 無動畫偏好：取消釘選，改為依序堆疊顯示 */
+  .scroll-sequence.is-static { height: auto; overflow: visible; }
+  .scroll-sequence.is-static .media-layer { display: none; }
+  .scroll-sequence.is-static .text-layer { position: static; display: block; padding: 3rem 1.5rem; }
+  .scroll-sequence.is-static .text-step { opacity: 1; transform: none; margin: 0 auto 3rem; }
+</style>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import Lenis from 'lenis';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const roots = document.querySelectorAll<HTMLElement>('.scroll-sequence');
+
+  if (reduce) {
+    roots.forEach((r) => r.classList.add('is-static'));
+  } else if (roots.length) {
+    // Lenis 平滑滾動，並與 ScrollTrigger 同步
+    const lenis = new Lenis();
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+
+    roots.forEach((root) => {
+      const texts = gsap.utils.toArray<HTMLElement>('.text-step', root);
+      const medias = gsap.utils.toArray<HTMLElement>('.media-frame', root);
+      const perStep = Number(root.dataset.scrollPerStep) || 1000;
+
+      const tl = gsap.timeline({
+        defaults: { ease: 'power2.out' },
+        scrollTrigger: {
+          trigger: root,
+          start: 'top top',
+          end: '+=' + texts.length * perStep, // 步驟越多，捲動空間越長
+          pin: true,
+          scrub: 1,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      texts.forEach((text, i) => {
+        const isLast = i === texts.length - 1;
+        const label = `step${i}`;
+        tl.addLabel(label);
+        // a. 文字滑入並淡入
+        tl.to(text, { opacity: 1, y: 0, duration: 1 }, label);
+        // b. 當前圖片淡出，下一張圖片淡入
+        if (medias[i + 1]) {
+          tl.to(medias[i], { opacity: 0, duration: 1 }, label + '+=1');
+          tl.to(medias[i + 1], { opacity: 1, duration: 1 }, label + '+=1');
+        }
+        // 停留一小段，再 c. 文字向上滑出並淡出（最後一個保留）
+        if (!isLast) tl.to(text, { opacity: 0, y: -40, duration: 1 }, label + '+=2');
+        else tl.to({}, { duration: 1 });
+      });
+    });
+  }
+</script>

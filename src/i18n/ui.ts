@@ -26,6 +26,15 @@ export const ui = {
       browse: '依領域與技術瀏覽',
       explore: '探索專案',
     },
+    projects: {
+      searchLabel: '搜尋專案',
+      searchPlaceholder: '搜尋專案…',
+      languageLabel: '依程式語言篩選',
+      allLanguages: '所有語言',
+      clearFilters: '清除篩選',
+      loading: '正在載入公開儲存庫…',
+      showAll: '顯示全部儲存庫',
+    },
     filters: {
       all: ['所有專案', '瀏覽所有公開專案與工具'],
       mobile: ['行動與跨平台', '將解決方案帶到 iOS、Android 與跨平台裝置'],
@@ -108,6 +117,15 @@ export const ui = {
       blogAll: 'All articles',
       browse: 'Browse by focus',
       explore: 'Explore by Domain & Technology',
+    },
+    projects: {
+      searchLabel: 'Search projects',
+      searchPlaceholder: 'Search projects…',
+      languageLabel: 'Filter by language',
+      allLanguages: 'All languages',
+      clearFilters: 'Clear filters',
+      loading: 'Loading public repositories…',
+      showAll: 'Show all repositories',
     },
     filters: {
       all: ['All Projects', 'Browse every public project and tool'],

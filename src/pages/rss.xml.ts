@@ -2,12 +2,13 @@ import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import type { APIContext } from 'astro';
 import { sortPosts } from '../utils/blog';
+import { SITE } from '../config/site';
 
 export async function GET(context: APIContext) {
   const posts = sortPosts(await getCollection('blog'));
   return rss({
-    title: 'ianlyo - Android Developer Blog',
-    description: 'Android development, Kotlin, Jetpack Compose, custom ROMs and development notes.',
+    title: SITE.rss.title,
+    description: SITE.rss.description,
     site: context.site!,
     items: posts.map((p) => ({
       title: p.data.title,

@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import ScrollSequence, { type ScrollStep } from './ScrollSequence.astro';
 import { t, localePath, pick, type Lang } from '../i18n/ui';
 interface Props { app: CollectionEntry<'apps'>; lang: Lang }
 const { app, lang } = Astro.props;
@@ -16,6 +17,14 @@ const steps = [
   { s: ui.step3, url: d.playStoreUrl, label: ui.playBtn, optional: false, icon: 'download_for_offline' },
   { s: ui.step4, url: d.feedbackUrl, label: ui.feedbackBtn, optional: false, icon: 'rate_review' },
 ];
+
+// Scroll sequence data: derived from the app's features (+ screenshots when available)
+const sequenceSteps: ScrollStep[] = d.features.map((f, i) => ({
+  id: i + 1,
+  image: d.screenshots.length ? d.screenshots[i % d.screenshots.length].src : undefined,
+  title: pick(f.title, lang),
+  subtitle: pick(f.description, lang),
+}));
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -73,6 +82,13 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/beta/${app.id}/`)
       <section class="section-block">
         <div class="prose"><p set:html={desc.replace(/\n/g, '<br />')} /></div>
       </section>
+
+      <!-- 2.5 Scroll sequence: features paired with screenshots -->
+      {d.features.length > 0 && (
+        <div class="scroll-bleed">
+          <ScrollSequence steps={sequenceSteps} label={d.name} />
+        </div>
+      )}
 
       <!-- 3. Screenshots -->
       <section class="section-block">

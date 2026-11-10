@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import { t, localePath, type Lang } from '../i18n/ui';
+import { SITE } from '../config/site';
 import { sortPosts, readingTime, formatDate } from '../utils/blog';
 import AppCard from './AppCard.astro';
 interface Props { lang: Lang }
@@ -48,7 +49,7 @@ const f = ui.filters;
             <span class="material-symbols-rounded icon-sm" aria-hidden="true">article</span>
             <span>{ui.hero.cta2}</span>
           </a>
-          <a href="https://github.com/ianlyo?tab=repositories" target="_blank" rel="noopener" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
+          <a href={SITE.github.reposUrl} target="_blank" rel="noopener" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
             <span>{ui.hero.cta3}</span>
             <span class="material-symbols-rounded icon-sm" aria-hidden="true">open_in_new</span>
           </a>
@@ -57,10 +58,10 @@ const f = ui.filters;
       <div class="col-12 hero-contribution">
         <div class="contribution-card">
           <div class="contribution-header justify-content-end">
-            <a href="https://github.com/ianlyo?tab=repositories" target="_blank" rel="noopener" class="contribution-github-link"><i class="bi bi-github"></i><span>ianlyo</span></a>
+            <a href={SITE.github.reposUrl} target="_blank" rel="noopener" class="contribution-github-link"><i class="bi bi-github"></i><span>{SITE.github.user}</span></a>
           </div>
           <div class="contribution-graph-wrapper">
-            <img class="contribution-graph" id="contribution-graph-img" src="https://ghchart.rshah.org/0d9488/ianlyo" alt="ianlyo GitHub contribution graph" loading="lazy" />
+            <img class="contribution-graph" id="contribution-graph-img" src={SITE.github.contributionChartUrl} alt={`${SITE.github.user} GitHub contribution graph`} loading="lazy" />
           </div>
         </div>
       </div>
@@ -146,24 +147,24 @@ const f = ui.filters;
         ))}
       </div>
       <div class="project-tools" role="search">
-        <label class="visually-hidden" for="project-search">Search projects</label>
+        <label class="visually-hidden" for="project-search">{ui.projects.searchLabel}</label>
         <div class="project-search-wrapper">
           <span class="material-symbols-rounded project-search-icon" aria-hidden="true">search</span>
-          <input id="project-search" type="search" placeholder="Search projects…" autocomplete="off" />
+          <input id="project-search" type="search" placeholder={ui.projects.searchPlaceholder} autocomplete="off" />
         </div>
-        <label class="visually-hidden" for="language-filter">Filter by language</label>
+        <label class="visually-hidden" for="language-filter">{ui.projects.languageLabel}</label>
         <div class="language-filter-wrapper">
           <span class="material-symbols-rounded language-filter-icon" aria-hidden="true">tune</span>
-          <select id="language-filter"><option value="">All languages</option></select>
+          <select id="language-filter"><option value="">{ui.projects.allLanguages}</option></select>
         </div>
         <button id="clear-filters" class="clear-filters" type="button" hidden>
           <span class="material-symbols-rounded icon-sm" aria-hidden="true">close</span>
-          <span>Clear filters</span>
+          <span>{ui.projects.clearFilters}</span>
         </button>
       </div>
       <div id="projects-grid" class="row project-grid" aria-live="polite"></div>
-      <p id="projects-status" class="projects-status">Loading public repositories…</p>
-      <div class="text-center"><button id="show-more-projects" class="show-more-projects" type="button" hidden>Show all repositories</button></div>
+      <p id="projects-status" class="projects-status">{ui.projects.loading}</p>
+      <div class="text-center"><button id="show-more-projects" class="show-more-projects" type="button" hidden>{ui.projects.showAll}</button></div>
     </div>
   </section>
 </main>
