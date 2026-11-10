@@ -25,168 +25,172 @@ const serializedScreenshots = screenshots.map((s) => ({
 }));
 ---
 
-<section class="screenshot-gallery-section" aria-label={sectionTitle}>
-  <div class="gallery-header-wrap">
-    <h2 class="block-title">
-      <Icon name="material-symbols:photo-library" class="material-symbols-rounded text-accent" aria-hidden="true" />
-      <span>{sectionTitle}</span>
-    </h2>
-  </div>
-
-  {screenshots.length === 0 ? (
-    <div class="gallery-empty-wrap">
-      <div class="shot-empty">
-        {ui.screenshotEmpty.replace('{id}', appId)}
-      </div>
+<section class="screenshot-gallery-section" data-porsche-section id={`gallery-section-${appId}`} aria-label={sectionTitle}>
+  <div class="gallery-viewport-stage">
+    <div class="gallery-header-wrap">
+      <h2 class="block-title">
+        <Icon name="material-symbols:photo-library" class="material-symbols-rounded text-accent" aria-hidden="true" />
+        <span>{sectionTitle}</span>
+      </h2>
     </div>
-  ) : (
-    <div
-      class="apple-gallery"
-      data-gallery
-      data-screenshots={JSON.stringify(serializedScreenshots)}
-      data-app-id={appId}
-    >
+
+    {screenshots.length === 0 ? (
+      <div class="gallery-empty-wrap">
+        <div class="shot-empty">
+          {ui.screenshotEmpty.replace('{id}', appId)}
+        </div>
+      </div>
+    ) : (
       <div
-        class="gallery-track"
-        tabindex="0"
-        role="region"
-        aria-label={sectionTitle}
+        class="apple-gallery"
+        data-gallery
+        data-screenshots={JSON.stringify(serializedScreenshots)}
+        data-app-id={appId}
       >
-        {screenshots.map((s, index) => (
+        <div class="gallery-track-outer">
           <div
-            class="gallery-slide"
-            data-slide-index={index}
+            class="gallery-track"
+            tabindex="0"
+            role="region"
+            aria-label={sectionTitle}
           >
-            <button
-              type="button"
-              class="screenshot-card"
-              data-lightbox-trigger={index}
-              aria-label={`${pick(s.alt, lang)} - ${ui.lightboxZoomHint}`}
-              title={ui.lightboxZoomHint}
-            >
-              <img
-                src={s.src}
-                alt={pick(s.alt, lang)}
-                loading={index < 2 ? 'eager' : 'lazy'}
-                decoding="async"
-              />
-              <span class="zoom-badge" aria-hidden="true">
-                <Icon name="material-symbols:zoom-in" class="material-symbols-rounded" />
-              </span>
-            </button>
+            {screenshots.map((s, index) => (
+              <div
+                class="gallery-slide"
+                data-slide-index={index}
+              >
+                <button
+                  type="button"
+                  class="screenshot-card"
+                  data-lightbox-trigger={index}
+                  aria-label={`${pick(s.alt, lang)} - ${ui.lightboxZoomHint}`}
+                  title={ui.lightboxZoomHint}
+                >
+                  <img
+                    src={s.src}
+                    alt={pick(s.alt, lang)}
+                    loading={index < 2 ? 'eager' : 'lazy'}
+                    decoding="async"
+                  />
+                  <span class="zoom-badge" aria-hidden="true">
+                    <Icon name="material-symbols:zoom-in" class="material-symbols-rounded" />
+                  </span>
+                </button>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-
-      <!-- Apple.com style bottom controls bar -->
-      <div class="gallery-controls">
-        <div class="gallery-indicators" role="tablist" aria-label={sectionTitle}>
-          {screenshots.map((_, index) => (
-            <button
-              type="button"
-              class={`gallery-dot ${index === 0 ? 'is-active' : ''}`}
-              data-dot-index={index}
-              role="tab"
-              aria-selected={index === 0 ? 'true' : 'false'}
-              aria-label={ui.screenshotIndex.replace('{current}', String(index + 1)).replace('{total}', String(screenshots.length))}
-            />
-          ))}
         </div>
 
-        <div class="gallery-nav-buttons">
-          <button
-            type="button"
-            class="apple-nav-btn prev"
-            data-action="prev"
-            aria-label={ui.prevScreenshot}
-            disabled
-          >
-            <Icon name="material-symbols:chevron-left" class="material-symbols-rounded" aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            class="apple-nav-btn next"
-            data-action="next"
-            aria-label={ui.nextScreenshot}
-          >
-            <Icon name="material-symbols:chevron-right" class="material-symbols-rounded" aria-hidden="true" />
-          </button>
-        </div>
-      </div>
-
-      <!-- Full-screen High-Resolution Lightbox Viewer -->
-      <div
-        class="screenshot-lightbox"
-        id={`lightbox-${appId}`}
-        aria-hidden="true"
-        role="dialog"
-        aria-modal="true"
-        aria-label={sectionTitle}
-      >
-        <div class="lightbox-backdrop" data-lightbox-close></div>
-
-        <div class="lightbox-content">
-          <!-- Lightbox Header (Back arrow + image title + raw link + close button) -->
-          <div class="lightbox-header">
-            <button
-              type="button"
-              class="lightbox-back-btn"
-              data-lightbox-close
-              aria-label={ui.lightboxClose}
-              title={ui.lightboxClose}
-            >
-              <Icon name="material-symbols:arrow-back" class="material-symbols-rounded" aria-hidden="true" />
-              <span class="lightbox-title" id={`lightbox-title-${appId}`}></span>
-            </button>
-
-            <div class="lightbox-actions">
-              <span class="lightbox-counter" id={`lightbox-counter-${appId}`}></span>
+        <!-- Apple.com style bottom controls bar -->
+        <div class="gallery-controls">
+          <div class="gallery-indicators" role="tablist" aria-label={sectionTitle}>
+            {screenshots.map((_, index) => (
               <button
                 type="button"
-                class="lightbox-action-btn"
-                data-lightbox-close
-                aria-label={ui.lightboxClose}
-                title={ui.lightboxClose}
-              >
-                <Icon name="material-symbols:close" class="material-symbols-rounded" aria-hidden="true" />
-              </button>
-            </div>
+                class={`gallery-dot ${index === 0 ? 'is-active' : ''}`}
+                data-dot-index={index}
+                role="tab"
+                aria-selected={index === 0 ? 'true' : 'false'}
+                aria-label={ui.screenshotIndex.replace('{current}', String(index + 1)).replace('{total}', String(screenshots.length))}
+              />
+            ))}
           </div>
 
-          <!-- Lightbox Stage: Prev / Next Buttons + Centered High-Res Image -->
-          <div class="lightbox-stage">
+          <div class="gallery-nav-buttons">
             <button
               type="button"
-              class="lightbox-nav-btn prev"
-              data-lightbox-prev
+              class="apple-nav-btn prev"
+              data-action="prev"
               aria-label={ui.prevScreenshot}
+              disabled
             >
               <Icon name="material-symbols:chevron-left" class="material-symbols-rounded" aria-hidden="true" />
             </button>
-
-            <div class="lightbox-img-wrap" id={`lightbox-wrap-${appId}`}>
-              <img
-                src=""
-                alt=""
-                class="lightbox-img"
-                id={`lightbox-img-${appId}`}
-                title={ui.lightboxZoomHint}
-              />
-            </div>
-
             <button
               type="button"
-              class="lightbox-nav-btn next"
-              data-lightbox-next
+              class="apple-nav-btn next"
+              data-action="next"
               aria-label={ui.nextScreenshot}
             >
               <Icon name="material-symbols:chevron-right" class="material-symbols-rounded" aria-hidden="true" />
             </button>
           </div>
         </div>
+
+        <!-- Full-screen High-Resolution Lightbox Viewer -->
+        <div
+          class="screenshot-lightbox"
+          id={`lightbox-${appId}`}
+          aria-hidden="true"
+          role="dialog"
+          aria-modal="true"
+          aria-label={sectionTitle}
+        >
+          <div class="lightbox-backdrop" data-lightbox-close></div>
+
+          <div class="lightbox-content">
+            <!-- Lightbox Header (Back arrow + image title + raw link + close button) -->
+            <div class="lightbox-header">
+              <button
+                type="button"
+                class="lightbox-back-btn"
+                data-lightbox-close
+                aria-label={ui.lightboxClose}
+                title={ui.lightboxClose}
+              >
+                <Icon name="material-symbols:arrow-back" class="material-symbols-rounded" aria-hidden="true" />
+                <span class="lightbox-title" id={`lightbox-title-${appId}`}></span>
+              </button>
+
+              <div class="lightbox-actions">
+                <span class="lightbox-counter" id={`lightbox-counter-${appId}`}></span>
+                <button
+                  type="button"
+                  class="lightbox-action-btn"
+                  data-lightbox-close
+                  aria-label={ui.lightboxClose}
+                  title={ui.lightboxClose}
+                >
+                  <Icon name="material-symbols:close" class="material-symbols-rounded" aria-hidden="true" />
+                </button>
+              </div>
+            </div>
+
+            <!-- Lightbox Stage: Prev / Next Buttons + Centered High-Res Image -->
+            <div class="lightbox-stage">
+              <button
+                type="button"
+                class="lightbox-nav-btn prev"
+                data-lightbox-prev
+                aria-label={ui.prevScreenshot}
+              >
+                <Icon name="material-symbols:chevron-left" class="material-symbols-rounded" aria-hidden="true" />
+              </button>
+
+              <div class="lightbox-img-wrap" id={`lightbox-wrap-${appId}`}>
+                <img
+                  src=""
+                  alt=""
+                  class="lightbox-img"
+                  id={`lightbox-img-${appId}`}
+                  title={ui.lightboxZoomHint}
+                />
+              </div>
+
+              <button
+                type="button"
+                class="lightbox-nav-btn next"
+                data-lightbox-next
+                aria-label={ui.nextScreenshot}
+              >
+                <Icon name="material-symbols:chevron-right" class="material-symbols-rounded" aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  )}
+    )}
+  </div>
 </section>
 
 <style>
@@ -237,6 +241,13 @@ const serializedScreenshots = screenshots.map((s) => ({
     padding-right: var(--gallery-gutter);
     outline: none;
     box-sizing: border-box;
+    cursor: grab;
+  }
+  .gallery-track.is-dragging {
+    cursor: grabbing;
+    user-select: none;
+    scroll-snap-type: none;
+    scroll-behavior: auto;
   }
   .gallery-track::-webkit-scrollbar {
     display: none;
@@ -251,6 +262,42 @@ const serializedScreenshots = screenshots.map((s) => ({
     display: flex;
     justify-content: center;
     box-sizing: border-box;
+    opacity: 0.85;
+    transform: scale(0.965);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+    will-change: transform, opacity;
+  }
+  .gallery-slide.is-focused {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Staggered entrance animation when scrolled into view */
+  .apple-gallery.is-revealed .gallery-slide {
+    animation: galleryCardRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes galleryCardRise {
+    from {
+      opacity: 0;
+      transform: translateY(32px) scale(0.92);
+    }
+    to {
+      opacity: var(--card-target-opacity, 0.85);
+      transform: translateY(0) scale(var(--card-target-scale, 0.965));
+    }
+  }
+  .apple-gallery.is-revealed .gallery-slide.is-focused {
+    --card-target-opacity: 1;
+    --card-target-scale: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gallery-slide {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+      animation: none !important;
+    }
   }
 
   /* Interactive Apple-grade screenshot cards */
@@ -595,11 +642,53 @@ const serializedScreenshots = screenshots.map((s) => ({
     cursor: zoom-out;
   }
 
+  @media (min-width: 769px) {
+    .screenshot-gallery-section {
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0;
+    }
+    .gallery-viewport-stage {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+    .gallery-track-outer {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+    .gallery-track {
+      width: max-content;
+      overflow-x: visible;
+      scroll-snap-type: none;
+      scroll-behavior: auto;
+      cursor: default;
+      will-change: transform;
+    }
+    .gallery-slide {
+      scroll-snap-align: none;
+    }
+  }
+
   @media (max-width: 768px) {
     .screenshot-gallery-section {
       --gallery-gutter: 1.25rem;
       --card-height: clamp(380px, 58vh, 480px);
       --card-width: calc(var(--card-height) * 1080 / 2400);
+      padding: 3.5rem 0 1.5rem;
+    }
+    .gallery-viewport-stage {
+      width: 100%;
+    }
+    .gallery-track-outer {
+      width: 100%;
+      overflow: visible;
     }
     .screenshot-card {
       border-radius: 16px;
@@ -635,259 +724,353 @@ const serializedScreenshots = screenshots.map((s) => ({
 </style>
 
 <script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  let galleryCtx: gsap.Context | null = null;
+
   function setupGalleries() {
-    const galleries = document.querySelectorAll<HTMLElement>('[data-gallery]');
+    if (galleryCtx) {
+      galleryCtx.revert();
+      galleryCtx = null;
+    }
 
-    galleries.forEach((gallery) => {
-      const track = gallery.querySelector<HTMLElement>('.gallery-track');
-      const appId = gallery.dataset.appId || 'app';
-      const screenshotsData = JSON.parse(gallery.dataset.screenshots || '[]') as Array<{
-        src: string;
-        alt: string;
-        filename: string;
-      }>;
+    const sections = document.querySelectorAll<HTMLElement>('[data-porsche-section]');
+    if (!sections.length) return;
 
-      if (!track || screenshotsData.length === 0) return;
+    galleryCtx = gsap.context(() => {
+      sections.forEach((section) => {
+        const gallery = section.querySelector<HTMLElement>('[data-gallery]');
+        const track = section.querySelector<HTMLElement>('.gallery-track');
+        if (!gallery || !track) return;
 
-      const slides = Array.from(gallery.querySelectorAll<HTMLElement>('.gallery-slide'));
-      const prevButton = gallery.querySelector<HTMLButtonElement>('.apple-nav-btn[data-action="prev"]');
-      const nextButton = gallery.querySelector<HTMLButtonElement>('.apple-nav-btn[data-action="next"]');
-      const dots = Array.from(gallery.querySelectorAll<HTMLButtonElement>('.gallery-dot'));
+        const appId = gallery.dataset.appId || 'app';
+        const screenshotsData = JSON.parse(gallery.dataset.screenshots || '[]') as Array<{
+          src: string;
+          alt: string;
+          filename: string;
+        }>;
+        if (screenshotsData.length === 0) return;
 
-      // Lightbox elements
-      const lightbox = document.getElementById(`lightbox-${appId}`);
-      const lightboxImg = document.getElementById(`lightbox-img-${appId}`) as HTMLImageElement | null;
-      const lightboxTitle = document.getElementById(`lightbox-title-${appId}`);
-      const lightboxCounter = document.getElementById(`lightbox-counter-${appId}`);
-      const lightboxPrev = lightbox?.querySelector<HTMLButtonElement>('[data-lightbox-prev]');
-      const lightboxNext = lightbox?.querySelector<HTMLButtonElement>('[data-lightbox-next]');
-      const lightboxCloseButtons = lightbox?.querySelectorAll('[data-lightbox-close]');
+        const slides = Array.from(gallery.querySelectorAll<HTMLElement>('.gallery-slide'));
+        const prevButton = gallery.querySelector<HTMLButtonElement>('.apple-nav-btn[data-action="prev"]');
+        const nextButton = gallery.querySelector<HTMLButtonElement>('.apple-nav-btn[data-action="next"]');
+        const dots = Array.from(gallery.querySelectorAll<HTMLButtonElement>('.gallery-dot'));
 
-      let currentLightboxIndex = 0;
-      let isZoomed = false;
+        // Lightbox elements
+        const lightbox = document.getElementById(`lightbox-${appId}`);
+        const lightboxImg = document.getElementById(`lightbox-img-${appId}`) as HTMLImageElement | null;
+        const lightboxTitle = document.getElementById(`lightbox-title-${appId}`);
+        const lightboxCounter = document.getElementById(`lightbox-counter-${appId}`);
+        const lightboxPrev = lightbox?.querySelector<HTMLButtonElement>('[data-lightbox-prev]');
+        const lightboxNext = lightbox?.querySelector<HTMLButtonElement>('[data-lightbox-next]');
+        const lightboxCloseButtons = lightbox?.querySelectorAll('[data-lightbox-close]');
 
-      const resetZoom = () => {
-        if (!lightboxImg) return;
-        isZoomed = false;
-        lightboxImg.classList.remove('is-zoomed');
-        lightboxImg.style.transformOrigin = 'center center';
-      };
+        let currentLightboxIndex = 0;
+        let isZoomed = false;
 
-      const toggleZoom = (e: MouseEvent) => {
-        if (!lightboxImg) return;
-        if (isZoomed) {
-          resetZoom();
-        } else {
-          const rect = lightboxImg.getBoundingClientRect();
-          const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
-          const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
-          lightboxImg.style.transformOrigin = `${x}% ${y}%`;
-          lightboxImg.classList.add('is-zoomed');
-          isZoomed = true;
-        }
-      };
+        const resetZoom = () => {
+          if (!lightboxImg) return;
+          isZoomed = false;
+          lightboxImg.classList.remove('is-zoomed');
+          lightboxImg.style.transformOrigin = 'center center';
+        };
 
-      const updateLightbox = (index: number) => {
-        resetZoom();
-        currentLightboxIndex = index;
-        const item = screenshotsData[index];
-        if (!item || !lightboxImg) return;
-
-        lightboxImg.src = item.src;
-        lightboxImg.alt = item.alt;
-
-        if (lightboxTitle) {
-          lightboxTitle.textContent = item.filename;
-        }
-        if (lightboxCounter) {
-          lightboxCounter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(screenshotsData.length).padStart(2, '0')}`;
-        }
-        if (lightboxPrev) {
-          lightboxPrev.disabled = index === 0;
-        }
-        if (lightboxNext) {
-          lightboxNext.disabled = index === screenshotsData.length - 1;
-        }
-      };
-
-      const openLightbox = (index: number) => {
-        if (!lightbox) return;
-        updateLightbox(index);
-        lightbox.classList.add('is-open');
-        lightbox.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-      };
-
-      const closeLightbox = () => {
-        if (!lightbox) return;
-        resetZoom();
-        lightbox.classList.remove('is-open');
-        lightbox.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
-      };
-
-      // Image click toggles zoom in / zoom out
-      lightboxImg?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleZoom(e);
-      });
-
-      // Clicking any blank space (stage, backdrop, wrapper) closes the lightbox
-      lightbox?.addEventListener('click', (e) => {
-        const target = e.target as HTMLElement | null;
-        if (!target) return;
-
-        // Ignore clicks on or inside the image itself
-        if (lightboxImg && (target === lightboxImg || lightboxImg.contains(target))) {
-          return;
-        }
-
-        // Ignore clicks on or inside the navigation buttons
-        if (
-          (lightboxPrev && (target === lightboxPrev || lightboxPrev.contains(target))) ||
-          (lightboxNext && (target === lightboxNext || lightboxNext.contains(target)))
-        ) {
-          return;
-        }
-
-        closeLightbox();
-      });
-
-      // Card click triggers lightbox
-      const triggers = gallery.querySelectorAll<HTMLElement>('[data-lightbox-trigger]');
-      triggers.forEach((trigger) => {
-        trigger.addEventListener('click', () => {
-          const index = parseInt(trigger.dataset.lightboxTrigger || '0', 10);
-          openLightbox(index);
-        });
-      });
-
-      // Lightbox Close
-      lightboxCloseButtons?.forEach((btn) => {
-        btn.addEventListener('click', (e) => {
-          if (e.target === btn || btn.contains(e.target as Node)) {
-            closeLightbox();
-          }
-        });
-      });
-
-      // Lightbox navigation
-      lightboxPrev?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (currentLightboxIndex > 0) {
-          updateLightbox(currentLightboxIndex - 1);
-        }
-      });
-
-      lightboxNext?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (currentLightboxIndex < screenshotsData.length - 1) {
-          updateLightbox(currentLightboxIndex + 1);
-        }
-      });
-
-      // Keyboard control for lightbox
-      document.addEventListener('keydown', (e) => {
-        if (!lightbox || !lightbox.classList.contains('is-open')) return;
-
-        if (e.key === 'Escape') {
+        const toggleZoom = (e: MouseEvent) => {
+          if (!lightboxImg) return;
           if (isZoomed) {
             resetZoom();
           } else {
-            closeLightbox();
+            const rect = lightboxImg.getBoundingClientRect();
+            const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+            const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+            lightboxImg.style.transformOrigin = `${x}% ${y}%`;
+            lightboxImg.classList.add('is-zoomed');
+            isZoomed = true;
           }
-        } else if (e.key === 'ArrowLeft') {
-          if (currentLightboxIndex > 0) updateLightbox(currentLightboxIndex - 1);
-        } else if (e.key === 'ArrowRight') {
-          if (currentLightboxIndex < screenshotsData.length - 1) updateLightbox(currentLightboxIndex + 1);
-        }
-      });
+        };
 
-      // Carousel track scrolling
-      const getStepDistance = () => {
-        const slide = slides[0];
-        if (!slide) return 300;
-        const style = window.getComputedStyle(track);
-        const gap = parseFloat(style.columnGap || style.gap || '24') || 24;
-        return (slide.getBoundingClientRect().width || slide.offsetWidth) + gap;
-      };
+        const updateLightbox = (index: number) => {
+          resetZoom();
+          currentLightboxIndex = index;
+          const item = screenshotsData[index];
+          if (!item || !lightboxImg) return;
 
-      const updateControls = () => {
-        const scrollLeft = track.scrollLeft;
-        const maxScroll = track.scrollWidth - track.clientWidth;
-        const atStart = scrollLeft <= 6;
-        const atEnd = scrollLeft >= maxScroll - 6;
+          lightboxImg.src = item.src;
+          lightboxImg.alt = item.alt;
 
-        if (prevButton) prevButton.disabled = atStart;
-        if (nextButton) nextButton.disabled = atEnd;
+          if (lightboxTitle) {
+            lightboxTitle.textContent = item.filename;
+          }
+          if (lightboxCounter) {
+            lightboxCounter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(screenshotsData.length).padStart(2, '0')}`;
+          }
+          if (lightboxPrev) {
+            lightboxPrev.disabled = index === 0;
+          }
+          if (lightboxNext) {
+            lightboxNext.disabled = index === screenshotsData.length - 1;
+          }
+        };
 
-        // Calculate active index
-        const step = getStepDistance();
-        const activeIndex = Math.min(
-          slides.length - 1,
-          Math.max(0, Math.round(scrollLeft / step))
-        );
+        const openLightbox = (index: number) => {
+          if (!lightbox) return;
+          updateLightbox(index);
+          lightbox.classList.add('is-open');
+          lightbox.setAttribute('aria-hidden', 'false');
+          document.body.style.overflow = 'hidden';
+        };
 
-        dots.forEach((dot, index) => {
-          const isActive = index === activeIndex;
-          dot.classList.toggle('is-active', isActive);
-          dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        const closeLightbox = () => {
+          if (!lightbox) return;
+          resetZoom();
+          lightbox.classList.remove('is-open');
+          lightbox.setAttribute('aria-hidden', 'true');
+          document.body.style.overflow = '';
+        };
+
+        // Image click toggles zoom in / zoom out
+        lightboxImg?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleZoom(e);
         });
-      };
 
-      const scrollBySlide = (direction: 'prev' | 'next') => {
-        const step = getStepDistance();
-        track.scrollBy({
-          left: direction === 'next' ? step : -step,
-          behavior: 'smooth',
+        // Blank space click closes lightbox
+        lightbox?.addEventListener('click', (e) => {
+          const target = e.target as HTMLElement | null;
+          if (!target) return;
+          if (lightboxImg && (target === lightboxImg || lightboxImg.contains(target))) return;
+          if (
+            (lightboxPrev && (target === lightboxPrev || lightboxPrev.contains(target))) ||
+            (lightboxNext && (target === lightboxNext || lightboxNext.contains(target)))
+          ) {
+            return;
+          }
+          closeLightbox();
         });
-      };
 
-      if (prevButton) {
-        prevButton.addEventListener('click', () => scrollBySlide('prev'));
-      }
-      if (nextButton) {
-        nextButton.addEventListener('click', () => scrollBySlide('next'));
-      }
-
-      dots.forEach((dot) => {
-        dot.addEventListener('click', () => {
-          const targetIndex = parseInt(dot.getAttribute('data-dot-index') || '0', 10);
-          const step = getStepDistance();
-          track.scrollTo({
-            left: targetIndex * step,
-            behavior: 'smooth',
+        // Card click triggers lightbox
+        const triggers = gallery.querySelectorAll<HTMLElement>('[data-lightbox-trigger]');
+        triggers.forEach((trigger) => {
+          trigger.addEventListener('click', () => {
+            const index = parseInt(trigger.dataset.lightboxTrigger || '0', 10);
+            openLightbox(index);
           });
         });
-      });
 
-      let ticking = false;
-      track.addEventListener('scroll', () => {
-        if (!ticking) {
-          window.requestAnimationFrame(() => {
-            updateControls();
-            ticking = false;
+        // Touch swipe navigation inside Lightbox
+        let touchStartX = 0;
+        let touchStartY = 0;
+        lightbox?.addEventListener('touchstart', (e) => {
+          if (!e.touches[0]) return;
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        lightbox?.addEventListener('touchend', (e) => {
+          if (!touchStartX || isZoomed || !e.changedTouches[0]) return;
+          const deltaX = e.changedTouches[0].clientX - touchStartX;
+          const deltaY = e.changedTouches[0].clientY - touchStartY;
+          if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY) * 1.4) {
+            if (deltaX < 0 && currentLightboxIndex < screenshotsData.length - 1) {
+              updateLightbox(currentLightboxIndex + 1);
+            } else if (deltaX > 0 && currentLightboxIndex > 0) {
+              updateLightbox(currentLightboxIndex - 1);
+            }
+          }
+          touchStartX = 0;
+          touchStartY = 0;
+        }, { passive: true });
+
+        // Lightbox Close
+        lightboxCloseButtons?.forEach((btn) => {
+          btn.addEventListener('click', (e) => {
+            if (e.target === btn || btn.contains(e.target as Node)) {
+              closeLightbox();
+            }
           });
-          ticking = true;
-        }
-      });
+        });
 
-      // Carousel keyboard navigation
-      track.addEventListener('keydown', (e) => {
-        if (lightbox && lightbox.classList.contains('is-open')) return;
-        if (e.key === 'ArrowLeft') {
-          e.preventDefault();
-          scrollBySlide('prev');
-        } else if (e.key === 'ArrowRight') {
-          e.preventDefault();
-          scrollBySlide('next');
-        }
-      });
+        // Lightbox prev/next buttons
+        lightboxPrev?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (currentLightboxIndex > 0) {
+            updateLightbox(currentLightboxIndex - 1);
+          }
+        });
+        lightboxNext?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (currentLightboxIndex < screenshotsData.length - 1) {
+            updateLightbox(currentLightboxIndex + 1);
+          }
+        });
 
-      // Initial control states
-      updateControls();
-      window.addEventListener('resize', updateControls);
+        // Keyboard navigation for lightbox
+        document.addEventListener('keydown', (e) => {
+          if (!lightbox || !lightbox.classList.contains('is-open')) return;
+          if (e.key === 'Escape') {
+            if (isZoomed) resetZoom();
+            else closeLightbox();
+          } else if (e.key === 'ArrowLeft') {
+            if (currentLightboxIndex > 0) updateLightbox(currentLightboxIndex - 1);
+          } else if (e.key === 'ArrowRight') {
+            if (currentLightboxIndex < screenshotsData.length - 1) updateLightbox(currentLightboxIndex + 1);
+          }
+        });
+
+        const updateDots = (activeIndex: number) => {
+          dots.forEach((dot, index) => {
+            const isActive = index === activeIndex;
+            dot.classList.toggle('is-active', isActive);
+            dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          });
+        };
+
+        const updateCardFocus = (activeIndex: number) => {
+          slides.forEach((slide, idx) => {
+            slide.classList.toggle('is-focused', idx === activeIndex);
+          });
+        };
+
+        const mm = gsap.matchMedia();
+
+        // 1. Desktop & Large Screens (Porsche Racing ScrollTrigger Pinned Scrub)
+        mm.add('(min-width: 769px)', () => {
+          const getDistance = () => {
+            const trackWidth = track.scrollWidth;
+            const windowWidth = window.innerWidth;
+            const gutter = parseFloat(window.getComputedStyle(section).getPropertyValue('--gallery-gutter')) || 80;
+            return Math.max(0, trackWidth - windowWidth + gutter * 1.5);
+          };
+
+          const scrollDistance = () => Math.max(1600, getDistance() * 1.35);
+
+          const tween = gsap.to(track, {
+            x: () => -getDistance(),
+            ease: 'none',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top top',
+              end: () => `+=${scrollDistance()}`,
+              pin: true,
+              pinSpacing: true,
+              scrub: 1.15, // Porsche Racing 標誌性物理阻尼
+              invalidateOnRefresh: true,
+              onUpdate: (self) => {
+                const p = self.progress;
+                const activeIndex = Math.min(
+                  slides.length - 1,
+                  Math.max(0, Math.round(p * (slides.length - 1)))
+                );
+                updateDots(activeIndex);
+                updateCardFocus(activeIndex);
+                if (prevButton) prevButton.disabled = p <= 0.01;
+                if (nextButton) nextButton.disabled = p >= 0.99;
+              },
+            },
+          });
+
+          // Scroll to target slide when dots or arrows are clicked
+          const scrollToSlideIndex = (index: number) => {
+            const st = tween.scrollTrigger;
+            if (!st) return;
+            const targetP = index / Math.max(1, slides.length - 1);
+            const targetY = st.start + (st.end - st.start) * targetP;
+            window.scrollTo({
+              top: targetY,
+              behavior: 'smooth',
+            });
+          };
+
+          dots.forEach((dot, idx) => {
+            dot.onclick = () => scrollToSlideIndex(idx);
+          });
+
+          if (prevButton) {
+            prevButton.onclick = () => {
+              const st = tween.scrollTrigger;
+              if (!st) return;
+              const currentIdx = Math.round(st.progress * (slides.length - 1));
+              const prevIdx = Math.max(0, currentIdx - 1);
+              scrollToSlideIndex(prevIdx);
+            };
+          }
+
+          if (nextButton) {
+            nextButton.onclick = () => {
+              const st = tween.scrollTrigger;
+              if (!st) return;
+              const currentIdx = Math.round(st.progress * (slides.length - 1));
+              const nextIdx = Math.min(slides.length - 1, currentIdx + 1);
+              scrollToSlideIndex(nextIdx);
+            };
+          }
+
+          // Initial focus state
+          updateCardFocus(0);
+          updateDots(0);
+        });
+
+        // 2. Mobile & Touch Screens: Native smooth touch swipe
+        mm.add('(max-width: 768px)', () => {
+          gsap.set(track, { clearProps: 'all' });
+
+          const getStepDistance = () => {
+            const slide = slides[0];
+            if (!slide) return 300;
+            const style = window.getComputedStyle(track);
+            const gap = parseFloat(style.columnGap || style.gap || '16') || 16;
+            return (slide.getBoundingClientRect().width || slide.offsetWidth) + gap;
+          };
+
+          const updateMobileControls = () => {
+            const scrollLeft = track.scrollLeft;
+            const maxScroll = track.scrollWidth - track.clientWidth;
+            if (prevButton) prevButton.disabled = scrollLeft <= 6;
+            if (nextButton) nextButton.disabled = scrollLeft >= maxScroll - 6;
+
+            const step = getStepDistance();
+            const activeIndex = Math.min(
+              slides.length - 1,
+              Math.max(0, Math.round(scrollLeft / step))
+            );
+            updateDots(activeIndex);
+            updateCardFocus(activeIndex);
+          };
+
+          track.onscroll = () => {
+            window.requestAnimationFrame(updateMobileControls);
+          };
+
+          dots.forEach((dot, idx) => {
+            dot.onclick = () => {
+              const step = getStepDistance();
+              track.scrollTo({
+                left: idx * step,
+                behavior: 'smooth',
+              });
+            };
+          });
+
+          if (prevButton) {
+            prevButton.onclick = () => {
+              track.scrollBy({ left: -getStepDistance(), behavior: 'smooth' });
+            };
+          }
+          if (nextButton) {
+            nextButton.onclick = () => {
+              track.scrollBy({ left: getStepDistance(), behavior: 'smooth' });
+            };
+          }
+
+          updateMobileControls();
+        });
+      });
     });
+
+    ScrollTrigger.refresh();
   }
 
   // Setup on page load and on Astro view transitions
