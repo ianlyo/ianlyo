@@ -207,13 +207,13 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/beta/${app.id}/`)
         </h2>
         <p style="color:var(--text-secondary)">{ui.feedbackHow}</p>
         <div class="cta-row">
-          {d.githubUrl ? (
+          {d.githubUrl && (
             <a class="btn-ghost" href={d.githubUrl} target="_blank" rel="noopener">
               <i class="bi bi-github"></i>
               <span>{ui.githubBtn}</span>
               <Icon name="material-symbols:open-in-new" class="material-symbols-rounded icon-xs" aria-hidden="true" />
             </a>
-          ) : <span class="btn-ghost is-placeholder">{ui.githubBtn}</span>}
+          )}
           {d.playStoreUrl && (
             <a class="btn-ghost" href={d.playStoreUrl} target="_blank" rel="noopener">
               <i class="bi bi-google-play"></i>

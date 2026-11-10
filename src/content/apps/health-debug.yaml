@@ -97,7 +97,7 @@ extraGroups:
     url: https://groups.google.com/g/testify-dev-community
 optInUrl: "https://play.google.com/apps/testing/com.lnu.healthdebug"
 playStoreUrl: "https://play.google.com/store/apps/details?id=com.lnu.healthdebug"
-githubUrl: "https://github.com/linenyou/health-debug"
+githubUrl: ""
 feedbackUrl: ""
 privacyUrl: "https://ianlyo.github.io/APP-Privacy-Policy/"
 
