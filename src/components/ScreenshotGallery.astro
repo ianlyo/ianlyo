@@ -201,8 +201,8 @@ const serializedScreenshots = screenshots.map((s) => ({
     padding: 3.5rem 0 1.5rem;
     overflow: hidden;
     box-sizing: border-box;
-    --gallery-gutter: clamp(2.5rem, 8vw, 7rem);
-    --card-height: clamp(440px, 62vh, 580px);
+    --gallery-gutter: clamp(3rem, 9vw, 10rem);
+    --card-height: clamp(500px, 72vh, 700px);
     --card-width: calc(var(--card-height) * 1080 / 2400);
   }
 
@@ -210,7 +210,7 @@ const serializedScreenshots = screenshots.map((s) => ({
   .gallery-empty-wrap {
     padding-left: var(--gallery-gutter);
     padding-right: var(--gallery-gutter);
-    margin: 0 auto 1.5rem;
+    margin: 0 auto 1.25rem;
     box-sizing: border-box;
     width: 100%;
     max-width: 100%;
@@ -221,6 +221,22 @@ const serializedScreenshots = screenshots.map((s) => ({
     width: 100%;
     max-width: 100%;
     overflow: hidden;
+  }
+
+  .apple-gallery.is-centered .gallery-track-outer {
+    display: flex;
+    justify-content: center;
+  }
+  .apple-gallery.is-centered .gallery-track {
+    margin: 0 auto;
+    justify-content: center;
+  }
+  .apple-gallery.is-centered .gallery-slide {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .apple-gallery.is-centered .gallery-controls {
+    display: none;
   }
 
   /* Horizontal track */
@@ -262,9 +278,9 @@ const serializedScreenshots = screenshots.map((s) => ({
     display: flex;
     justify-content: center;
     box-sizing: border-box;
-    opacity: 0.85;
-    transform: scale(0.965);
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+    opacity: 0.72;
+    transform: scale(0.94);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
     will-change: transform, opacity;
   }
   .gallery-slide.is-focused {
@@ -670,6 +686,7 @@ const serializedScreenshots = screenshots.map((s) => ({
       scroll-behavior: auto;
       cursor: default;
       will-change: transform;
+      gap: clamp(1.75rem, 3vw, 3rem);
     }
     .gallery-slide {
       scroll-snap-align: none;
@@ -945,7 +962,22 @@ const serializedScreenshots = screenshots.map((s) => ({
             return Math.max(0, trackWidth - windowWidth + gutter * 1.5);
           };
 
-          const scrollDistance = () => Math.max(1600, getDistance() * 1.35);
+          const distance = getDistance();
+
+          // 若卡片總寬度小於視窗寬度（例如超寬螢幕或截圖只有少數幾張），無需橫向滾動，直接置中優雅陳列，垂直滾動暢通無阻
+          if (distance <= 40) {
+            gallery.classList.add('is-centered');
+            gsap.set(track, { clearProps: 'all' });
+            slides.forEach((slide) => {
+              slide.classList.add('is-focused');
+            });
+            return;
+          }
+
+          gallery.classList.remove('is-centered');
+
+          // 動態比例滾動行程：以橫向移動距離等比對應垂直滾動距離，杜絕死區
+          const scrollDistance = () => Math.round(getDistance() * 1.15 + 100);
 
           const tween = gsap.to(track, {
             x: () => -getDistance(),
@@ -956,7 +988,7 @@ const serializedScreenshots = screenshots.map((s) => ({
               end: () => `+=${scrollDistance()}`,
               pin: true,
               pinSpacing: true,
-              scrub: 1.15, // Porsche Racing 標誌性物理阻尼
+              scrub: 0.65, // Porsche Racing 絲滑物理阻尼，跟手靈敏無延遲
               invalidateOnRefresh: true,
               onUpdate: (self) => {
                 const p = self.progress;
@@ -1076,4 +1108,12 @@ const serializedScreenshots = screenshots.map((s) => ({
   // Setup on page load and on Astro view transitions
   setupGalleries();
   document.addEventListener('astro:page-load', setupGalleries);
+
+  let resizeTimeout: any;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      setupGalleries();
+    }, 200);
+  });
 </script>

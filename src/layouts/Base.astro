@@ -265,11 +265,32 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
       left: 0;
       height: 3px;
       width: 0%;
-      background: linear-gradient(90deg, #14b8a6 0%, #38bdf8 100%);
       z-index: 1060;
       pointer-events: none;
-      transition: width 0.08s ease-out;
+      opacity: 0;
+      transition: width 0.1s ease-out, opacity 0.25s ease;
+      background: linear-gradient(90deg, rgba(13, 148, 136, 0.65) 0%, rgba(14, 165, 233, 0.75) 100%);
+      box-shadow: 0 2px 8px rgba(13, 148, 136, 0.28), 0 1px 3px rgba(0, 0, 0, 0.08);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
     }
+
+    .scroll-progress-bar.is-visible {
+      opacity: 1;
+    }
+
+    /* 淺色模式：精準落影搭配主題青色柔和光暈，兼具立體感與清晰度 */
+    [data-bs-theme='light'] .scroll-progress-bar {
+      background: linear-gradient(90deg, rgba(13, 148, 136, 0.65) 0%, rgba(14, 165, 233, 0.75) 100%);
+      box-shadow: 0 2px 8px rgba(13, 148, 136, 0.32), 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 深色模式：未來科技感霓虹光暈 (Neon Glow)，在深色底上深邃優雅 */
+    [data-bs-theme='dark'] .scroll-progress-bar {
+      background: linear-gradient(90deg, rgba(45, 212, 191, 0.75) 0%, rgba(56, 189, 248, 0.85) 100%);
+      box-shadow: 0 0 12px rgba(45, 212, 191, 0.55), 0 2px 8px rgba(56, 189, 248, 0.35);
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .scroll-progress-bar {
         display: none !important;
@@ -340,6 +361,11 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
           var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
           var progress = height > 0 ? (scroll / height) * 100 : 0;
           progressBar.style.width = Math.min(100, Math.max(0, progress)) + '%';
+          if (scroll > 8) {
+            progressBar.classList.add('is-visible');
+          } else {
+            progressBar.classList.remove('is-visible');
+          }
           ticking = false;
         }
         window.addEventListener('scroll', function () {
