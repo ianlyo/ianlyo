@@ -5,6 +5,9 @@ import icon from 'astro-icon';
 // Custom domain is set by public/CNAME. Change `site` if the domain changes.
 export default defineConfig({
   site: 'https://linnu.dpdns.org',
+  server: {
+    allowedHosts: ['.ngrok-free.dev', '.ngrok-free.app', '.ngrok.io'],
+  },
   trailingSlash: 'always',
   build: { format: 'directory' },
   i18n: {

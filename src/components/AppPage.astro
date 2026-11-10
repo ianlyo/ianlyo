@@ -24,6 +24,7 @@ const steps = [
 const sequenceSteps: ScrollStep[] = d.features.map((f, i) => ({
   id: i + 1,
   images: f.images,
+  video: f.video,
   zoom: f.zoom,
   image: f.image ?? (d.screenshots.length ? d.screenshots[i % d.screenshots.length].src : undefined),
   title: pick(f.title, lang),

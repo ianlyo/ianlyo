@@ -1,5 +1,5 @@
 ---
-title: 歡迎來到我的 Android 開發部落格
+title: 歡迎來到我的技術部落格
 description: 這是一篇範例文章，示範如何用 Markdown 發佈文章、使用分類、標籤、程式碼區塊與目錄。
 pubDate: 2026-11-10
 category: Development Notes

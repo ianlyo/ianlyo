@@ -21,11 +21,11 @@ export const SITE = {
   /** 預設社群分享圖（放在 public/ 底下） */
   ogImage: '/og/default.png',
   /** 社群分享圖替代文字 */
-  ogImageAlt: 'ianlyo - Android Developer Blog & Beta Testing Hub',
+  ogImageAlt: 'ianlyo - Developer Portfolio & Apps Showcase',
   /** RSS 標題 / 描述 */
   rss: {
-    title: 'ianlyo - Android Developer Blog',
-    description: 'Android development notes, tutorials and project updates by Ian.',
+    title: 'ianlyo - Technical Blog',
+    description: 'Software development notes, tutorials and project updates by Ian.',
   },
   github: {
     user: githubUser,

@@ -77,14 +77,40 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
   <meta name="twitter:image:alt" content={imageAlt} />
   {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
-  <!-- Anti-FOUC theme script (same logic as the original site) -->
-  <script is:inline>
+  <!-- Anti-FOUC Theme & Auto Locale Detection Script -->
+  <script is:inline define:vars={{ currentLang: lang, enTarget: enPath, zhTarget: zhPath }}>
     (function () {
       try {
-        var saved = localStorage.getItem('theme');
+        // 1. Theme initialization
+        var savedTheme = localStorage.getItem('theme');
         var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        var theme = !saved || saved === 'auto' ? (prefersDark ? 'dark' : 'light') : saved;
+        var theme = !savedTheme || savedTheme === 'auto' ? (prefersDark ? 'dark' : 'light') : savedTheme;
         document.documentElement.setAttribute('data-bs-theme', theme);
+
+        // 2. Language auto-detection & preference routing
+        var savedLang = localStorage.getItem('preferred-locale');
+        if (!savedLang) {
+          var langs = navigator.languages || [navigator.language || ''];
+          var prefersEn = false;
+          for (var i = 0; i < langs.length; i++) {
+            var l = (langs[i] || '').toLowerCase();
+            if (l.startsWith('zh')) {
+              prefersEn = false;
+              break;
+            }
+            if (l.startsWith('en')) {
+              prefersEn = true;
+              break;
+            }
+          }
+          if (prefersEn && currentLang !== 'en' && enTarget) {
+            window.location.replace(enTarget + window.location.search + window.location.hash);
+          }
+        } else if (savedLang === 'en' && currentLang !== 'en' && enTarget) {
+          window.location.replace(enTarget + window.location.search + window.location.hash);
+        } else if (savedLang === 'zh-Hant' && currentLang === 'en' && zhTarget) {
+          window.location.replace(zhTarget + window.location.search + window.location.hash);
+        }
       } catch (e) {}
     })();
   </script>
@@ -129,7 +155,7 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
         <i class="bi bi-github" aria-hidden="true"></i>
       </a>
       {otherPath && (
-        <a href={otherPath} hreflang={otherLang} class="lang-switch">
+        <a href={otherPath} hreflang={otherLang} class="lang-switch" data-lang-switch={otherLang}>
           <Icon name="material-symbols:translate" class="material-symbols-rounded icon-xs" aria-hidden="true" />
           <span>{ui.langSwitch}</span>
         </a>
@@ -153,7 +179,7 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
     <div class="nav-drawer-header">
       <div class="nav-drawer-brand">
         <span class="brand-mark">IAN<span>.</span></span>
-        <span class="nav-drawer-subtitle">{SITE.author} · Android Developer</span>
+        <span class="nav-drawer-subtitle">{SITE.author} · Developer</span>
       </div>
       <button type="button" class="nav-drawer-close" id="nav-drawer-close" aria-label={ui.nav.menuClose}>
         <Icon name="material-symbols:close" class="material-symbols-rounded" aria-hidden="true" />
@@ -198,7 +224,7 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
 
       <div class="nav-drawer-secondary">
         {otherPath && (
-          <a href={otherPath} hreflang={otherLang} class="nav-drawer-item">
+          <a href={otherPath} hreflang={otherLang} class="nav-drawer-item lang-switch" data-lang-switch={otherLang}>
             <Icon name="material-symbols:translate" class="material-symbols-rounded" aria-hidden="true" />
             <span>{ui.langSwitch}</span>
           </a>
@@ -271,12 +297,31 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
         });
       }
 
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setupNavDrawer);
-      } else {
-        setupNavDrawer();
+      function setupLangSwitch() {
+        var buttons = document.querySelectorAll('[data-lang-switch]');
+        buttons.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var target = btn.getAttribute('data-lang-switch');
+            if (target) {
+              try {
+                localStorage.setItem('preferred-locale', target);
+              } catch (e) {}
+            }
+          });
+        });
       }
-      document.addEventListener('astro:page-load', setupNavDrawer);
+
+      function init() {
+        setupNavDrawer();
+        setupLangSwitch();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+      document.addEventListener('astro:page-load', init);
     })();
   </script>
 </body>

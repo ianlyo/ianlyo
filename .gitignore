@@ -39,6 +39,7 @@ build/
 .env
 .env.*
 !.env.example
+policy.yaml
 
 # Generated documents
 *.pdf

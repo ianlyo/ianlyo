@@ -17,6 +17,12 @@ interface Props {
 const { screenshots = [], lang, appId, title } = Astro.props;
 const ui = t(lang).beta;
 const sectionTitle = title ?? ui.screenshots;
+
+const serializedScreenshots = screenshots.map((s) => ({
+  src: s.src,
+  alt: pick(s.alt, lang),
+  filename: s.src.split('/').pop() ?? 'screenshot.png',
+}));
 ---
 
 <section class="screenshot-gallery-section" aria-label={sectionTitle}>
@@ -34,7 +40,12 @@ const sectionTitle = title ?? ui.screenshots;
       </div>
     </div>
   ) : (
-    <div class="apple-gallery" data-gallery>
+    <div
+      class="apple-gallery"
+      data-gallery
+      data-screenshots={JSON.stringify(serializedScreenshots)}
+      data-app-id={appId}
+    >
       <div
         class="gallery-track"
         tabindex="0"
@@ -46,19 +57,28 @@ const sectionTitle = title ?? ui.screenshots;
             class="gallery-slide"
             data-slide-index={index}
           >
-            <div class="screenshot-card">
+            <button
+              type="button"
+              class="screenshot-card"
+              data-lightbox-trigger={index}
+              aria-label={`${pick(s.alt, lang)} - ${ui.lightboxZoomHint}`}
+              title={ui.lightboxZoomHint}
+            >
               <img
                 src={s.src}
                 alt={pick(s.alt, lang)}
                 loading={index < 2 ? 'eager' : 'lazy'}
                 decoding="async"
               />
-            </div>
+              <span class="zoom-badge" aria-hidden="true">
+                <Icon name="material-symbols:zoom-in" class="material-symbols-rounded" />
+              </span>
+            </button>
           </div>
         ))}
       </div>
 
-      <!-- Apple.com style bottom controls bar (indicator pills on left + ONLY < > buttons on right) -->
+      <!-- Apple.com style bottom controls bar -->
       <div class="gallery-controls">
         <div class="gallery-indicators" role="tablist" aria-label={sectionTitle}>
           {screenshots.map((_, index) => (
@@ -93,6 +113,78 @@ const sectionTitle = title ?? ui.screenshots;
           </button>
         </div>
       </div>
+
+      <!-- Full-screen High-Resolution Lightbox Viewer -->
+      <div
+        class="screenshot-lightbox"
+        id={`lightbox-${appId}`}
+        aria-hidden="true"
+        role="dialog"
+        aria-modal="true"
+        aria-label={sectionTitle}
+      >
+        <div class="lightbox-backdrop" data-lightbox-close></div>
+
+        <div class="lightbox-content">
+          <!-- Lightbox Header (Back arrow + image title + raw link + close button) -->
+          <div class="lightbox-header">
+            <button
+              type="button"
+              class="lightbox-back-btn"
+              data-lightbox-close
+              aria-label={ui.lightboxClose}
+              title={ui.lightboxClose}
+            >
+              <Icon name="material-symbols:arrow-back" class="material-symbols-rounded" aria-hidden="true" />
+              <span class="lightbox-title" id={`lightbox-title-${appId}`}></span>
+            </button>
+
+            <div class="lightbox-actions">
+              <span class="lightbox-counter" id={`lightbox-counter-${appId}`}></span>
+              <button
+                type="button"
+                class="lightbox-action-btn"
+                data-lightbox-close
+                aria-label={ui.lightboxClose}
+                title={ui.lightboxClose}
+              >
+                <Icon name="material-symbols:close" class="material-symbols-rounded" aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+
+          <!-- Lightbox Stage: Prev / Next Buttons + Centered High-Res Image -->
+          <div class="lightbox-stage">
+            <button
+              type="button"
+              class="lightbox-nav-btn prev"
+              data-lightbox-prev
+              aria-label={ui.prevScreenshot}
+            >
+              <Icon name="material-symbols:chevron-left" class="material-symbols-rounded" aria-hidden="true" />
+            </button>
+
+            <div class="lightbox-img-wrap" id={`lightbox-wrap-${appId}`}>
+              <img
+                src=""
+                alt=""
+                class="lightbox-img"
+                id={`lightbox-img-${appId}`}
+                title={ui.lightboxZoomHint}
+              />
+            </div>
+
+            <button
+              type="button"
+              class="lightbox-nav-btn next"
+              data-lightbox-next
+              aria-label={ui.nextScreenshot}
+            >
+              <Icon name="material-symbols:chevron-right" class="material-symbols-rounded" aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   )}
 </section>
@@ -102,17 +194,20 @@ const sectionTitle = title ?? ui.screenshots;
     position: relative;
     width: 100%;
     max-width: 100%;
-    padding: 3.5rem 0 1rem;
+    padding: 3.5rem 0 1.5rem;
     overflow: hidden;
     box-sizing: border-box;
+    --gallery-gutter: clamp(2.5rem, 8vw, 7rem);
   }
 
   .gallery-header-wrap,
   .gallery-empty-wrap {
-    max-width: 760px;
+    padding-left: var(--gallery-gutter);
+    padding-right: var(--gallery-gutter);
     margin: 0 auto 1.5rem;
-    padding: 0 1.5rem;
     box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
   }
 
   .apple-gallery {
@@ -122,7 +217,7 @@ const sectionTitle = title ?? ui.screenshots;
     overflow: hidden;
   }
 
-  /* Horizontal track: smooth snap, contained within viewport, edge padding aligned with content */
+  /* Horizontal track */
   .gallery-track {
     display: flex;
     gap: 1.5rem;
@@ -131,7 +226,10 @@ const sectionTitle = title ?? ui.screenshots;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding: 1rem max(1.5rem, calc((100% - 760px) / 2));
+    padding-top: 1rem;
+    padding-bottom: 1.5rem;
+    padding-left: var(--gallery-gutter);
+    padding-right: var(--gallery-gutter);
     outline: none;
     box-sizing: border-box;
   }
@@ -145,7 +243,7 @@ const sectionTitle = title ?? ui.screenshots;
     scroll-snap-stop: normal;
   }
 
-  /* Apple-grade screenshot cards */
+  /* Interactive Apple-grade screenshot cards */
   .screenshot-card {
     height: clamp(440px, 62vh, 580px);
     aspect-ratio: 1080 / 2400;
@@ -156,7 +254,11 @@ const sectionTitle = title ?? ui.screenshots;
     background: var(--bg-surface-subtle);
     border: 1px solid var(--border-subtle);
     box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
-    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+    cursor: zoom-in;
+    padding: 0;
+    display: block;
+    outline: none;
   }
 
   :global([data-bs-theme='light']) .screenshot-card {
@@ -166,7 +268,12 @@ const sectionTitle = title ?? ui.screenshots;
   .screenshot-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 22px 44px -12px rgba(0, 0, 0, 0.5);
-    border-color: var(--border-hover);
+    border-color: var(--accent-primary);
+  }
+
+  .screenshot-card:hover .zoom-badge {
+    opacity: 1;
+    transform: scale(1);
   }
 
   .screenshot-card img {
@@ -179,15 +286,41 @@ const sectionTitle = title ?? ui.screenshots;
     border-radius: 22px;
   }
 
-  /* Apple-style bottom controls (pills on left, single < > on right) */
+  .zoom-badge {
+    position: absolute;
+    bottom: 14px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+  }
+  .zoom-badge .material-symbols-rounded {
+    font-size: 1.25rem;
+  }
+
+  /* Apple-style bottom controls */
   .gallery-controls {
-    max-width: 760px;
+    padding-left: var(--gallery-gutter);
+    padding-right: var(--gallery-gutter);
     margin: 1.25rem auto 0;
-    padding: 0 1.5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
   }
 
   .gallery-indicators {
@@ -225,7 +358,7 @@ const sectionTitle = title ?? ui.screenshots;
     gap: 0.75rem;
   }
 
-  /* Circular glass buttons (Apple-style < and >) */
+  /* Circular glass buttons */
   .apple-nav-btn {
     width: 44px;
     height: 44px;
@@ -273,7 +406,182 @@ const sectionTitle = title ?? ui.screenshots;
     font-size: 1.45rem;
   }
 
+  /* ==========================================================================
+     High-Resolution Fullscreen Lightbox
+     ========================================================================== */
+  .screenshot-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .screenshot-lightbox.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.62);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    z-index: 1;
+  }
+
+  .lightbox-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+  }
+
+  .lightbox-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    color: #fff;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 100%);
+  }
+
+  .lightbox-back-btn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+    transition: opacity 0.2s ease;
+  }
+  .lightbox-back-btn:hover {
+    opacity: 0.8;
+  }
+  .lightbox-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .lightbox-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .lightbox-counter {
+    font-size: 0.88rem;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 0.08em;
+  }
+
+  .lightbox-action-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    padding: 0;
+  }
+  .lightbox-action-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    transform: scale(1.05);
+  }
+
+  .lightbox-stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .lightbox-nav-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    z-index: 5;
+    flex-shrink: 0;
+  }
+  .lightbox-nav-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.08);
+  }
+  .lightbox-nav-btn:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+  }
+  .lightbox-nav-btn .material-symbols-rounded {
+    font-size: 1.6rem;
+  }
+
+  .lightbox-img-wrap {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .lightbox-img {
+    max-width: 90vw;
+    max-height: calc(100vh - 120px);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85);
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: center center;
+    cursor: zoom-in;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  .lightbox-img.is-zoomed {
+    transform: scale(2.2);
+    cursor: zoom-out;
+  }
+
   @media (max-width: 768px) {
+    .screenshot-gallery-section {
+      --gallery-gutter: 1.25rem;
+    }
     .screenshot-card {
       height: clamp(380px, 58vh, 480px);
       border-radius: 16px;
@@ -284,13 +592,25 @@ const sectionTitle = title ?? ui.screenshots;
     }
     .gallery-track {
       gap: 1rem;
-      padding: 0.75rem 1.25rem;
+      padding-top: 0.75rem;
+      padding-bottom: 1rem;
     }
     .gallery-slide {
       scroll-snap-align: center;
     }
-    .gallery-controls {
-      padding: 0 1.25rem;
+    .lightbox-stage {
+      padding: 0 0.5rem 1rem;
+    }
+    .lightbox-nav-btn {
+      width: 40px;
+      height: 40px;
+    }
+    .lightbox-img {
+      max-width: 94vw;
+      max-height: calc(100vh - 110px);
+    }
+    .lightbox-img.is-zoomed {
+      transform: scale(1.85);
     }
   }
 </style>
@@ -301,15 +621,170 @@ const sectionTitle = title ?? ui.screenshots;
 
     galleries.forEach((gallery) => {
       const track = gallery.querySelector<HTMLElement>('.gallery-track');
-      if (!track) return;
+      const appId = gallery.dataset.appId || 'app';
+      const screenshotsData = JSON.parse(gallery.dataset.screenshots || '[]') as Array<{
+        src: string;
+        alt: string;
+        filename: string;
+      }>;
+
+      if (!track || screenshotsData.length === 0) return;
 
       const slides = Array.from(gallery.querySelectorAll<HTMLElement>('.gallery-slide'));
       const prevButton = gallery.querySelector<HTMLButtonElement>('.apple-nav-btn[data-action="prev"]');
       const nextButton = gallery.querySelector<HTMLButtonElement>('.apple-nav-btn[data-action="next"]');
       const dots = Array.from(gallery.querySelectorAll<HTMLButtonElement>('.gallery-dot'));
 
-      if (slides.length === 0) return;
+      // Lightbox elements
+      const lightbox = document.getElementById(`lightbox-${appId}`);
+      const lightboxImg = document.getElementById(`lightbox-img-${appId}`) as HTMLImageElement | null;
+      const lightboxTitle = document.getElementById(`lightbox-title-${appId}`);
+      const lightboxCounter = document.getElementById(`lightbox-counter-${appId}`);
+      const lightboxPrev = lightbox?.querySelector<HTMLButtonElement>('[data-lightbox-prev]');
+      const lightboxNext = lightbox?.querySelector<HTMLButtonElement>('[data-lightbox-next]');
+      const lightboxCloseButtons = lightbox?.querySelectorAll('[data-lightbox-close]');
 
+      let currentLightboxIndex = 0;
+      let isZoomed = false;
+
+      const resetZoom = () => {
+        if (!lightboxImg) return;
+        isZoomed = false;
+        lightboxImg.classList.remove('is-zoomed');
+        lightboxImg.style.transformOrigin = 'center center';
+      };
+
+      const toggleZoom = (e: MouseEvent) => {
+        if (!lightboxImg) return;
+        if (isZoomed) {
+          resetZoom();
+        } else {
+          const rect = lightboxImg.getBoundingClientRect();
+          const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+          const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+          lightboxImg.style.transformOrigin = `${x}% ${y}%`;
+          lightboxImg.classList.add('is-zoomed');
+          isZoomed = true;
+        }
+      };
+
+      const updateLightbox = (index: number) => {
+        resetZoom();
+        currentLightboxIndex = index;
+        const item = screenshotsData[index];
+        if (!item || !lightboxImg) return;
+
+        lightboxImg.src = item.src;
+        lightboxImg.alt = item.alt;
+
+        if (lightboxTitle) {
+          lightboxTitle.textContent = item.filename;
+        }
+        if (lightboxCounter) {
+          lightboxCounter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(screenshotsData.length).padStart(2, '0')}`;
+        }
+        if (lightboxPrev) {
+          lightboxPrev.disabled = index === 0;
+        }
+        if (lightboxNext) {
+          lightboxNext.disabled = index === screenshotsData.length - 1;
+        }
+      };
+
+      const openLightbox = (index: number) => {
+        if (!lightbox) return;
+        updateLightbox(index);
+        lightbox.classList.add('is-open');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      };
+
+      const closeLightbox = () => {
+        if (!lightbox) return;
+        resetZoom();
+        lightbox.classList.remove('is-open');
+        lightbox.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      };
+
+      // Image click toggles zoom in / zoom out
+      lightboxImg?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleZoom(e);
+      });
+
+      // Clicking any blank space (stage, backdrop, wrapper) closes the lightbox
+      lightbox?.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement | null;
+        if (!target) return;
+
+        // Ignore clicks on or inside the image itself
+        if (lightboxImg && (target === lightboxImg || lightboxImg.contains(target))) {
+          return;
+        }
+
+        // Ignore clicks on or inside the navigation buttons
+        if (
+          (lightboxPrev && (target === lightboxPrev || lightboxPrev.contains(target))) ||
+          (lightboxNext && (target === lightboxNext || lightboxNext.contains(target)))
+        ) {
+          return;
+        }
+
+        closeLightbox();
+      });
+
+      // Card click triggers lightbox
+      const triggers = gallery.querySelectorAll<HTMLElement>('[data-lightbox-trigger]');
+      triggers.forEach((trigger) => {
+        trigger.addEventListener('click', () => {
+          const index = parseInt(trigger.dataset.lightboxTrigger || '0', 10);
+          openLightbox(index);
+        });
+      });
+
+      // Lightbox Close
+      lightboxCloseButtons?.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          if (e.target === btn || btn.contains(e.target as Node)) {
+            closeLightbox();
+          }
+        });
+      });
+
+      // Lightbox navigation
+      lightboxPrev?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (currentLightboxIndex > 0) {
+          updateLightbox(currentLightboxIndex - 1);
+        }
+      });
+
+      lightboxNext?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (currentLightboxIndex < screenshotsData.length - 1) {
+          updateLightbox(currentLightboxIndex + 1);
+        }
+      });
+
+      // Keyboard control for lightbox
+      document.addEventListener('keydown', (e) => {
+        if (!lightbox || !lightbox.classList.contains('is-open')) return;
+
+        if (e.key === 'Escape') {
+          if (isZoomed) {
+            resetZoom();
+          } else {
+            closeLightbox();
+          }
+        } else if (e.key === 'ArrowLeft') {
+          if (currentLightboxIndex > 0) updateLightbox(currentLightboxIndex - 1);
+        } else if (e.key === 'ArrowRight') {
+          if (currentLightboxIndex < screenshotsData.length - 1) updateLightbox(currentLightboxIndex + 1);
+        }
+      });
+
+      // Carousel track scrolling
       const getStepDistance = () => {
         const slide = slides[0];
         if (!slide) return 300;
@@ -378,8 +853,9 @@ const sectionTitle = title ?? ui.screenshots;
         }
       });
 
-      // Keyboard navigation support
+      // Carousel keyboard navigation
       track.addEventListener('keydown', (e) => {
+        if (lightbox && lightbox.classList.contains('is-open')) return;
         if (e.key === 'ArrowLeft') {
           e.preventDefault();
           scrollBySlide('prev');

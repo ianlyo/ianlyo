@@ -4,7 +4,7 @@
 # ──────────────────────────────────────────────────────────────
 name: Health Debug
 packageName: com.lnu.healthdebug
-icon: ""                                     # e.g. /apps/health-debug/icon.png (put file in public/apps/health-debug/)
+icon: /apps/health-debug/app-icon.png
 status: closed-beta                          # closed-beta | open-beta | released | coming-soon | paused
 version: "2.2.2"                             # versionCode 14
 minAndroid: "7.1"                            # API 25 (per Play Console); Health Connect is built in from Android 14
@@ -26,16 +26,19 @@ description:
 features:
   - title: { zh: 設定時間與配速, en: Set Duration and Pace }
     image: /apps/health-debug/live.png
+    video: /apps/health-debug/vid/live-recording.mp4
     description:
       zh: 即時記錄模式可自訂時、分、秒與每分鐘步數配速，隨時開始模擬健走或跑步。
       en: In Live Recording, set hours, minutes, seconds and steps-per-minute pace, then start simulating a walk or run.
   - title: { zh: 即時模擬運動數據, en: Live Session Stats }
     image: /apps/health-debug/recording.png
+    video: /apps/health-debug/vid/live-recording-2timing.mp4
     description:
       zh: 錄製中即時顯示剩餘時間、步數、距離、速度、配速與卡路里，並自動計算分段與速度變化。
       en: See remaining time, steps, distance, speed, pace and kcal update live, with segments and speed fluctuation calculated automatically.
   - title: { zh: 即時通知追蹤進度, en: Live Notifications }
     zoom: true
+    video: /apps/health-debug/vid/live-notification.mp4
     images:
       - /apps/health-debug/live-update.png
       - /apps/health-debug/live-update-expand.png

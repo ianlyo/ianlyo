@@ -52,7 +52,7 @@ const apps = defineCollection({
     tagline: localized,
     description: localized,
     features: z
-      .array(z.object({ title: localized, description: localized, image: z.string().optional(), images: z.array(z.string()).optional(), zoom: z.boolean().optional() }))
+      .array(z.object({ title: localized, description: localized, image: z.string().optional(), images: z.array(z.string()).optional(), video: z.string().optional(), zoom: z.boolean().optional() }))
       .default([]),
     /** Permissions the app requests (shown as chips). */
     permissions: z.array(z.string()).default([]),

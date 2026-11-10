@@ -23,6 +23,7 @@ When maintaining or updating this project, follow these instructions strictly:
   - Image-focused without distracting text captions underneath (`圖片為主不用文字`).
   - Circular glass `<` and `>` arrow buttons, bottom indicator pills, touch swipe, and keyboard navigation.
   - NEVER crop screenshots on mobile devices: always ensure `object-fit: contain` and clean aspect ratio so status/navigation bars are 100% visible.
+  - Fullscreen Lightbox: clicking any screenshot opens full original resolution image with backdrop blur, image title, prev/next buttons, and Esc/click-to-close.
 
 ## 4. Mobile Navigation
 - Mobile screens (< 768px) use a Google Photos / Material 3 slide-out Navigation Drawer (`#nav-drawer`).

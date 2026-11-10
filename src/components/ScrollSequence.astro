@@ -9,11 +9,14 @@ export interface ScrollStep {
   id: number;
   image?: string; // optional screenshot shown in the phone frame
   images?: string[]; // several screenshots shown one after another within this step
+  video?: string; // optional video (.mp4 / .webm) scrubbed/played while scrolling through this step
   zoom?: boolean; // zoom the phone in so only the top of the screen is visible
   title: string;
   subtitle: string;
   href?: string;
 }
+
+const isVideoUrl = (url?: string) => Boolean(url && /\.(mp4|webm|ogg|mov)(\?.*|#.*)?$/i.test(url));
 
 interface Props {
   steps?: ScrollStep[];
@@ -28,7 +31,7 @@ const defaultSteps: ScrollStep[] = [
   { id: 3, image: '/og/default.png', title: 'Step 3', subtitle: 'Describe the third step here.' },
 ];
 
-const { steps: scrollSteps = defaultSteps, scrollPerStep = 1000, label = 'Scroll sequence' } = Astro.props;
+const { steps: scrollSteps = defaultSteps, scrollPerStep = 1500, label = 'Scroll sequence' } = Astro.props;
 ---
 {scrollSteps.length > 0 && (
   <section class="scroll-sequence" data-scroll-per-step={scrollPerStep} aria-label={label}>
@@ -45,11 +48,25 @@ const { steps: scrollSteps = defaultSteps, scrollPerStep = 1000, label = 'Scroll
       <div class="media-layer">
         <div class="phone">
           <div class="phone-screen">
-            {scrollSteps.map((s, i) => (s.images?.length ? s.images : s.image ? [s.image] : [undefined]).map((src, k) => (
-              <div class="media-frame" style={i === 0 && k === 0 ? 'opacity:1' : undefined} data-step-index={i}>
-                {src && <img src={src} alt={s.title} loading={i === 0 && k === 0 ? 'eager' : 'lazy'} decoding="async" />}
-              </div>
-            )))}
+            {scrollSteps.map((s, i) => {
+              const items = s.video ? [s.video] : s.images?.length ? s.images : s.image ? [s.image] : [undefined];
+              return items.map((src, k) => (
+                <div class="media-frame" style={i === 0 && k === 0 ? 'opacity:1' : undefined} data-step-index={i}>
+                  {src && isVideoUrl(src) ? (
+                    <video
+                      src={src}
+                      muted
+                      playsinline
+                      preload="auto"
+                      class="scroll-video"
+                      aria-label={s.title}
+                    />
+                  ) : (
+                    src && <img src={src} alt={s.title} loading={i === 0 && k === 0 ? 'eager' : 'lazy'} decoding="async" />
+                  )}
+                </div>
+              ));
+            })}
           </div>
         </div>
       </div>
@@ -58,31 +75,117 @@ const { steps: scrollSteps = defaultSteps, scrollPerStep = 1000, label = 'Scroll
 )}
 
 <style>
-  .scroll-sequence { position: relative; width: 100%; max-width: 100%; height: 100vh; height: 100svh; overflow: hidden; color: #fff;
-    background: radial-gradient(ellipse at 70% 50%, #2a1f1e, #000 70%); }
-  .stage { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; align-items: center;
-    gap: 2rem; max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
-  .text-layer { display: grid; align-items: center; }
-  .text-step { grid-area: 1 / 1; opacity: 0; transform: translateY(40px); will-change: opacity, transform; }
-  .step-count { display: block; margin-bottom: .75rem; font-size: .875rem; letter-spacing: .15em; color: rgb(255 255 255 / .5); }
-  .text-step h2 { font-size: clamp(1.75rem, 4.5vw, 3.5rem); font-weight: 800; letter-spacing: -.02em; line-height: 1.1; margin: 0 0 1rem; color: #fff; }
-  .text-step h2 a { color: inherit; text-decoration: none; }
-  .text-step p { font-size: clamp(1rem, 1.8vw, 1.25rem); line-height: 1.6; margin: 0; color: rgb(255 255 255 / .8); }
-  .media-layer { display: flex; justify-content: center; align-items: center; }
-  .phone { transform-origin: 0 0; will-change: transform; }
-  /* Google Pixel 6a / Modern Android phone frame: exact 1080:2400 aspect ratio, thin bezels, no image cropping */
+  .scroll-sequence {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    color: #fff;
+    background: radial-gradient(ellipse at 70% 50%, #2a1f1e, #000 70%);
+    box-sizing: border-box;
+  }
+  /* Apple.com style bottom vignette where the bottom of the phone bleeds off */
+  .scroll-sequence::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 16vh;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 55%, rgba(0, 0, 0, 0) 100%);
+    pointer-events: none;
+    z-index: 4;
+  }
+  .stage {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    align-items: center;
+    gap: 2.5rem;
+    max-width: 78rem;
+    margin: 0 auto;
+    padding: 4.5rem 2.5rem 0;
+    box-sizing: border-box;
+  }
+  .text-layer {
+    display: grid;
+    align-items: center;
+    z-index: 10;
+    max-width: 32rem;
+    width: 100%;
+  }
+  .text-step {
+    grid-area: 1 / 1;
+    opacity: 0;
+    transform: translateY(40px);
+    will-change: opacity, transform;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .step-count {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: rgb(255 255 255 / 0.55);
+  }
+  .text-step h2 {
+    font-size: clamp(1.65rem, 3.4vw, 2.75rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin: 0 0 1rem;
+    color: #fff;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  .text-step h2 a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .text-step p {
+    font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+    line-height: 1.65;
+    margin: 0;
+    color: rgb(255 255 255 / 0.82);
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  .media-layer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%;
+    padding-top: 1rem;
+    box-sizing: border-box;
+    z-index: 2;
+  }
+  /* Google Pixel / Apple showcase phone frame: large, top-aligned so bottom bleeds off nicely */
   .phone {
     position: relative;
-    height: min(76vh, 44rem);
+    height: clamp(560px, 90dvh, 840px);
     aspect-ratio: 1080 / 2400;
-    border-radius: 1.8rem;
-    padding: 3.5px;
+    border-radius: 2.1rem;
+    padding: 5px;
     background: #0c0c0d;
-    box-shadow: 0 0 0 2px #2b2b2d, 0 0 0 3.5px #4a4d52, 0 30px 80px rgb(0 0 0 / .6), inset 0 0 0 1px #1c1c1e;
+    box-shadow: 0 0 0 2px #2b2b2d, 0 0 0 4px #4a4d52, 0 30px 90px rgb(0 0 0 / 0.75), inset 0 0 0 1px #1c1c1e;
     box-sizing: content-box;
+    transform-origin: top center;
+    will-change: transform;
   }
   /* side keys (right edge): power + volume */
-  .phone::before, .phone::after { content: ''; position: absolute; right: -5.5px; width: 3px; border-radius: 0 2px 2px 0; background: #5b5e63; }
+  .phone::before, .phone::after {
+    content: '';
+    position: absolute;
+    right: -6.5px;
+    width: 3px;
+    border-radius: 0 2px 2px 0;
+    background: #5b5e63;
+  }
   .phone::before { top: 22%; height: 7%; }
   .phone::after { top: 32%; height: 11%; }
   .phone-screen {
@@ -90,60 +193,105 @@ const { steps: scrollSteps = defaultSteps, scrollPerStep = 1000, label = 'Scroll
     width: 100%;
     height: 100%;
     aspect-ratio: 1080 / 2400;
-    border-radius: 1.6rem;
+    border-radius: 1.85rem;
     overflow: hidden;
     background: #1a1110;
   }
 
   .media-frame { position: absolute; inset: 0; opacity: 0; will-change: opacity; }
-  .media-frame img {
+  .media-frame img,
+  .media-frame video {
     width: 100%;
     height: 100%;
     object-fit: contain;
     display: block;
   }
 
-  @media (max-width: 767px) {
+  /* Mobile & narrow screens: Apple.com style large bottom-cropped phone + floating frosted glass caption card */
+  @media (max-width: 768px) {
+    .scroll-sequence::after {
+      height: 32vh;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.65) 55%, rgba(0, 0, 0, 0) 100%);
+    }
     .stage {
-      grid-template-columns: 1fr;
-      grid-template-rows: auto 1fr;
-      align-content: center;
-      gap: 0.5rem;
-      padding: 3.8rem 1rem 1rem;
-    }
-    .text-layer {
-      min-height: 7rem;
-      align-items: start;
-      text-align: center;
-    }
-    .text-step {
-      max-width: 24rem;
-      margin: 0 auto;
-    }
-    .text-step h2 {
-      font-size: clamp(1.2rem, 4.8vw, 1.55rem);
-      margin: 0 0 0.35rem;
-    }
-    .text-step p {
-      font-size: 0.88rem;
-      line-height: 1.45;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 4.25rem 1rem 0;
+      gap: 0;
     }
     .media-layer {
-      align-items: center;
+      width: 100%;
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
       justify-content: center;
+      padding-top: 0.25rem;
+      overflow: hidden;
     }
     .phone {
-      height: min(48vh, 340px);
-      max-height: calc(100svh - 13.5rem);
-      padding: 2.5px;
-      border-radius: 14px;
-      box-shadow: 0 0 0 1.5px #2b2b2d, 0 12px 30px rgba(0, 0, 0, 0.5);
-    }
-    .phone::before, .phone::after {
-      display: none;
+      height: clamp(480px, 78dvh, 680px);
+      max-width: 82vw;
+      padding: 4px;
+      border-radius: 26px;
+      box-shadow: 0 0 0 2px #2b2b2d, 0 0 0 3.5px #4a4d52, 0 24px 60px rgba(0, 0, 0, 0.8);
+      transform-origin: top center;
     }
     .phone-screen {
-      border-radius: 12px;
+      border-radius: 22px;
+    }
+    .text-layer {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: max(1.75rem, calc(env(safe-area-inset-bottom, 0px) + 1.25rem));
+      z-index: 10;
+      display: grid;
+      place-items: end center;
+      padding: 0 1rem;
+      pointer-events: none;
+      box-sizing: border-box;
+    }
+    .text-step {
+      grid-area: 1 / 1;
+      width: 100%;
+      max-width: min(24.5rem, calc(100vw - 2rem));
+      margin: 0 auto;
+      padding: 0.85rem 1.15rem;
+      border-radius: 20px;
+      background: rgba(22, 22, 26, 0.85);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75);
+      text-align: left;
+      box-sizing: border-box;
+      pointer-events: auto;
+      transform: translateY(12px);
+    }
+    .step-count {
+      display: inline-block;
+      margin-bottom: 0.2rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: rgba(255, 255, 255, 0.55);
+    }
+    .text-step h2 {
+      font-size: clamp(1.05rem, 4.2vw, 1.25rem);
+      margin: 0 0 0.25rem;
+      font-weight: 700;
+      line-height: 1.25;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    .text-step p {
+      font-size: clamp(0.8rem, 2.4vw, 0.9rem);
+      line-height: 1.45;
+      color: rgba(255, 255, 255, 0.85);
+      word-break: break-word;
+      overflow-wrap: break-word;
     }
   }
 
@@ -162,36 +310,153 @@ const { steps: scrollSteps = defaultSteps, scrollPerStep = 1000, label = 'Scroll
 
   gsap.registerPlugin(ScrollTrigger);
 
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const roots = document.querySelectorAll<HTMLElement>('.scroll-sequence');
+  let activeLenis: Lenis | null = null;
+  let videoTickerFns: Array<() => void> = [];
 
-  if (reduce) {
-    roots.forEach((r) => r.classList.add('is-static'));
-  } else if (roots.length) {
-    // Lenis smooth scrolling, synced with ScrollTrigger
-    const lenis = new Lenis();
-    lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => lenis.raf(time * 1000));
+  /**
+   * Ultra-Smooth Scroll-Driven Video Controller:
+   * Uses requestAnimationFrame delta-tracking with adaptive playbackRate:
+   * - Smoothly chases targetTime with hardware-accelerated playback
+   * - Eliminates seek-freezes and audio-engine overhead
+   * - Handles forward and reverse scrubbing with fast threshold matching
+   */
+  function bindScrollVideo(video: HTMLVideoElement) {
+    let targetTime = 0;
+    let isSeeking = false;
+
+    video.muted = true;
+    video.playsInline = true;
+
+    const onMetadata = () => {
+      if (video.currentTime === 0) {
+        try {
+          video.currentTime = 0.001;
+        } catch {}
+      }
+    };
+    if (video.readyState >= 1) onMetadata();
+    else video.addEventListener('loadedmetadata', onMetadata, { once: true });
+
+    video.addEventListener('seeked', () => {
+      isSeeking = false;
+    });
+
+    const tick = () => {
+      const dur = video.duration;
+      if (!dur || Number.isNaN(dur)) return;
+
+      const curr = video.currentTime;
+      const diff = targetTime - curr;
+
+      // 1. Moving forward smoothly: use hardware playback with dynamic speed
+      if (diff > 0.04) {
+        // Dynamic speed based on distance: from 0.8x up to 4.0x
+        const speed = Math.min(4.0, Math.max(0.75, diff * 5.0));
+        if (Math.abs(video.playbackRate - speed) > 0.05) {
+          video.playbackRate = speed;
+        }
+        if (video.paused && !isSeeking) {
+          video.play().catch(() => {
+            if (!isSeeking) {
+              isSeeking = true;
+              video.currentTime = targetTime;
+            }
+          });
+        }
+      } else if (diff < -0.06) {
+        // 2. Scrolling backwards: pause and smoothly seek backwards
+        if (!video.paused) {
+          video.pause();
+        }
+        if (!isSeeking) {
+          isSeeking = true;
+          // Step towards target backwards in small increments to prevent video decoder stall
+          const step = Math.max(targetTime, curr - Math.max(0.12, Math.abs(diff) * 0.45));
+          video.currentTime = step;
+        }
+      } else {
+        // 3. Arrived at target: pause neatly on exact frame
+        if (!video.paused) {
+          video.pause();
+        }
+        if (Math.abs(diff) > 0.015 && !isSeeking) {
+          isSeeking = true;
+          video.currentTime = targetTime;
+        }
+      }
+    };
+
+    gsap.ticker.add(tick);
+    videoTickerFns.push(tick);
+
+    return (progress: number) => {
+      const dur = video.duration;
+      if (!dur || Number.isNaN(dur)) return;
+      const maxTime = Math.max(0, dur - 0.04);
+      targetTime = Math.max(0, Math.min(maxTime, progress * maxTime));
+    };
+  }
+
+  function initScrollSequence() {
+    const roots = document.querySelectorAll<HTMLElement>('.scroll-sequence');
+    if (!roots.length) return;
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      roots.forEach((r) => r.classList.add('is-static'));
+      return;
+    }
+
+    // Clean up previous instances if any
+    videoTickerFns.forEach((fn) => gsap.ticker.remove(fn));
+    videoTickerFns = [];
+    if (activeLenis) {
+      activeLenis.destroy();
+      activeLenis = null;
+    }
+
+    activeLenis = new Lenis();
+    activeLenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => activeLenis?.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
 
     roots.forEach((root) => {
       const texts = gsap.utils.toArray<HTMLElement>('.text-step', root);
       const medias = gsap.utils.toArray<HTMLElement>('.media-frame', root);
       const phone = root.querySelector<HTMLElement>('.phone')!;
-      const perStep = Number(root.dataset.scrollPerStep) || 1000;
-      // Zoomed phone: scale up from its top-left corner so only the top of the screen shows (Apple style)
-      const ZOOM = 2.4;
+      if (!phone || texts.length === 0) return;
+
+      const perStep = Number(root.dataset.scrollPerStep) || 1800;
+      const isMobile = window.innerWidth <= 768;
+      const ZOOM = isMobile ? 1.18 : 1.75;
+      const yShift = isMobile ? 12 : 40;
+      phone.style.transformOrigin = 'top center';
+
+      // Reset initial positions per device breakpoint
+      texts.forEach((text, idx) => {
+        if (idx > 0) {
+          gsap.set(text, { opacity: 0, y: yShift });
+        }
+      });
+
       const framesOf = (i: number) => medias.filter((m) => Number(m.dataset.stepIndex) === i);
+
+      // Calculate dynamic total scroll length based on whether steps contain videos
+      const totalStepsWeight = texts.reduce((acc, _text, i) => {
+        const frames = framesOf(i);
+        const hasVideo = Boolean(frames[0]?.querySelector('video'));
+        return acc + (hasVideo ? 1.4 : 1.0);
+      }, 0);
 
       const tl = gsap.timeline({
         defaults: { ease: 'power2.out' },
         scrollTrigger: {
           trigger: root,
           start: 'top top',
-          end: '+=' + texts.length * perStep,
+          end: '+=' + Math.round(totalStepsWeight * perStep),
           pin: true,
-          scrub: 1,
-          anticipatePin: 1,
+          pinSpacing: true,
+          scrub: 1.2,
           invalidateOnRefresh: true,
         },
       });
@@ -203,10 +468,14 @@ const { steps: scrollSteps = defaultSteps, scrollPerStep = 1000, label = 'Scroll
         const prevFrames = i > 0 ? framesOf(i - 1) : [];
         const zoom = text.dataset.zoom === '1';
         const prevZoom = i > 0 && texts[i - 1].dataset.zoom === '1';
+        const videoEl = frames[0]?.querySelector<HTMLVideoElement>('video');
+        // Steps with video get ample scrub time (4.5s virtual timeline duration) for detailed playback
+        const holdDuration = videoEl ? 4.5 : 2.0 + frames.length;
+
         tl.addLabel(label);
         // a. text slides in and fades in
         tl.to(text, { opacity: 1, y: 0, duration: 1 }, label);
-        // b. this step's first screenshot replaces the previous step's last one
+        // b. this step's first screenshot/video replaces the previous step's last one
         if (i > 0) {
           tl.to(prevFrames[prevFrames.length - 1], { opacity: 0, duration: 1 }, label);
           tl.to(frames[0], { opacity: 1, duration: 1 }, label);
@@ -214,16 +483,38 @@ const { steps: scrollSteps = defaultSteps, scrollPerStep = 1000, label = 'Scroll
         // c. zoom the phone in (or back out) together with the text
         if (zoom) tl.to(phone, { scale: ZOOM, duration: 1.5, ease: 'power2.inOut' }, label);
         else if (prevZoom) tl.to(phone, { scale: 1, duration: 1, ease: 'power2.inOut' }, label);
-        // d. further screenshots in the same step cross-fade one by one
+        // d1. if step contains a video, scrub/play video across the step's active scroll range
+        if (videoEl) {
+          const setVideoProgress = bindScrollVideo(videoEl);
+          const videoProxy = { progress: 0 };
+          tl.fromTo(
+            videoProxy,
+            { progress: 0 },
+            {
+              progress: 1,
+              duration: holdDuration,
+              ease: 'none',
+              onUpdate: () => setVideoProgress(videoProxy.progress),
+            },
+            label
+          );
+        }
+        // d2. further screenshots in the same step cross-fade one by one
         frames.slice(1).forEach((fr, k) => {
           tl.to(frames[k], { opacity: 0, duration: 1 }, label + '+=' + (1.5 + k));
           tl.to(fr, { opacity: 1, duration: 1 }, label + '+=' + (1.5 + k));
         });
         // e. hold, then text slides up and fades out (last step stays)
-        if (!isLast) tl.to(text, { opacity: 0, y: -40, duration: 1 }, label + '+=' + (1.5 + frames.length));
+        if (!isLast) tl.to(text, { opacity: 0, y: -yShift, duration: 1 }, label + '+=' + holdDuration);
         else tl.to({}, { duration: 1 });
-      });    });
+      });
+    });
+
+    ScrollTrigger.refresh();
   }
+
+  initScrollSequence();
+  document.addEventListener('astro:page-load', initScrollSequence);
 </script>
 
 
