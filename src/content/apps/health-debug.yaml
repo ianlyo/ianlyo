@@ -36,15 +36,15 @@ features:
     description:
       zh: 錄製中即時顯示剩餘時間、步數、距離、速度、配速與卡路里，並自動計算分段與速度變化。
       en: See remaining time, steps, distance, speed, pace and kcal update live, with segments and speed fluctuation calculated automatically.
-  - title: { zh: 即時通知追蹤進度, en: Live Notifications }
+  - title: { zh: 支援 Live Update 即時更新, en: Live Update Notifications }
     zoom: true
     video: /apps/health-debug/vid/live-notification.mp4
     images:
       - /apps/health-debug/live-update.png
       - /apps/health-debug/live-update-expand.png
     description:
-      zh: 以 ProgressStyle 即時通知顯示剩餘時間、步數、距離與卡路里，離開 App 也能掌握進度。
-      en: A ProgressStyle live notification shows remaining time, steps, distance and kcal while you are away from the app.
+      zh: 透過 Android 16 最新的 Live Update 即時更新功能，以 ProgressStyle 顯示步數、距離與卡路里。即使離開 App，狀態列與通知中心也會持續追蹤最新進度。
+      en: Powered by Android 16's latest Live Update and ProgressStyle APIs to display steps, distance, and calories live. Progress stays visible across the status bar and notification shade even after leaving the app.
   - title: { zh: 歷史資料直接寫入, en: Direct Historical Write }
     image: /apps/health-debug/write.png
     description:
@@ -55,11 +55,11 @@ features:
     description:
       zh: 依時間範圍、來源 App 與資料類型檢視步數、距離、卡路里與心率，快速驗證寫入結果。
       en: Filter by time range, source app and data type to verify the steps, distance, calories and heart rate you wrote.
-  - title: { zh: Google Fit 同步讀取, en: Read It in Google Fit }
+  - title: { zh: 無縫寫入 Health Connect, en: Seamless Health Connect Sync }
     image: /apps/health-debug/googlefit.png
     description:
-      zh: 寫入 Health Connect 的運動、距離、卡路里、心率與步速，Google Fit 都能直接讀取並顯示，方便驗證你的 App 的資料流程。
-      en: Sessions, distance, calories, heart rate and pace written to Health Connect show up directly in Google Fit, so you can verify your data pipeline end to end.
+      zh: 將模擬的運動、心率與距離等數據精準寫入 Health Connect 原生資料庫。任何支援該平台的應用程式（如 Google Fit）皆能即時讀取並顯示，輕鬆驗證您 App 的跨應用資料流。
+      en: Accurately inject simulated workouts, heart rate, and distance directly into the Health Connect native store. Any supported app (such as Google Fit) can read and visualize them instantly, making it effortless to verify your cross-app data pipeline.
 
 screenshots:
   - src: /apps/health-debug/live.png
@@ -67,13 +67,13 @@ screenshots:
   - src: /apps/health-debug/recording.png
     alt: { zh: 錄製中, en: Recording in progress }
   - src: /apps/health-debug/live-update-expand.png
-    alt: { zh: 即時通知, en: Live notification }
+    alt: { zh: Live Update 即時更新, en: Live Update notification }
   - src: /apps/health-debug/write.png
     alt: { zh: 歷史資料直接寫入, en: Direct historical write }
   - src: /apps/health-debug/records.png
     alt: { zh: 健康數據紀錄, en: Health data records }
   - src: /apps/health-debug/googlefit.png
-    alt: { zh: Google Fit 顯示的運動記錄, en: Session shown in Google Fit }
+    alt: { zh: 寫入 Health Connect 並由 Google Fit 讀取驗證, en: Health Connect data read in Google Fit }
 specs: []
 faq:
   - q: { zh: 我需要什麼才能參加測試？, en: What do I need to join the beta? }
