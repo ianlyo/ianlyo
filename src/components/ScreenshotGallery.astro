@@ -999,8 +999,8 @@ const serializedScreenshots = screenshots.map((s) => ({
         gallery.classList.remove('is-centered');
 
         const isMobile = window.innerWidth <= 768;
-        // 動態比例滾動行程：以橫向移動距離等比對應垂直滾動距離，杜絕死區
-        const scrollDistance = () => Math.round(getDistance() * (isMobile ? 1.05 : 1.15) + (isMobile ? 60 : 100));
+        // 輕快敏捷滾動行程：大幅縮短釘選距離（約縮短 45%~50%），讓使用者更快瀏覽並順暢切換至下個區段
+        const scrollDistance = () => Math.round(getDistance() * (isMobile ? 0.52 : 0.62) + 20);
 
         const tween = gsap.to(track, {
           x: () => -getDistance(),
@@ -1011,7 +1011,7 @@ const serializedScreenshots = screenshots.map((s) => ({
             end: () => `+=${scrollDistance()}`,
             pin: true,
             pinSpacing: true,
-            scrub: isMobile ? 0.45 : 0.65, // 手機觸控更加靈敏跟手，桌機絲滑物理阻尼
+            scrub: isMobile ? 0.25 : 0.38, // 輕快敏捷的跟手響應，滑動迅速不黏滯
             invalidateOnRefresh: true,
             onUpdate: (self) => {
               const p = self.progress;
@@ -1054,7 +1054,7 @@ const serializedScreenshots = screenshots.map((s) => ({
           if (isHorizontalSwipe) {
             // 水平滑動時將手指位移平滑轉換為頁面垂直滾動，驅動 GSAP 絲滑橫向展開
             window.scrollTo({
-              top: swipeStartScrollY - deltaX * 1.1,
+              top: swipeStartScrollY - deltaX * 1.35,
               behavior: 'auto',
             });
           }
