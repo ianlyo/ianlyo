@@ -3,7 +3,7 @@
 目標：**改文字、改內容時，不需要碰版面程式碼。** 每一類資訊只有一個存放位置。
 Goal: change text or content without touching layout code. Each kind of information lives in exactly one place.
 
-> 發布文章、新增 App、部署流程請見 [MAINTENANCE_GUIDE.md](MAINTENANCE_GUIDE.md)；整體架構請見 [SITE_README.md](SITE_README.md)。
+> 發布文章、新增 App、部署流程請見 [MAINTENANCE_GUIDE.md](MAINTENANCE_GUIDE.md)；AI 助理維護規範請見 [AI_MAINTENANCE_GUIDE.md](AI_MAINTENANCE_GUIDE.md)；整體架構請見 [SITE_README.md](SITE_README.md)。
 
 ---
 
@@ -15,6 +15,7 @@ Goal: change text or content without touching layout code. Each kind of informat
 | 所有介面文字（導覽列、首頁標語、按鈕、Beta 步驟、頁尾、搜尋框等），中英文 | [`src/i18n/ui.ts`](../src/i18n/ui.ts) | `'zh-Hant'` 與 `en` 兩區塊需同步修改 |
 | 部落格文章 | `src/content/blog/*.md` | 範本：`templates/new-blog-post.md` |
 | Android App 資訊（版本、連結、功能、FAQ、更新紀錄） | `src/content/apps/*.yaml` | 範本：`templates/new-android-app.yaml` |
+| Android App 截圖展示（Apple 風格輪播） | 圖片放 `public/apps/<id>/`，清單於 `src/content/apps/<id>.yaml` | 由 `src/components/ScreenshotGallery.astro` 自動渲染 |
 | 隱私權政策頁 | `public/myfiles/privacy/<App>/index.html` | 純 HTML |
 | 網域 | `astro.config.mjs` 的 `site`、`public/CNAME`、`src/config/site.ts` 的 `url` | 三處需一致 |
 | 樣式 | `public/assets/css/site.css`、`style.css` | 僅視覺調整時才需要 |

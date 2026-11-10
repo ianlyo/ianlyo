@@ -185,6 +185,26 @@ select:focus-visible {
     box-shadow: 0 0 0 4px var(--accent-glow) !important;
 }
 
+/* Global Link Reset - eliminates default browser & Bootstrap underlines */
+a,
+a:hover,
+a:focus,
+a:active,
+a:visited {
+    text-decoration: none;
+}
+
+a {
+    color: var(--accent-primary);
+    text-decoration: none;
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+a:hover {
+    color: var(--accent-primary-hover);
+    text-decoration: none;
+}
+
 /* ==========================================================================
    Navigation Bar (.site-nav)
    ========================================================================== */
@@ -1233,22 +1253,17 @@ select:focus-visible {
 
 @media (max-width: 768px) {
     .site-nav {
-        padding: 10px 16px;
+        padding: 8px 16px;
     }
     
     .nav-links {
-        gap: 6px;
-    }
-    
-    .nav-links a {
-        padding: 6px 10px;
-        font-size: 0.75rem;
+        display: none !important;
     }
     
     .theme-toggle {
-        width: 36px;
-        height: 36px;
-        margin-left: 8px !important;
+        width: 38px;
+        height: 38px;
+        margin-left: 0 !important;
     }
     
     .hero-section {

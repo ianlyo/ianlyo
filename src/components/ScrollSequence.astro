@@ -58,10 +58,8 @@ const { steps: scrollSteps = defaultSteps, scrollPerStep = 1000, label = 'Scroll
 )}
 
 <style>
-  .scroll-sequence { position: relative; width: 100%; height: 100vh; height: 100svh; overflow: hidden; color: #fff;
+  .scroll-sequence { position: relative; width: 100%; max-width: 100%; height: 100vh; height: 100svh; overflow: hidden; color: #fff;
     background: radial-gradient(ellipse at 70% 50%, #2a1f1e, #000 70%); }
-  /* Lets the component break out of a narrow container to full viewport width */
-  :global(.scroll-bleed) { width: 100vw; margin-left: calc(50% - 50vw); }
   .stage { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; align-items: center;
     gap: 2rem; max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
   .text-layer { display: grid; align-items: center; }
@@ -70,26 +68,83 @@ const { steps: scrollSteps = defaultSteps, scrollPerStep = 1000, label = 'Scroll
   .text-step h2 { font-size: clamp(1.75rem, 4.5vw, 3.5rem); font-weight: 800; letter-spacing: -.02em; line-height: 1.1; margin: 0 0 1rem; color: #fff; }
   .text-step h2 a { color: inherit; text-decoration: none; }
   .text-step p { font-size: clamp(1rem, 1.8vw, 1.25rem); line-height: 1.6; margin: 0; color: rgb(255 255 255 / .8); }
-  .media-layer { display: flex; justify-content: center; }
+  .media-layer { display: flex; justify-content: center; align-items: center; }
   .phone { transform-origin: 0 0; will-change: transform; }
-  /* Google Pixel 6a: 20:9 flat display, thin bezels, centered punch-hole camera, aluminium rails */
-  .phone { position: relative; height: min(78vh, 46rem); aspect-ratio: 1080 / 2400; border-radius: 2.1rem; padding: .42rem;
+  /* Google Pixel 6a / Modern Android phone frame: exact 1080:2400 aspect ratio, thin bezels, no image cropping */
+  .phone {
+    position: relative;
+    height: min(76vh, 44rem);
+    aspect-ratio: 1080 / 2400;
+    border-radius: 1.8rem;
+    padding: 3.5px;
     background: #0c0c0d;
-    box-shadow: 0 0 0 2px #2b2b2d, 0 0 0 3.5px #5b5e63, 0 30px 80px rgb(0 0 0 / .6), inset 0 0 0 1px #1c1c1e; }
+    box-shadow: 0 0 0 2px #2b2b2d, 0 0 0 3.5px #4a4d52, 0 30px 80px rgb(0 0 0 / .6), inset 0 0 0 1px #1c1c1e;
+    box-sizing: content-box;
+  }
   /* side keys (right edge): power + volume */
   .phone::before, .phone::after { content: ''; position: absolute; right: -5.5px; width: 3px; border-radius: 0 2px 2px 0; background: #5b5e63; }
   .phone::before { top: 22%; height: 7%; }
   .phone::after { top: 32%; height: 11%; }
-  .phone-screen { position: relative; width: 100%; height: 100%; border-radius: 1.75rem; overflow: hidden; background: #1a1110; }
+  .phone-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1080 / 2400;
+    border-radius: 1.6rem;
+    overflow: hidden;
+    background: #1a1110;
+  }
 
   .media-frame { position: absolute; inset: 0; opacity: 0; will-change: opacity; }
-  .media-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .media-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
 
   @media (max-width: 767px) {
-    .stage { grid-template-columns: 1fr; grid-template-rows: auto 1fr; align-content: center; gap: 1rem; padding-top: 4.5rem; }
-    .text-layer { min-height: 11rem; align-items: start; text-align: center; }
-    .media-layer { align-items: flex-start; }
-    .phone { height: min(52vh, 28rem); }
+    .stage {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+      align-content: center;
+      gap: 0.5rem;
+      padding: 3.8rem 1rem 1rem;
+    }
+    .text-layer {
+      min-height: 7rem;
+      align-items: start;
+      text-align: center;
+    }
+    .text-step {
+      max-width: 24rem;
+      margin: 0 auto;
+    }
+    .text-step h2 {
+      font-size: clamp(1.2rem, 4.8vw, 1.55rem);
+      margin: 0 0 0.35rem;
+    }
+    .text-step p {
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+    .media-layer {
+      align-items: center;
+      justify-content: center;
+    }
+    .phone {
+      height: min(48vh, 340px);
+      max-height: calc(100svh - 13.5rem);
+      padding: 2.5px;
+      border-radius: 14px;
+      box-shadow: 0 0 0 1.5px #2b2b2d, 0 12px 30px rgba(0, 0, 0, 0.5);
+    }
+    .phone::before, .phone::after {
+      display: none;
+    }
+    .phone-screen {
+      border-radius: 12px;
+    }
   }
 
   /* Reduced motion: no pinning, show every step in order */

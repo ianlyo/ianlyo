@@ -45,7 +45,8 @@
 .nav-links a.active { color: var(--accent-primary); }
 .nav-links { display: flex; align-items: center; gap: 1rem; }
 .nav-links a { display: inline-flex; align-items: center; gap: .35rem; }
-.lang-switch { font-size: .85rem; border: 1px solid var(--border-strong); border-radius: var(--radius-full); padding: .15rem .65rem; display: inline-flex; align-items: center; gap: .35rem; }
+.lang-switch { font-size: .85rem; border: 1px solid var(--border-strong); border-radius: var(--radius-full); padding: .15rem .65rem; display: inline-flex; align-items: center; gap: .35rem; color: var(--text-secondary); text-decoration: none; transition: all .2s ease; }
+.lang-switch:hover { border-color: var(--accent-primary); color: var(--accent-primary); text-decoration: none; }
 
 .page { padding: 7rem 0 4rem; min-height: 70vh; }
 .page-narrow { max-width: 760px; margin: 0 auto; }
@@ -53,18 +54,68 @@
 .page-head p.lead { color: var(--text-secondary); max-width: 60ch; }
 .section-block { padding: 3.5rem 0 0; }
 
+/* Section more links (e.g. 查看全部 App ->, 所有文章 ->) */
+.section-link {
+  color: var(--accent-primary);
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  transition: color .2s ease, transform .2s ease;
+}
+.section-link:hover {
+  color: var(--accent-primary-hover);
+  text-decoration: none;
+  transform: translateX(4px);
+}
+.section-link .material-symbols-rounded {
+  transition: transform .2s ease;
+}
+.section-link:hover .material-symbols-rounded {
+  transform: translateX(2px);
+}
+
 /* Cards */
 .card-grid { display: grid; gap: 1.1rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
 .surface-card {
   background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
   padding: 1.25rem; box-shadow: var(--shadow-sm); transition: border-color .2s, box-shadow .2s, transform .2s;
-  color: var(--text-primary); display: block;
+  color: var(--text-primary); display: block; text-decoration: none;
 }
-a.surface-card:hover { border-color: var(--border-hover); box-shadow: var(--shadow-md); transform: translateY(-2px); }
-.surface-card h3, .surface-card h2 { font-size: 1.1rem; font-weight: 700; margin: 0 0 .35rem; }
+a.surface-card {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+a.surface-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.surface-card h3, .surface-card h2 { font-size: 1.1rem; font-weight: 700; margin: 0 0 .35rem; transition: color .2s ease; }
+a.surface-card:hover h3, a.surface-card:hover h2 { color: var(--accent-primary); }
 .surface-card p { color: var(--text-secondary); margin: 0; font-size: .95rem; }
 .meta { color: var(--text-muted); font-size: .85rem; display: flex; flex-wrap: wrap; gap: .4rem .9rem; align-items: center; }
 .meta > * { display: inline-flex; align-items: center; gap: .3rem; }
+
+.post-card-link {
+  color: inherit;
+  text-decoration: none;
+  display: block;
+}
+.post-card-link:hover {
+  color: inherit;
+  text-decoration: none;
+}
+.post-card-link h2 {
+  transition: color .2s ease;
+}
+.surface-card:hover .post-card-link h2,
+.post-card-link:hover h2 {
+  color: var(--accent-primary);
+}
 
 .back-link {
   color: var(--text-secondary);
@@ -92,12 +143,13 @@ a.chip:hover { border-color: var(--border-hover); }
   padding: .8rem 1.6rem; font-weight: 700; font-size: 1.05rem; border-radius: var(--radius-md);
   background: var(--accent-primary); color: var(--accent-text); border: 0; text-decoration: none;
 }
-.btn-install:hover { background: var(--accent-primary-hover); color: var(--accent-text); }
+.btn-install:hover, .btn-install:focus { background: var(--accent-primary-hover); color: var(--accent-text); text-decoration: none; }
 .btn-ghost {
   display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; padding: .55rem 1.1rem; font-weight: 600;
   border: 1px solid var(--border-strong); border-radius: var(--radius-md); color: var(--text-primary); background: transparent;
+  text-decoration: none;
 }
-.btn-ghost:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+.btn-ghost:hover, .btn-ghost:focus { border-color: var(--accent-primary); color: var(--accent-primary); text-decoration: none; }
 .is-placeholder { opacity: .55; pointer-events: none; border-style: dashed !important; }
 .placeholder-note { font-size: .8rem; color: var(--text-muted); margin-top: .35rem; }
 .cta-row { display: flex; flex-wrap: wrap; gap: .75rem; align-items: flex-start; }
@@ -169,13 +221,14 @@ h2.block-title .material-symbols-rounded { font-size: 1.35rem; }
 .toc { position: sticky; top: 6rem; align-self: start; font-size: .88rem; }
 .toc h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); }
 .toc ul { list-style: none; padding: 0; margin: 0; border-left: 1px solid var(--border-subtle); }
-.toc li a { display: block; padding: .25rem .8rem; color: var(--text-secondary); }
-.toc li a:hover { color: var(--accent-primary); }
+.toc li a { display: block; padding: .25rem .8rem; color: var(--text-secondary); text-decoration: none; transition: color .2s ease; }
+.toc li a:hover { color: var(--accent-primary); text-decoration: none; }
 .toc li.depth-3 a { padding-left: 1.6rem; }
 .prose { font-size: 1.05rem; line-height: 1.8; color: var(--text-primary); overflow-wrap: anywhere; }
 .prose h2 { font-size: 1.5rem; font-weight: 800; margin: 2.4rem 0 .8rem; scroll-margin-top: 6rem; }
 .prose h3 { font-size: 1.2rem; font-weight: 700; margin: 1.8rem 0 .6rem; scroll-margin-top: 6rem; }
-.prose a { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 3px; }
+.prose a { color: var(--accent-primary); text-decoration: none; font-weight: 600; transition: color .2s ease, opacity .2s ease; }
+.prose a:hover { color: var(--accent-primary-hover); text-decoration: none; }
 .prose img { max-width: 100%; height: auto; border-radius: var(--radius-md); }
 .prose blockquote { border-left: 3px solid var(--accent-primary); margin: 1.2rem 0; padding: .2rem 1rem; color: var(--text-secondary); background: var(--accent-subtle); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
 .prose :not(pre) > code { background: var(--bg-surface-subtle); border: 1px solid var(--border-subtle); padding: .1rem .4rem; border-radius: 6px; font-size: .88em; }
@@ -187,8 +240,195 @@ h2.block-title .material-symbols-rounded { font-size: 1.35rem; }
 [data-bs-theme='dark'] .astro-code, [data-bs-theme='dark'] .astro-code span { color: var(--shiki-dark) !important; background-color: var(--shiki-dark-bg) !important; }
 
 .pagination-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2rem; }
+.pagination-nav a { text-decoration: none; }
 .search-box { width: 100%; }
+
+/* Pagefind search UI overrides */
+.pagefind-ui a,
+.pagefind-ui a:hover,
+.pagefind-ui .pagefind-ui__result-link,
+.pagefind-ui .pagefind-ui__result-link:hover,
+.pagefind-ui .pagefind-ui__search-clear {
+  text-decoration: none !important;
+}
 .site-footer .footer-links { display: flex; gap: 1.2rem; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 
 svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: currentColor; }
+
+/* ==========================================================================
+   Navigation Bar & Google Photos Style Mobile Navigation Drawer
+   ========================================================================== */
+.nav-left, .nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-hamburger-btn,
+.nav-icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.15s ease, color 0.2s ease;
+}
+.nav-hamburger-btn:hover,
+.nav-icon-btn:hover {
+  background: var(--bg-surface-subtle);
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+.nav-hamburger-btn:active,
+.nav-icon-btn:active {
+  transform: scale(0.92);
+}
+.nav-hamburger-btn .material-symbols-rounded,
+.nav-icon-btn .material-symbols-rounded {
+  font-size: 1.5rem;
+}
+
+/* Material 3 / Google Photos Drawer Backdrop */
+.nav-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1040;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+.nav-drawer-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Material 3 Navigation Drawer */
+.nav-drawer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: min(320px, 82vw);
+  background: var(--bg-surface);
+  border-radius: 0 28px 28px 0;
+  box-shadow: 6px 0 36px rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  border-right: 1px solid var(--border-subtle);
+}
+.nav-drawer.is-open {
+  transform: translateX(0);
+}
+
+.nav-drawer-header {
+  padding: 1.25rem 1.25rem 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-drawer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.nav-drawer-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.nav-drawer-close {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.nav-drawer-close:hover {
+  background: var(--bg-surface-subtle);
+  color: var(--text-primary);
+}
+
+.nav-drawer-body {
+  padding: 0.5rem 0.75rem 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-drawer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+/* Google Photos rounded pill active item */
+.nav-drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: 50px;
+  padding: 0 1.25rem;
+  border-radius: var(--radius-full);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.nav-drawer-item .material-symbols-rounded,
+.nav-drawer-item i {
+  font-size: 1.35rem;
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+.nav-drawer-item:hover {
+  background: var(--bg-surface-subtle);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.nav-drawer-item.active {
+  background: var(--accent-subtle);
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+.nav-drawer-item.active .material-symbols-rounded,
+.nav-drawer-item.active i {
+  color: var(--accent-primary);
+}
+
+.nav-drawer-divider {
+  border: none;
+  border-top: 1px solid var(--border-subtle);
+  margin: 1rem 0.5rem;
+}
+
+.nav-drawer-secondary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+

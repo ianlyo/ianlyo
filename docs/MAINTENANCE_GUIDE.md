@@ -2,7 +2,7 @@
 
 完全不需要更動任何前端程式碼。所有更新都只需透過新增或編輯 Markdown / YAML 檔案，並 push 到 GitHub，GitHub Actions 就會在約 1–2 分鐘內自動重新建置並發布網站（可在 GitHub 儲存庫的 **Actions** 標籤查看）。
 
-> 修改介面文字或全站設定請見 [EDITING_GUIDE.md](EDITING_GUIDE.md)。
+> 修改介面文字或全站設定請見 [EDITING_GUIDE.md](EDITING_GUIDE.md)；AI 助理專用規範請見 [AI_MAINTENANCE_GUIDE.md](AI_MAINTENANCE_GUIDE.md)。
 
 You never need to touch the frontend codebase. Everything is done by adding or editing files, then pushing to GitHub. GitHub Actions rebuilds and publishes the site in 1–2 minutes.
 
@@ -25,9 +25,10 @@ You never need to touch the frontend codebase. Everything is done by adding or e
 
 ## 新增 Android App / Add an Android App
 1. 複製 `templates/new-android-app.yaml` 至 `src/content/apps/<app-id>.yaml`。
-2. 將應用程式圖示與截圖放入 `public/apps/<app-id>/` 目錄。
-3. 填寫 YAML 內的各項欄位；若尚未有測試或商店連結，可保留為 `""`（頁面上會以停用狀態的「佔位」按鈕顯示）。
-4. Push 到 GitHub 後，頁面會自動生成於 `/beta/<app-id>/` 以及 `/en/beta/<app-id>/`。
+2. 將應用程式圖示與高解析截圖（建議 1080×2400 或原始手機尺寸）放入 `public/apps/<app-id>/` 目錄。
+3. 填寫 YAML 內的各項欄位；截圖清單加入 `screenshots:` 陣列，頁面會自動以 Apple 風格的大尺寸橫向輪播呈現（圖片為主不用多餘文字，附帶 `<` 與 `>` 圓形按鈕、指示條與觸控滑動支援）。
+4. 若尚未有測試或商店連結，可保留為 `""`（頁面上會以停用狀態的「佔位」按鈕顯示）。
+5. Push 到 GitHub 後，頁面會自動生成於 `/beta/<app-id>/` 以及 `/en/beta/<app-id>/`。
 
 ---
 

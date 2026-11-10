@@ -97,19 +97,35 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-  <link rel="stylesheet" href="/assets/css/style.css?v=2.0" />
-  <link rel="stylesheet" href="/assets/css/site.css?v=2.0" />
+  <link rel="stylesheet" href="/assets/css/style.css?v=2.1" />
+  <link rel="stylesheet" href="/assets/css/site.css?v=2.1" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <nav class="site-nav" aria-label="Main navigation">
-    <a class="brand-mark" href={localePath(lang, '/')} aria-label={`${SITE.name} home`}>IAN<span>.</span></a>
-    <div class="nav-links">
+    <div class="nav-left">
+      <!-- Mobile hamburger toggle button (three lines like Google Photos) -->
+      <button
+        type="button"
+        class="nav-hamburger-btn d-inline-flex d-md-none"
+        id="nav-drawer-open"
+        aria-label={ui.nav.menuOpen}
+        aria-controls="nav-drawer"
+        aria-expanded="false"
+      >
+        <Icon name="material-symbols:menu" class="material-symbols-rounded" aria-hidden="true" />
+      </button>
+
+      <a class="brand-mark" href={localePath(lang, '/')} aria-label={`${SITE.name} home`}>IAN<span>.</span></a>
+    </div>
+
+    <!-- Desktop nav links (hidden on mobile, visible on desktop) -->
+    <div class="nav-links d-none d-md-flex">
       <a href={localePath(lang, '/beta/')} class:list={[{ active: isActive('/beta') }]}>{ui.nav.beta}</a>
       <a href="/blog/" class:list={[{ active: path.startsWith('/blog') }]}>{ui.nav.blog}</a>
-      <a href={localePath(lang, '/') + '#projects'} class="d-none d-md-inline">{ui.nav.projects}</a>
+      <a href={localePath(lang, '/') + '#projects'}>{ui.nav.projects}</a>
       <a href="/search/" aria-label={ui.nav.search} title={ui.nav.search}><Icon name="material-symbols:search" class="material-symbols-rounded" aria-hidden="true" /></a>
-      <a href={SITE.github.reposUrl} target="_blank" rel="noopener" aria-label="GitHub" title="GitHub" class="d-none d-sm-inline-flex">
+      <a href={SITE.github.reposUrl} target="_blank" rel="noopener" aria-label="GitHub" title="GitHub">
         <i class="bi bi-github" aria-hidden="true"></i>
       </a>
       {otherPath && (
@@ -119,10 +135,82 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
         </a>
       )}
     </div>
-    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme">
-      <Icon name="material-symbols:contrast" class="material-symbols-rounded" aria-hidden="true" />
-    </button>
+
+    <!-- Right controls (Search on mobile + Theme toggle on all) -->
+    <div class="nav-right">
+      <a href="/search/" class="nav-icon-btn d-inline-flex d-md-none" aria-label={ui.nav.search} title={ui.nav.search}>
+        <Icon name="material-symbols:search" class="material-symbols-rounded" aria-hidden="true" />
+      </a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme">
+        <Icon name="material-symbols:contrast" class="material-symbols-rounded" aria-hidden="true" />
+      </button>
+    </div>
   </nav>
+
+  <!-- Google Photos-style slide-out navigation drawer (Mobile) -->
+  <div class="nav-drawer-backdrop" id="nav-drawer-backdrop" aria-hidden="true"></div>
+  <aside class="nav-drawer" id="nav-drawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="nav-drawer-header">
+      <div class="nav-drawer-brand">
+        <span class="brand-mark">IAN<span>.</span></span>
+        <span class="nav-drawer-subtitle">{SITE.author} · Android Developer</span>
+      </div>
+      <button type="button" class="nav-drawer-close" id="nav-drawer-close" aria-label={ui.nav.menuClose}>
+        <Icon name="material-symbols:close" class="material-symbols-rounded" aria-hidden="true" />
+      </button>
+    </div>
+
+    <div class="nav-drawer-body">
+      <ul class="nav-drawer-list">
+        <li>
+          <a href={localePath(lang, '/')} class:list={['nav-drawer-item', { active: path === '/' || path === '/en/' }]}>
+            <Icon name="material-symbols:home-outline" class="material-symbols-rounded" aria-hidden="true" />
+            <span>{ui.nav.home}</span>
+          </a>
+        </li>
+        <li>
+          <a href={localePath(lang, '/beta/')} class:list={['nav-drawer-item', { active: isActive('/beta') }]}>
+            <Icon name="material-symbols:science-outline" class="material-symbols-rounded" aria-hidden="true" />
+            <span>{ui.nav.beta}</span>
+          </a>
+        </li>
+        <li>
+          <a href="/blog/" class:list={['nav-drawer-item', { active: path.startsWith('/blog') }]}>
+            <Icon name="material-symbols:article-outline" class="material-symbols-rounded" aria-hidden="true" />
+            <span>{ui.nav.blog}</span>
+          </a>
+        </li>
+        <li>
+          <a href={localePath(lang, '/') + '#projects'} class="nav-drawer-item">
+            <Icon name="material-symbols:code" class="material-symbols-rounded" aria-hidden="true" />
+            <span>{ui.nav.projects}</span>
+          </a>
+        </li>
+        <li>
+          <a href="/search/" class:list={['nav-drawer-item', { active: path.startsWith('/search') }]}>
+            <Icon name="material-symbols:search" class="material-symbols-rounded" aria-hidden="true" />
+            <span>{ui.nav.search}</span>
+          </a>
+        </li>
+      </ul>
+
+      <hr class="nav-drawer-divider" />
+
+      <div class="nav-drawer-secondary">
+        {otherPath && (
+          <a href={otherPath} hreflang={otherLang} class="nav-drawer-item">
+            <Icon name="material-symbols:translate" class="material-symbols-rounded" aria-hidden="true" />
+            <span>{ui.langSwitch}</span>
+          </a>
+        )}
+        <a href={SITE.github.reposUrl} target="_blank" rel="noopener" class="nav-drawer-item">
+          <i class="bi bi-github" aria-hidden="true"></i>
+          <span>GitHub</span>
+          <Icon name="material-symbols:open-in-new" class="material-symbols-rounded icon-xs ms-auto" aria-hidden="true" />
+        </a>
+      </div>
+    </div>
+  </aside>
 
   <div id="main"><slot /></div>
 
@@ -142,5 +230,54 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
   </footer>
 
   <script is:inline src="/assets/js/script.js?v=2.0"></script>
+  <script is:inline>
+    (function () {
+      function setupNavDrawer() {
+        var openBtn = document.getElementById('nav-drawer-open');
+        var closeBtn = document.getElementById('nav-drawer-close');
+        var backdrop = document.getElementById('nav-drawer-backdrop');
+        var drawer = document.getElementById('nav-drawer');
+        if (!drawer || !openBtn || !backdrop) return;
+
+        function openDrawer() {
+          drawer.classList.add('is-open');
+          backdrop.classList.add('is-open');
+          drawer.setAttribute('aria-hidden', 'false');
+          openBtn.setAttribute('aria-expanded', 'true');
+          document.body.style.overflow = 'hidden';
+        }
+
+        function closeDrawer() {
+          drawer.classList.remove('is-open');
+          backdrop.classList.remove('is-open');
+          drawer.setAttribute('aria-hidden', 'true');
+          openBtn.setAttribute('aria-expanded', 'false');
+          document.body.style.overflow = '';
+        }
+
+        openBtn.addEventListener('click', openDrawer);
+        if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+        backdrop.addEventListener('click', closeDrawer);
+
+        var drawerLinks = drawer.querySelectorAll('a');
+        drawerLinks.forEach(function (link) {
+          link.addEventListener('click', closeDrawer);
+        });
+
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
+            closeDrawer();
+          }
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupNavDrawer);
+      } else {
+        setupNavDrawer();
+      }
+      document.addEventListener('astro:page-load', setupNavDrawer);
+    })();
+  </script>
 </body>
 </html>

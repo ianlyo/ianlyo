@@ -240,7 +240,7 @@ async function initializeProjects() {
             reposData = JSON.parse(cachedData);
         } else {
             if (status) {
-                status.innerHTML = 'Repositories could not be loaded right now. <a href="https://github.com/ianlyo?tab=repositories" target="_blank" rel="noopener" class="text-accent" style="color: inherit; text-decoration: underline;">View all public repositories on GitHub.</a>';
+                status.innerHTML = 'Repositories could not be loaded right now. <a href="https://github.com/ianlyo?tab=repositories" target="_blank" rel="noopener" class="text-accent" style="color: inherit; text-decoration: none; font-weight: 600;">View all public repositories on GitHub.</a>';
                 status.classList.add('is-error');
             }
             const heroStats = document.querySelector('.hero-stats');

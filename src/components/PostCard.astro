@@ -8,7 +8,7 @@ const { post, lang = 'zh-Hant' } = Astro.props;
 const ui = t(lang).blog;
 ---
 <article class="surface-card">
-  <a href={`/blog/${post.id}/`} style="color:inherit">
+  <a href={`/blog/${post.id}/`} class="post-card-link">
     <h2>{post.data.title}</h2>
     <p>{post.data.description}</p>
   </a>

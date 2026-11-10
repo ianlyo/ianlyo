@@ -3,6 +3,7 @@ import { Icon } from 'astro-icon/components';
 import type { CollectionEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import ScrollSequence, { type ScrollStep } from './ScrollSequence.astro';
+import ScreenshotGallery from './ScreenshotGallery.astro';
 import { t, localePath, pick, type Lang } from '../i18n/ui';
 interface Props { app: CollectionEntry<'apps'>; lang: Lang }
 const { app, lang } = Astro.props;
@@ -13,7 +14,7 @@ const tagline = pick(d.tagline, lang);
 const ogImage = d.screenshots[0]?.src ? d.screenshots[0].src : '/og/default.png';
 
 const steps = [
-  { s: ui.step1, url: d.googleGroupUrl, label: ui.groupBtn, optional: true, icon: 'groups', extra: d.extraGroups },
+  { s: ui.step1, url: d.googleGroupUrl, label: ui.groupBtn, optional: false, icon: 'groups', extra: d.extraGroups },
   { s: ui.step2, url: d.optInUrl, label: ui.optInBtn, optional: false, icon: 'how_to_reg' },
   { s: ui.step3, url: d.playStoreUrl, label: ui.playBtn, optional: false, icon: 'download_for_offline' },
   { s: ui.step4, url: d.feedbackUrl, label: ui.feedbackBtn, optional: false, icon: 'rate_review' },
@@ -83,25 +84,22 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/beta/${app.id}/`)
       <section class="section-block">
         <div class="prose"><p set:html={desc.replace(/\n/g, '<br />')} /></div>
       </section>
+    </div>
 
-      <!-- 2.5 Scroll sequence: features paired with screenshots -->
-      {d.features.length > 0 && (
-        <div class="scroll-bleed">
-          <ScrollSequence steps={sequenceSteps} label={d.name} />
-        </div>
-      )}
+    <!-- 2.5 Scroll sequence: features paired with screenshots -->
+    {d.features.length > 0 && (
+      <ScrollSequence steps={sequenceSteps} label={d.name} />
+    )}
 
-      <!-- 3. Screenshots -->
-      <section class="section-block">
-        <h2 class="block-title">
-          <Icon name="material-symbols:photo-library" class="material-symbols-rounded text-accent" aria-hidden="true" />
-          <span>{ui.screenshots}</span>
-        </h2>
-        {d.screenshots.length
-          ? <div class="shots">{d.screenshots.map((s) => <img src={s.src} alt={pick(s.alt, lang)} loading="lazy" />)}</div>
-          : <div class="shot-empty">Screenshots placeholder - add images to <code>public/apps/{app.id}/</code></div>}
-      </section>
+    <!-- 3. Screenshots (Apple-style interactive gallery) -->
+    <ScreenshotGallery
+      screenshots={d.screenshots}
+      title={ui.screenshots}
+      lang={lang}
+      appId={app.id}
+    />
 
+    <div class="container page-narrow">
       <!-- 4. Features -->
       {d.features.length > 0 && (
         <section class="section-block">
@@ -125,10 +123,10 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/beta/${app.id}/`)
         </h2>
         <table class="spec-table">
           <tbody>
-            <tr><th><Icon name="material-symbols:inventory-2" class="material-symbols-rounded icon-xs" aria-hidden="true" />Package</th><td><code>{d.packageName}</code></td></tr>
+            <tr><th><Icon name="material-symbols:inventory-2" class="material-symbols-rounded icon-xs" aria-hidden="true" />{ui.packageLabel}</th><td><code>{d.packageName}</code></td></tr>
             <tr><th><Icon name="material-symbols:sell" class="material-symbols-rounded icon-xs" aria-hidden="true" />{ui.version}</th><td>{d.version}</td></tr>
             <tr><th><Icon name="material-symbols:android" class="material-symbols-rounded icon-xs" aria-hidden="true" />{ui.minAndroid}</th><td>Android {d.minAndroid}</td></tr>
-            {d.targetAndroid && <tr><th><Icon name="material-symbols:smartphone" class="material-symbols-rounded icon-xs" aria-hidden="true" />Target Android</th><td>Android {d.targetAndroid}</td></tr>}
+            {d.targetAndroid && <tr><th><Icon name="material-symbols:smartphone" class="material-symbols-rounded icon-xs" aria-hidden="true" />{ui.targetAndroidLabel}</th><td>Android {d.targetAndroid}</td></tr>}
             {d.specs.map((s) => <tr><th>{pick(s.label, lang)}</th><td>{s.value}</td></tr>)}
           </tbody>
         </table>
