@@ -280,8 +280,6 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
       transition: width 0.1s ease-out, opacity 0.25s ease;
       background: linear-gradient(90deg, rgba(79, 70, 229, 0.7) 0%, rgba(14, 165, 233, 0.78) 50%, rgba(168, 85, 247, 0.78) 100%);
       box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3), 0 1px 3px rgba(0, 0, 0, 0.08);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
     }
 
     .scroll-progress-bar.is-visible {
@@ -317,6 +315,10 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
         // 因此若為 WebKit / Safari 環境，直接回傳 false，讓其走原生高保真的 -webkit-backdrop-filter blur 模式。
         const isWebKit = /AppleWebKit/i.test(navigator.userAgent) && !/Chrome|Chromium|Edg/i.test(navigator.userAgent);
         if (isWebKit) return false;
+
+        // Android (Chrome) 捲動時重算 SVG 位移濾鏡 + 大半徑模糊非常耗 GPU，會造成明顯卡頓，
+        // 因此在 Android 與觸控粗指標裝置上停用 SVG filter，改走輕量模糊。
+        if (/Android/i.test(navigator.userAgent)) return false;
 
         const testEl = document.createElement('div');
         testEl.style.cssText = 'backdrop-filter: url(#test)';
@@ -375,12 +377,13 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
         // Fallback for WebKit (Safari / iPadOS / iOS) & environments where backdrop-filter: url() is unsupported
         // 確保 WebKit 原生 GPU 渲染層能完美繪製 Apple 原生 Liquid Glass 磨砂效果
         if (nav) {
-          const navFallback = 'blur(36px) saturate(210%) contrast(1.05)';
+          const isAndroid = /Android/i.test(navigator.userAgent);
+          const navFallback = isAndroid ? 'blur(12px) saturate(160%)' : 'blur(36px) saturate(210%) contrast(1.05)';
           nav.style.setProperty('-webkit-backdrop-filter', navFallback);
           nav.style.backdropFilter = navFallback;
         }
         if (drawer) {
-          const drawerFallback = 'blur(48px) saturate(210%) contrast(1.05)';
+          const drawerFallback = /Android/i.test(navigator.userAgent) ? 'blur(16px) saturate(160%)' : 'blur(48px) saturate(210%) contrast(1.05)';
           drawer.style.setProperty('-webkit-backdrop-filter', drawerFallback);
           drawer.style.backdropFilter = drawerFallback;
         }
