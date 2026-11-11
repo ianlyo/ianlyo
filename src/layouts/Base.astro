@@ -326,14 +326,6 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
       const nav = document.querySelector<HTMLElement>('.site-nav');
       if (!nav) return;
 
-      // 手機寬度 (< 768px) 維持乾淨白色實底，避免被底層內容干擾
-      if (window.innerWidth <= 768) {
-        nav.style.backdropFilter = '';
-        // @ts-ignore
-        nav.style['-webkit-backdrop-filter'] = '';
-        return;
-      }
-
       const rect = nav.getBoundingClientRect();
       const width = Math.max(Math.round(rect.width), 320);
       const height = Math.max(Math.round(rect.height), 56);
