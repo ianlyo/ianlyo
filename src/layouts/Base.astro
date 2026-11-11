@@ -120,11 +120,8 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-  <link rel="stylesheet" href="/assets/css/style.css?v=2.5" />
-  <link rel="stylesheet" href="/assets/css/site.css?v=2.4" />
+  <link rel="stylesheet" href="/assets/css/style.css?v=2.6" />
+  <link rel="stylesheet" href="/assets/css/site.css?v=2.5" />
 </head>
 <body>
   <!-- Reading scroll progress indicator -->
@@ -266,18 +263,20 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
     </div>
   </footer>
 
-  <script is:inline src="/assets/js/script.js?v=2.1"></script>
+  <script is:inline src="/assets/js/script.js?v=2.2"></script>
   <style is:global>
     .scroll-progress-bar {
       position: fixed;
       top: 0;
       left: 0;
       height: 3px;
-      width: 0%;
+      width: 100%;
       z-index: 1060;
       pointer-events: none;
       opacity: 0;
-      transition: width 0.1s ease-out, opacity 0.25s ease;
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 0.08s linear, opacity 0.25s ease;
       background: linear-gradient(90deg, rgba(79, 70, 229, 0.7) 0%, rgba(14, 165, 233, 0.78) 50%, rgba(168, 85, 247, 0.78) 100%);
       box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3), 0 1px 3px rgba(0, 0, 0, 0.08);
     }
@@ -304,113 +303,17 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
       }
     }
   </style>
-  <script>
-    import { getDisplacementFilter } from '../utils/liquidGlass';
-
-    const supportsBackdropFilterUrl = (() => {
-      try {
-        // WebKit (Safari / iOS / iPadOS) 的 backdrop-filter 必須使用 -webkit- 前綴
-        // 且 WebKit 雖然語法上可能接受 url() 字串，但實質上無法在 backdrop-filter 中解析或渲染 SVG filter，
-        // 甚至會導致整個 backdrop-filter 失效而退化為完全無模糊。
-        // 因此若為 WebKit / Safari 環境，直接回傳 false，讓其走原生高保真的 -webkit-backdrop-filter blur 模式。
-        const isWebKit = /AppleWebKit/i.test(navigator.userAgent) && !/Chrome|Chromium|Edg/i.test(navigator.userAgent);
-        if (isWebKit) return false;
-
-        // Android (Chrome) 捲動時重算 SVG 位移濾鏡 + 大半徑模糊非常耗 GPU，會造成明顯卡頓，
-        // 因此在 Android 與觸控粗指標裝置上停用 SVG filter，改走輕量模糊。
-        if (/Android/i.test(navigator.userAgent)) return false;
-
-        const testEl = document.createElement('div');
-        testEl.style.cssText = 'backdrop-filter: url(#test)';
-        return (
-          testEl.style.backdropFilter === 'url(#test)' ||
-          testEl.style.backdropFilter === 'url("#test")'
-        );
-      } catch (e) {
-        return false;
-      }
-    })();
-
-    function applyLiquidNav() {
-      const nav = document.querySelector<HTMLElement>('.site-nav');
-      const drawer = document.querySelector<HTMLElement>('.nav-drawer');
-
-      if (supportsBackdropFilterUrl) {
-        if (nav) {
-          const rect = nav.getBoundingClientRect();
-          const width = Math.max(Math.round(rect.width), 320);
-          const height = Math.max(Math.round(rect.height), 56);
-          // nikdelvin/liquid-glass: SVG Displacement Mapping + Enhanced Chromatic Aberration for Navbar
-          const navFilterUrl = getDisplacementFilter({
-            height,
-            width,
-            radius: 0,
-            depth: 20,
-            strength: 220,
-            chromaticAberration: 12,
-          });
-          const navFilterValue = `blur(4px) url('${navFilterUrl}') blur(8px) contrast(1.1) brightness(1.05) saturate(220%)`;
-          nav.style.backdropFilter = navFilterValue;
-          // @ts-ignore
-          nav.style['-webkit-backdrop-filter'] = navFilterValue;
-        }
-
-        if (drawer) {
-          const drawerRect = drawer.getBoundingClientRect();
-          const dWidth = Math.max(Math.round(drawerRect.width || 320), 280);
-          const dHeight = Math.max(Math.round(drawerRect.height || window.innerHeight), 500);
-          // 延伸至側邊欄：以圓角 28px、加深物理折射深度打造真正 Apple Liquid Glass 延伸背景折射
-          const drawerFilterUrl = getDisplacementFilter({
-            height: dHeight,
-            width: dWidth,
-            radius: 28,
-            depth: 32,
-            strength: 180,
-            chromaticAberration: 8,
-          });
-          const drawerFilterValue = `blur(4px) url('${drawerFilterUrl}') blur(16px) contrast(1.08) brightness(1.04) saturate(210%)`;
-          drawer.style.backdropFilter = drawerFilterValue;
-          // @ts-ignore
-          drawer.style['-webkit-backdrop-filter'] = drawerFilterValue;
-        }
-      } else {
-        // Fallback for WebKit (Safari / iPadOS / iOS) & environments where backdrop-filter: url() is unsupported
-        // 確保 WebKit 原生 GPU 渲染層能完美繪製 Apple 原生 Liquid Glass 磨砂效果
-        if (nav) {
-          const isAndroid = /Android/i.test(navigator.userAgent);
-          const navFallback = isAndroid ? 'blur(12px) saturate(160%)' : 'blur(36px) saturate(210%) contrast(1.05)';
-          nav.style.setProperty('-webkit-backdrop-filter', navFallback);
-          nav.style.backdropFilter = navFallback;
-        }
-        if (drawer) {
-          const drawerFallback = /Android/i.test(navigator.userAgent) ? 'blur(16px) saturate(160%)' : 'blur(48px) saturate(210%) contrast(1.05)';
-          drawer.style.setProperty('-webkit-backdrop-filter', drawerFallback);
-          drawer.style.backdropFilter = drawerFallback;
-        }
-      }
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', applyLiquidNav);
-    } else {
-      applyLiquidNav();
-    }
-    document.addEventListener('astro:page-load', applyLiquidNav);
-
-    let resizeTimer: number;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(applyLiquidNav, 150);
-    }, { passive: true });
-  </script>
   <script is:inline>
     (function () {
+      var scrollListenerBound = false;
+
       function setupNavDrawer() {
         var openBtn = document.getElementById('nav-drawer-open');
         var closeBtn = document.getElementById('nav-drawer-close');
         var backdrop = document.getElementById('nav-drawer-backdrop');
         var drawer = document.getElementById('nav-drawer');
-        if (!drawer || !openBtn || !backdrop) return;
+        if (!drawer || !openBtn || !backdrop || drawer.dataset.bound === 'true') return;
+        drawer.dataset.bound = 'true';
 
         function openDrawer() {
           drawer.classList.add('is-open');
@@ -447,6 +350,8 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
       function setupLangSwitch() {
         var buttons = document.querySelectorAll('[data-lang-switch]');
         buttons.forEach(function (btn) {
+          if (btn.dataset.bound === 'true') return;
+          btn.dataset.bound = 'true';
           btn.addEventListener('click', function () {
             var target = btn.getAttribute('data-lang-switch');
             if (target) {
@@ -462,57 +367,92 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
         var progressBar = document.getElementById('scroll-progress');
         var gradientEls = Array.prototype.slice.call(
           document.querySelectorAll('.hero-title em, .scroll-gradient-text, [data-scroll-gradient]')
-        );
+        ).filter(function (el) {
+          return el.getAttribute('data-gsap-gradient') !== 'true';
+        });
+        var cachedMetrics = [];
+        var docHeight = 0;
+        var vh = window.innerHeight || document.documentElement.clientHeight || 800;
         var ticking = false;
 
-        function applyGradientProgress(el, ratio, phaseOffset) {
+        function measure() {
+          vh = window.innerHeight || document.documentElement.clientHeight || 800;
+          docHeight = Math.max(0, document.documentElement.scrollHeight - vh);
+          var scroll = window.scrollY || document.documentElement.scrollTop || 0;
+          cachedMetrics = gradientEls.map(function (el, idx) {
+            var rect = el.getBoundingClientRect();
+            var absTop = rect.top + scroll;
+            return {
+              el: el,
+              absTop: absTop,
+              height: rect.height,
+              isHero: absTop < vh * 0.85,
+              phaseOffset: (idx % 4) * 0.15,
+              lastGradX: ''
+            };
+          });
+        }
+
+        function applyGradientProgress(item, ratio) {
           var r = Math.min(1, Math.max(0, ratio));
-          var phase = (r + (phaseOffset || 0)) % 1;
-          el.style.setProperty('--hero-grad-x', (phase * 100).toFixed(2) + '%');
-          el.style.setProperty('--hero-grad-y', (50 + Math.sin(phase * Math.PI * 2) * 50).toFixed(2) + '%');
-          el.style.setProperty('--hero-hue', (Math.sin(phase * Math.PI) * 42).toFixed(1) + 'deg');
-          el.style.setProperty('--hero-glow', Math.sin(r * Math.PI).toFixed(3));
+          var phase = (r + item.phaseOffset) % 1;
+          var gradX = (phase * 100).toFixed(1) + '%';
+          if (item.lastGradX === gradX) return;
+          item.lastGradX = gradX;
+          var gradY = (50 + Math.sin(phase * Math.PI * 2) * 50).toFixed(1) + '%';
+          item.el.style.setProperty('--hero-grad-x', gradX);
+          item.el.style.setProperty('--hero-grad-y', gradY);
         }
 
         function update() {
-          var scroll = window.scrollY || document.documentElement.scrollTop;
-          var vh = window.innerHeight || document.documentElement.clientHeight || 800;
+          var scroll = window.scrollY || document.documentElement.scrollTop || 0;
           if (progressBar) {
-            var height = document.documentElement.scrollHeight - vh;
-            var progress = height > 0 ? (scroll / height) * 100 : 0;
-            progressBar.style.width = Math.min(100, Math.max(0, progress)) + '%';
+            var progress = docHeight > 0 ? Math.min(1, Math.max(0, scroll / docHeight)) : 0;
+            progressBar.style.transform = 'scaleX(' + progress.toFixed(4) + ')';
             if (scroll > 8) {
               progressBar.classList.add('is-visible');
             } else {
               progressBar.classList.remove('is-visible');
             }
           }
-          for (var i = 0; i < gradientEls.length; i++) {
-            var el = gradientEls[i];
-            if (el.getAttribute('data-gsap-gradient') === 'true') continue;
-            var rect = el.getBoundingClientRect();
+          for (var i = 0; i < cachedMetrics.length; i++) {
+            var item = cachedMetrics[i];
+            var rectTop = item.absTop - scroll;
+            // Skip elements far outside the viewport to save CPU/GPU
+            if (rectTop > vh + 100 || rectTop + item.height < -100) continue;
             var ratio;
-            if (rect.top + scroll < vh * 0.85) {
-              // Top-of-page / Hero elements: drive immediately from scroll=0
+            if (item.isHero) {
               var range = Math.max(vh * 0.65, 320);
               ratio = scroll / range;
             } else {
-              // In-page headings: drive as element crosses viewport
-              var total = vh + rect.height;
-              ratio = total > 0 ? (vh - rect.top) / total : 0;
+              var total = vh + item.height;
+              ratio = total > 0 ? (vh - rectTop) / total : 0;
             }
-            applyGradientProgress(el, ratio, (i % 4) * 0.15);
+            applyGradientProgress(item, ratio);
           }
           ticking = false;
         }
-        window.addEventListener('scroll', function () {
-          if (!ticking) {
-            window.requestAnimationFrame(update);
-            ticking = true;
-          }
-        }, { passive: true });
-        window.addEventListener('resize', update, { passive: true });
+
+        measure();
         update();
+
+        if (!scrollListenerBound) {
+          scrollListenerBound = true;
+          window.addEventListener('scroll', function () {
+            if (!ticking) {
+              window.requestAnimationFrame(update);
+              ticking = true;
+            }
+          }, { passive: true });
+          var resizeTimeout;
+          window.addEventListener('resize', function () {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function () {
+              measure();
+              update();
+            }, 150);
+          }, { passive: true });
+        }
       }
 
       function init() {

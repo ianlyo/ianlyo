@@ -281,7 +281,6 @@ const serializedScreenshots = screenshots.map((s) => ({
     opacity: 0.72;
     transform: scale(0.94);
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
-    will-change: transform, opacity;
   }
   .gallery-slide.is-focused {
     opacity: 1;
@@ -378,8 +377,8 @@ const serializedScreenshots = screenshots.map((s) => ({
     height: 36px;
     border-radius: 50%;
     background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     border: 1px solid rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
@@ -452,9 +451,9 @@ const serializedScreenshots = screenshots.map((s) => ({
     justify-content: center;
     cursor: pointer;
     border: 1px solid rgba(255, 255, 255, 0.16);
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: rgba(40, 40, 44, 0.5);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     color: var(--text-primary);
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     padding: 0;
@@ -511,9 +510,9 @@ const serializedScreenshots = screenshots.map((s) => ({
   .lightbox-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.62);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     z-index: 1;
   }
 
@@ -608,9 +607,9 @@ const serializedScreenshots = screenshots.map((s) => ({
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(40, 40, 44, 0.55);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: #fff;
     cursor: pointer;
@@ -690,7 +689,6 @@ const serializedScreenshots = screenshots.map((s) => ({
       scroll-snap-type: none;
       scroll-behavior: auto;
       cursor: default;
-      will-change: transform;
       gap: clamp(1.75rem, 3vw, 3rem);
     }
     .gallery-slide {
@@ -728,7 +726,6 @@ const serializedScreenshots = screenshots.map((s) => ({
       scroll-snap-type: none;
       scroll-behavior: auto;
       cursor: default;
-      will-change: transform;
       gap: 1.25rem;
       padding-top: 0.5rem;
       padding-bottom: 0.75rem;
@@ -739,11 +736,11 @@ const serializedScreenshots = screenshots.map((s) => ({
       scroll-snap-align: none;
     }
     .screenshot-card {
-      border-radius: 18px;
+      border-radius: 16px;
       box-shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.45);
     }
     .screenshot-card img {
-      border-radius: 16px;
+      border-radius: 15px;
     }
     .gallery-controls {
       margin-top: 0.75rem;
@@ -773,11 +770,17 @@ const serializedScreenshots = screenshots.map((s) => ({
   gsap.registerPlugin(ScrollTrigger);
 
   let galleryCtx: gsap.Context | null = null;
+  let activeKeydownHandler: ((e: KeyboardEvent) => void) | null = null;
+  let lastWindowWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
 
   function setupGalleries() {
     if (galleryCtx) {
       galleryCtx.revert();
       galleryCtx = null;
+    }
+    if (activeKeydownHandler) {
+      document.removeEventListener('keydown', activeKeydownHandler);
+      activeKeydownHandler = null;
     }
 
     const sections = document.querySelectorAll<HTMLElement>('[data-porsche-section]');
@@ -951,7 +954,7 @@ const serializedScreenshots = screenshots.map((s) => ({
         });
 
         // Keyboard navigation for lightbox
-        document.addEventListener('keydown', (e) => {
+        const onKeyDown = (e: KeyboardEvent) => {
           if (!lightbox || !lightbox.classList.contains('is-open')) return;
           if (e.key === 'Escape') {
             if (isZoomed) resetZoom();
@@ -961,17 +964,19 @@ const serializedScreenshots = screenshots.map((s) => ({
           } else if (e.key === 'ArrowRight') {
             if (currentLightboxIndex < screenshotsData.length - 1) updateLightbox(currentLightboxIndex + 1);
           }
-        });
+        };
+        activeKeydownHandler = onKeyDown;
+        document.addEventListener('keydown', onKeyDown);
 
-        const updateDots = (activeIndex: number) => {
+        let lastActiveIndex = -1;
+        const updateActiveSlide = (activeIndex: number) => {
+          if (activeIndex === lastActiveIndex) return;
+          lastActiveIndex = activeIndex;
           dots.forEach((dot, index) => {
             const isActive = index === activeIndex;
             dot.classList.toggle('is-active', isActive);
             dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
           });
-        };
-
-        const updateCardFocus = (activeIndex: number) => {
           slides.forEach((slide, idx) => {
             slide.classList.toggle('is-focused', idx === activeIndex);
           });
@@ -1011,7 +1016,7 @@ const serializedScreenshots = screenshots.map((s) => ({
             end: () => `+=${scrollDistance()}`,
             pin: true,
             pinSpacing: true,
-            scrub: isMobile ? 0.25 : 0.38, // 輕快敏捷的跟手響應，滑動迅速不黏滯
+            scrub: isMobile ? 0.2 : 0.35,
             invalidateOnRefresh: true,
             onUpdate: (self) => {
               const p = self.progress;
@@ -1019,10 +1024,15 @@ const serializedScreenshots = screenshots.map((s) => ({
                 slides.length - 1,
                 Math.max(0, Math.round(p * (slides.length - 1)))
               );
-              updateDots(activeIndex);
-              updateCardFocus(activeIndex);
-              if (prevButton) prevButton.disabled = p <= 0.01;
-              if (nextButton) nextButton.disabled = p >= 0.99;
+              updateActiveSlide(activeIndex);
+              if (prevButton) {
+                const disablePrev = p <= 0.01;
+                if (prevButton.disabled !== disablePrev) prevButton.disabled = disablePrev;
+              }
+              if (nextButton) {
+                const disableNext = p >= 0.99;
+                if (nextButton.disabled !== disableNext) nextButton.disabled = disableNext;
+              }
             },
           },
         });
@@ -1032,6 +1042,9 @@ const serializedScreenshots = screenshots.map((s) => ({
         let swipeStartY = 0;
         let swipeStartScrollY = 0;
         let isHorizontalSwipe = false;
+
+        let touchRafId = 0;
+        let pendingTargetScrollY = 0;
 
         track.addEventListener('touchstart', (e: TouchEvent) => {
           if (!e.touches[0]) return;
@@ -1052,15 +1065,24 @@ const serializedScreenshots = screenshots.map((s) => ({
           }
 
           if (isHorizontalSwipe) {
-            // 水平滑動時將手指位移平滑轉換為頁面垂直滾動，驅動 GSAP 絲滑橫向展開
-            window.scrollTo({
-              top: swipeStartScrollY - deltaX * 1.35,
-              behavior: 'auto',
-            });
+            pendingTargetScrollY = swipeStartScrollY - deltaX * 1.35;
+            if (!touchRafId) {
+              touchRafId = window.requestAnimationFrame(() => {
+                window.scrollTo({
+                  top: pendingTargetScrollY,
+                  behavior: 'auto',
+                });
+                touchRafId = 0;
+              });
+            }
           }
         }, { passive: true });
 
         track.addEventListener('touchend', () => {
+          if (touchRafId) {
+            window.cancelAnimationFrame(touchRafId);
+            touchRafId = 0;
+          }
           swipeStartX = 0;
           swipeStartY = 0;
           isHorizontalSwipe = false;
@@ -1103,8 +1125,7 @@ const serializedScreenshots = screenshots.map((s) => ({
         }
 
         // Initial focus state
-        updateCardFocus(0);
-        updateDots(0);
+        updateActiveSlide(0);
       });
     });
 
@@ -1117,9 +1138,12 @@ const serializedScreenshots = screenshots.map((s) => ({
 
   let resizeTimeout: any;
   window.addEventListener('resize', () => {
+    // Ignore mobile address bar vertical height changes when horizontal width hasn't changed
+    if (Math.abs(window.innerWidth - lastWindowWidth) < 2) return;
+    lastWindowWidth = window.innerWidth;
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
       setupGalleries();
     }, 200);
-  });
+  }, { passive: true });
 </script>

@@ -68,21 +68,18 @@ document.addEventListener('DOMContentLoaded', function() {
             root.setAttribute('data-bs-theme', effectiveTheme);
 
             // Icon and title indicating current mode & next action
-            let iconName = 'contrast';
-            let iconClass = '';
+            let iconSvg = '<svg class="material-symbols-rounded" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m1-2.075q3.025-.375 5.013-2.637T20 12t-1.987-5.288T13 4.075z"/></svg>';
             let titleText = 'Theme: System (Click to switch to Light mode)';
 
             if (mode === 'light') {
-                iconName = 'light_mode';
-                iconClass = 'filled theme-icon-light';
+                iconSvg = '<svg class="material-symbols-rounded filled theme-icon-light" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 17q-2.075 0-3.537-1.463T7 12t1.463-3.537T12 7t3.538 1.463T17 12t-1.463 3.538T12 17M2 13q-.425 0-.712-.288T1 12t.288-.712T2 11h2q.425 0 .713.288T5 12t-.288.713T4 13zm18 0q-.425 0-.712-.288T19 12t.288-.712T20 11h2q.425 0 .713.288T23 12t-.288.713T22 13zm-8-8q-.425 0-.712-.288T11 4V2q0-.425.288-.712T12 1t.713.288T13 2v2q0 .425-.288.713T12 5m0 18q-.425 0-.712-.288T11 22v-2q0-.425.288-.712T12 19t.713.288T13 20v2q0 .425-.288.713T12 23M5.65 7.05L4.575 6q-.3-.275-.288-.7t.288-.725q.3-.3.725-.3t.7.3L7.05 5.65q.275.3.275.7t-.275.7t-.7.275t-.7-.275M18 19.425l-1.05-1.075q-.275-.3-.275-.7t.275-.7t.7-.275t.7.275L19.425 18q.3.275.288.7t-.288.725q-.3.3-.725.3t-.7-.3M16.95 7.05q-.3-.275-.275-.7t.275-.7L18 4.575q.275-.3.7-.288t.725.288q.3.3.3.725t-.3.7L18.35 7.05q-.3.275-.7.275t-.7-.275M4.575 19.425q-.3-.3-.3-.725t.3-.7l1.075-1.05q.3-.275.7-.275t.7.275t.275.7t-.275.7L6 19.425q-.275.3-.7.288t-.725-.288"/></svg>';
                 titleText = 'Theme: Light (Click to switch to Dark mode)';
             } else if (mode === 'dark') {
-                iconName = 'dark_mode';
-                iconClass = 'filled theme-icon-dark';
+                iconSvg = '<svg class="material-symbols-rounded filled theme-icon-dark" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21q-3.75 0-6.375-2.625T3 12t2.625-6.375T12 3q.35 0 .688.025t.662.075q-1.025.725-1.638 1.888T11.1 7.5q0 2.25 1.575 3.825T16.5 12.9q1.375 0 2.525-.613T20.9 10.65q.05.325.075.662T21 12q0 3.75-2.625 6.375T12 21"/></svg>';
                 titleText = 'Theme: Dark (Click to switch to System)';
             }
 
-            toggle.innerHTML = `<span class="material-symbols-rounded ${iconClass}" aria-hidden="true">${iconName}</span>`;
+            toggle.innerHTML = iconSvg;
             toggle.setAttribute('aria-label', titleText);
             toggle.setAttribute('title', titleText);
 
@@ -417,7 +414,7 @@ function renderProjects() {
 
     if (showMoreButton) {
         showMoreButton.hidden = visibleProjects.length <= 6;
-        showMoreButton.innerHTML = `${showAllProjects ? 'Show less' : 'Show all repositories'} <span class="material-symbols-rounded projects-toggle-icon" aria-hidden="true">expand_more</span>`;
+        showMoreButton.innerHTML = `${showAllProjects ? 'Show less' : 'Show all repositories'} <svg class="material-symbols-rounded projects-toggle-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="m12 15.4l-6-6L7.4 8l4.6 4.6L16.6 8L18 9.4z"/></svg>`;
         showMoreButton.setAttribute('aria-expanded', String(showAllProjects));
     }
 
@@ -444,7 +441,7 @@ function createProjectCard(repo) {
                         </small>
                         <a href="${repo.html_url}" class="btn btn-outline-primary d-inline-flex align-items-center gap-1" target="_blank" rel="noopener" aria-label="Open ${escapeHtml(repo.name)} on GitHub">
                             ${githubIcon} <span>View</span>
-                            <span class="material-symbols-rounded icon-xs" aria-hidden="true">open_in_new</span>
+                            <svg class="material-symbols-rounded icon-xs" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h7v2H5v14h14v-7h2v7q0 .825-.587 1.413T19 21zm4.7-5.3l-1.4-1.4L17.6 5H14V3h7v7h-2V6.4z"/></svg>
                         </a>
                     </div>
                 </div>
