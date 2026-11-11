@@ -25,7 +25,7 @@ const en = t('en').notFound;
           <rect x="88" y="70" width="18" height="12" rx="6" fill="#e8eaf6"/>
         </svg>
       </div>
-      <h1 class="nf-code glitch" data-text="404" aria-label="404">404</h1>
+      <h1 class="nf-code glitch" id="nf-code" data-text="404" aria-label="404">404</h1>
       <h2 class="nf-title" id="nf-title">{zh.title}</h2>
       <p class="nf-quote" id="nf-quote" aria-live="polite"></p>
       <p class="nf-lead" id="nf-lead">{zh.lead}</p>
@@ -103,7 +103,35 @@ const en = t('en').notFound;
         if (!reduce) burst();
       }
       $('nf-egg').addEventListener('click', celebrate);
-      $('nf-astro').addEventListener('click', celebrate);
+
+      // Independent drag: each element keeps its own offset via the CSS `translate` property.
+      var justDragged = false;
+      function makeDraggable(el) {
+        var ox = 0, oy = 0, sx = 0, sy = 0, moved = false;
+        el.addEventListener('pointerdown', function (e) {
+          sx = e.clientX - ox; sy = e.clientY - oy; moved = false;
+          el.setPointerCapture(e.pointerId);
+          el.classList.add('is-dragging');
+        });
+        el.addEventListener('pointermove', function (e) {
+          if (!el.hasPointerCapture(e.pointerId)) return;
+          var nx = e.clientX - sx, ny = e.clientY - sy;
+          if (Math.abs(nx - ox) + Math.abs(ny - oy) > 3) moved = true;
+          ox = nx; oy = ny;
+          el.style.translate = ox + 'px ' + oy + 'px';
+        });
+        function end(e) {
+          if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
+          el.classList.remove('is-dragging');
+          if (moved) { justDragged = true; setTimeout(function () { justDragged = false; }, 0); }
+        }
+        el.addEventListener('pointerup', end);
+        el.addEventListener('pointercancel', end);
+        el.addEventListener('dblclick', function () { ox = oy = 0; el.style.translate = ''; });
+      }
+      makeDraggable($('nf-astro'));
+      makeDraggable($('nf-code'));
+      $('nf-astro').addEventListener('click', function () { if (!justDragged) celebrate(); });
     })();
   </script>
 
@@ -120,6 +148,8 @@ const en = t('en').notFound;
       transform: translate(calc(var(--px) * -14px), calc(var(--py) * -14px)); transition: transform .15s ease-out; }
     .nf-astro { display: inline-block; cursor: pointer; color: var(--text-muted, #888);
       transform: translate(calc(var(--px) * 22px), calc(var(--py) * 22px)); transition: transform .15s ease-out; }
+    .nf-astro, .nf-code { cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
+    .nf-astro.is-dragging, .nf-code.is-dragging { cursor: grabbing; z-index: 2; position: relative; }
     .nf-astro svg { animation: nf-float 5s ease-in-out infinite; filter: drop-shadow(0 10px 20px rgba(124,140,255,.35)); }
     @keyframes nf-float { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-16px) rotate(4deg); } }
 
