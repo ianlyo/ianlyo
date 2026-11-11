@@ -324,32 +324,58 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
 
     function applyLiquidNav() {
       const nav = document.querySelector<HTMLElement>('.site-nav');
-      if (!nav) return;
-
-      const rect = nav.getBoundingClientRect();
-      const width = Math.max(Math.round(rect.width), 320);
-      const height = Math.max(Math.round(rect.height), 56);
+      const drawer = document.querySelector<HTMLElement>('.nav-drawer');
 
       if (supportsBackdropFilterUrl) {
-        // nikdelvin/liquid-glass: SVG Displacement Mapping + Enhanced Chromatic Aberration
-        const filterUrl = getDisplacementFilter({
-          height,
-          width,
-          radius: 0,
-          depth: 20,
-          strength: 220,
-          chromaticAberration: 12,
-        });
+        if (nav) {
+          const rect = nav.getBoundingClientRect();
+          const width = Math.max(Math.round(rect.width), 320);
+          const height = Math.max(Math.round(rect.height), 56);
+          // nikdelvin/liquid-glass: SVG Displacement Mapping + Enhanced Chromatic Aberration for Navbar
+          const navFilterUrl = getDisplacementFilter({
+            height,
+            width,
+            radius: 0,
+            depth: 20,
+            strength: 220,
+            chromaticAberration: 12,
+          });
+          const navFilterValue = `blur(4px) url('${navFilterUrl}') blur(8px) contrast(1.1) brightness(1.05) saturate(220%)`;
+          nav.style.backdropFilter = navFilterValue;
+          // @ts-ignore
+          nav.style['-webkit-backdrop-filter'] = navFilterValue;
+        }
 
-        const filterValue = `blur(4px) url('${filterUrl}') blur(8px) contrast(1.1) brightness(1.05) saturate(220%)`;
-        nav.style.backdropFilter = filterValue;
-        // @ts-ignore
-        nav.style['-webkit-backdrop-filter'] = filterValue;
+        if (drawer) {
+          const drawerRect = drawer.getBoundingClientRect();
+          const dWidth = Math.max(Math.round(drawerRect.width || 320), 280);
+          const dHeight = Math.max(Math.round(drawerRect.height || window.innerHeight), 500);
+          // 延伸至側邊欄：以圓角 28px、加深物理折射深度打造真正 Apple Liquid Glass 延伸背景折射
+          const drawerFilterUrl = getDisplacementFilter({
+            height: dHeight,
+            width: dWidth,
+            radius: 28,
+            depth: 32,
+            strength: 180,
+            chromaticAberration: 8,
+          });
+          const drawerFilterValue = `blur(4px) url('${drawerFilterUrl}') blur(16px) contrast(1.08) brightness(1.04) saturate(210%)`;
+          drawer.style.backdropFilter = drawerFilterValue;
+          // @ts-ignore
+          drawer.style['-webkit-backdrop-filter'] = drawerFilterValue;
+        }
       } else {
-        // Fallback for Safari / environments where backdrop-filter: url() is unsupported
-        nav.style.backdropFilter = 'blur(36px) saturate(210%)';
-        // @ts-ignore
-        nav.style['-webkit-backdrop-filter'] = 'blur(36px) saturate(210%)';
+        // Fallback for environments where backdrop-filter: url() is unsupported
+        if (nav) {
+          nav.style.backdropFilter = 'blur(36px) saturate(210%)';
+          // @ts-ignore
+          nav.style['-webkit-backdrop-filter'] = 'blur(36px) saturate(210%)';
+        }
+        if (drawer) {
+          drawer.style.backdropFilter = 'blur(48px) saturate(210%)';
+          // @ts-ignore
+          drawer.style['-webkit-backdrop-filter'] = 'blur(48px) saturate(210%)';
+        }
       }
     }
 
