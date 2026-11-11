@@ -14,12 +14,12 @@ const others = apps.filter((a) => !active.includes(a));
 <Base lang={lang} title={ui.title} description={ui.lead}>
   <main class="page">
     <div class="container">
-      <header class="page-head mb-4">
+      <header class="page-head mb-4 reveal">
         <h1 class="d-flex align-items-center gap-2">
           <Icon name="material-symbols:apps" class="material-symbols-rounded text-accent" aria-hidden="true" />
           <span>{ui.title}</span>
         </h1>
-        <p class="lead">{ui.lead}</p>
+        <p class="lead reveal reveal-delay-100">{ui.lead}</p>
       </header>
       {active.length ? <div class="card-grid">{active.map((a) => <AppCard app={a} lang={lang} />)}</div> : <p class="d-inline-flex align-items-center gap-2 text-muted"><Icon name="material-symbols:inbox" class="material-symbols-rounded" aria-hidden="true" /><span>{ui.empty}</span></p>}
       {others.length > 0 && (

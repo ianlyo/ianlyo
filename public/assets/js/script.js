@@ -419,6 +419,9 @@ function renderProjects() {
     }
 
     grid.innerHTML = displayProjects.map(createProjectCard).join('');
+    if (typeof window.initScrollReveal === 'function') {
+        window.initScrollReveal();
+    }
 }
 
 function createProjectCard(repo) {
@@ -428,7 +431,7 @@ function createProjectCard(repo) {
     
     return `
         <div class="col-lg-4 col-md-6 mb-4">
-            <article class="card repo-card">
+            <article class="card repo-card reveal">
                 <div class="card-body">
                     <h5 class="card-title">
                         <a href="${repo.html_url}" target="_blank" rel="noopener">${escapeHtml(repo.name)}</a>

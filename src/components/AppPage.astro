@@ -82,7 +82,7 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
       
 
       <!-- 2. Introduction -->
-      <section class="section-block">
+      <section class="section-block reveal">
         <div class="prose"><p set:html={desc.replace(/\n/g, '<br />')} /></div>
       </section>
     </div>
@@ -104,20 +104,20 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
       <!-- 4. Features -->
       {d.features.length > 0 && (
         <section class="section-block">
-          <h2 class="block-title">
+          <h2 class="block-title reveal">
             <Icon name="material-symbols:auto-awesome" class="material-symbols-rounded text-accent" aria-hidden="true" />
             <span>{ui.features}</span>
           </h2>
           <div class="card-grid">
             {d.features.map((f) => (
-              <div class="surface-card"><h3>{pick(f.title, lang)}</h3><p>{pick(f.description, lang)}</p></div>
+              <div class="surface-card reveal"><h3>{pick(f.title, lang)}</h3><p>{pick(f.description, lang)}</p></div>
             ))}
           </div>
         </section>
       )}
 
       <!-- 5. Specs -->
-      <section class="section-block">
+      <section class="section-block reveal">
         <h2 class="block-title">
           <Icon name="material-symbols:fact-check" class="material-symbols-rounded text-accent" aria-hidden="true" />
           <span>{ui.specs}</span>
@@ -136,7 +136,7 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
       </section>
 
       <!-- 6 & 7. Installation + beta instructions -->
-      <section class="section-block" id="install">
+      <section class="section-block reveal" id="install">
         <h2 class="block-title">
           <Icon name="material-symbols:checklist" class="material-symbols-rounded text-accent" aria-hidden="true" />
           <span>{ui.stepsTitle}</span>
@@ -164,7 +164,7 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
 
       <!-- 8. FAQ -->
       {d.faq.length > 0 && (
-        <section class="section-block">
+        <section class="section-block reveal">
           <h2 class="block-title">
             <Icon name="material-symbols:help" class="material-symbols-rounded text-accent" aria-hidden="true" />
             <span>{ui.faq}</span>
@@ -182,7 +182,7 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
       )}
 
       <!-- 9. Changelog -->
-      <section class="section-block">
+      <section class="section-block reveal">
         <h2 class="block-title">
           <Icon name="material-symbols:history" class="material-symbols-rounded text-accent" aria-hidden="true" />
           <span>{ui.changelog}</span>
@@ -200,7 +200,7 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
       </section>
 
       <!-- 10. Feedback and links -->
-      <section class="section-block">
+      <section class="section-block reveal">
         <h2 class="block-title">
           <Icon name="material-symbols:link" class="material-symbols-rounded text-accent" aria-hidden="true" />
           <span>{ui.links}</span>

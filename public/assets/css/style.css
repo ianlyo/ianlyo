@@ -41,7 +41,6 @@
     --nav-border: rgba(226, 232, 240, 0.65);
     
     /* Hero Atmosphere */
-    --card-gradient-top: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
     --hero-title-gradient: linear-gradient(
         115deg,
         #4f46e5 0%,
@@ -53,6 +52,20 @@
     --hero-ambient-glow: radial-gradient(circle at 85% 15%, rgba(79, 70, 229, 0.1) 0%, transparent 60%),
                          radial-gradient(circle at 10% 80%, rgba(14, 165, 233, 0.08) 0%, transparent 50%);
     
+    /* Chromatic Aberration Glow (Light Mode: High contrast, dark text with vivid chromatic fringe & subtle ambient bloom) */
+    --glow-text-color: #0f172a;
+    --glow-chroma-top: rgba(0, 160, 245, 0.9);
+    --glow-chroma-bottom: rgba(249, 115, 22, 0.92);
+    --glow-core: rgba(15, 23, 42, 0.16);
+    --glow-mid: rgba(79, 70, 229, 0.2);
+    --glow-ambient: rgba(14, 165, 233, 0.15);
+    --text-glow-aberration-shadow:
+        0 -3px 4px var(--glow-chroma-top),
+        0 3px 4px var(--glow-chroma-bottom),
+        0 0 14px var(--glow-core),
+        0 0 35px var(--glow-mid),
+        0 0 75px var(--glow-ambient);
+
     /* Radii */
     --radius-sm: 8px;
     --radius-md: 14px;
@@ -104,7 +117,6 @@
     --nav-border: rgba(255, 255, 255, 0.12);
     
     /* Hero Atmosphere */
-    --card-gradient-top: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
     --hero-title-gradient: linear-gradient(
         115deg,
         #818cf8 0%,
@@ -121,6 +133,20 @@
     --theme-toggle-bg: rgba(21, 30, 48, 0.95);
     --theme-toggle-border: rgba(255, 255, 255, 0.14);
     --theme-toggle-color: #f1f5f9;
+
+    /* Chromatic Aberration Glow (Dark Mode: Cyberpunk high luminosity, white text with cyan & orange fringe & white ambient bloom) */
+    --glow-text-color: #ffffff;
+    --glow-chroma-top: rgba(0, 220, 255, 0.9);
+    --glow-chroma-bottom: rgba(255, 120, 0, 0.9);
+    --glow-core: rgba(255, 255, 255, 0.9);
+    --glow-mid: rgba(255, 255, 255, 0.6);
+    --glow-ambient: rgba(255, 255, 255, 0.3);
+    --text-glow-aberration-shadow:
+        0 -4px 4px var(--glow-chroma-top),
+        0 4px 4px var(--glow-chroma-bottom),
+        0 0 20px var(--glow-core),
+        0 0 45px var(--glow-mid),
+        0 0 90px var(--glow-ambient);
 }
 
 /* ==========================================================================
@@ -643,16 +669,6 @@ a:hover {
     transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.contribution-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--card-gradient-top);
-}
-
 .contribution-card:hover {
     border-color: var(--border-hover);
     box-shadow: var(--shadow-lg);
@@ -1031,6 +1047,25 @@ a:hover {
     color: var(--accent-primary);
 }
 
+.project-tools input,
+.project-tools select {
+    min-height: 46px;
+    padding: 10px 16px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: 'DM Sans', 'Noto Sans TC', sans-serif;
+    font-size: 0.92rem;
+    box-shadow: var(--shadow-sm);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.project-tools select option {
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+}
+
 .language-filter-wrapper select,
 .category-filter-wrapper select {
     width: 195px;
@@ -1039,10 +1074,11 @@ a:hover {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
+    background-color: var(--bg-surface);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 20px;
+    background-position: calc(100% - 12px) center;
+    background-size: 20px 20px;
     cursor: pointer;
 }
 
@@ -1054,20 +1090,6 @@ a:hover {
 .language-filter-wrapper:focus-within .language-filter-icon,
 .category-filter-wrapper:focus-within .category-filter-icon {
     color: var(--accent-primary);
-}
-
-.project-tools input,
-.project-tools select {
-    min-height: 46px;
-    padding: 10px 16px;
-    background: var(--bg-surface);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-sm);
-    color: var(--text-primary);
-    font-family: 'DM Sans', 'Noto Sans TC', sans-serif;
-    font-size: 0.92rem;
-    box-shadow: var(--shadow-sm);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .project-tools input::placeholder {
@@ -1117,26 +1139,10 @@ a:hover {
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease, box-shadow 0.25s ease !important;
 }
 
-.repo-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--card-gradient-top);
-    opacity: 0;
-    transition: opacity 0.25s ease;
-}
-
 .repo-card:hover {
     transform: translateY(-5px);
     border-color: var(--border-hover) !important;
     box-shadow: var(--shadow-lg) !important;
-}
-
-.repo-card:hover::before {
-    opacity: 1;
 }
 
 .repo-card .card-body {

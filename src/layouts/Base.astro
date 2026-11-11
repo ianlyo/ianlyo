@@ -120,7 +120,7 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/assets/css/style.css?v=2.6" />
+  <link rel="stylesheet" href="/assets/css/style.css?v=2.7" />
   <link rel="stylesheet" href="/assets/css/site.css?v=2.5" />
 </head>
 <body>
@@ -264,7 +264,81 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
   </footer>
 
   <script is:inline src="/assets/js/script.js?v=2.2"></script>
+  <script src="../scripts/scrollReveal.ts"></script>
   <style is:global>
+    /* ==========================================================================
+       Apple-Style Scroll-Triggered Fade-In & Slide-Up (.reveal)
+       ========================================================================== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Staggered Delay Classes */
+    .reveal-delay-100,
+    .reveal.delay-1,
+    .delay-1 {
+      transition-delay: 0.1s;
+    }
+
+    .reveal-delay-200,
+    .reveal.delay-2,
+    .delay-2 {
+      transition-delay: 0.2s;
+    }
+
+    .reveal-delay-300,
+    .reveal.delay-3,
+    .delay-3 {
+      transition-delay: 0.3s;
+    }
+
+    .reveal-delay-400,
+    .reveal.delay-4,
+    .delay-4 {
+      transition-delay: 0.4s;
+    }
+
+    /* Auto-stagger for grid items without explicit delay class */
+    .card-grid > .reveal:not([class*="delay"]):nth-child(1),
+    .stagger-group > .reveal:not([class*="delay"]):nth-child(1),
+    .project-grid > div:nth-child(1) .reveal {
+      transition-delay: 0.06s;
+    }
+    .card-grid > .reveal:not([class*="delay"]):nth-child(2),
+    .stagger-group > .reveal:not([class*="delay"]):nth-child(2),
+    .project-grid > div:nth-child(2) .reveal {
+      transition-delay: 0.14s;
+    }
+    .card-grid > .reveal:not([class*="delay"]):nth-child(3),
+    .stagger-group > .reveal:not([class*="delay"]):nth-child(3),
+    .project-grid > div:nth-child(3) .reveal {
+      transition-delay: 0.22s;
+    }
+    .card-grid > .reveal:not([class*="delay"]):nth-child(4),
+    .stagger-group > .reveal:not([class*="delay"]):nth-child(4),
+    .project-grid > div:nth-child(4) .reveal {
+      transition-delay: 0.30s;
+    }
+    .card-grid > .reveal:not([class*="delay"]):nth-child(5),
+    .stagger-group > .reveal:not([class*="delay"]):nth-child(5),
+    .project-grid > div:nth-child(5) .reveal {
+      transition-delay: 0.38s;
+    }
+    .card-grid > .reveal:not([class*="delay"]):nth-child(6),
+    .stagger-group > .reveal:not([class*="delay"]):nth-child(6),
+    .project-grid > div:nth-child(6) .reveal {
+      transition-delay: 0.46s;
+    }
+
     .scroll-progress-bar {
       position: fixed;
       top: 0;
@@ -300,6 +374,12 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
     @media (prefers-reduced-motion: reduce) {
       .scroll-progress-bar {
         display: none !important;
+      }
+      .reveal {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+        will-change: auto !important;
       }
     }
   </style>

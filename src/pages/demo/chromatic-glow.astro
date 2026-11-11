@@ -1,0 +1,320 @@
+---
+import { Icon } from 'astro-icon/components';
+import Base from '../../layouts/Base.astro';
+import { t, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'zh-Hant' } = Astro.props;
+const ui = t(lang);
+const demo = ui.chromaticGlowDemo;
+const altPath = lang === 'en' ? '/demo/chromatic-glow/' : '/en/demo/chromatic-glow/';
+---
+
+<Base
+  title={demo.title}
+  description={demo.lead}
+  lang={lang}
+  altPath={altPath}
+  noindex
+>
+  <main class="page demo-page py-5">
+    <div class="container page-wide">
+      <!-- Breadcrumb / Back Navigation -->
+      <div class="mb-4">
+        <a href={lang === 'en' ? '/en/' : '/'} class="btn btn-sm btn-outline-secondary rounded-pill d-inline-flex align-items-center gap-1">
+          <Icon name="material-symbols:arrow-back" class="material-symbols-rounded icon-xs" aria-hidden="true" />
+          <span>{ui.nav.home}</span>
+        </a>
+      </div>
+
+      <!-- Header Section -->
+      <header class="text-center mb-5 pb-3">
+        <div class="badge rounded-pill bg-primary-subtle text-primary mb-3 px-3 py-2 fw-semibold">
+          Design Token & Architecture Showcase
+        </div>
+        <h1 class="display-4 fw-black mb-3">
+          <span class="text-glow-aberration d-inline-block tracking-tight" id="hero-display-text">
+            {demo.defaultPreviewText}
+          </span>
+        </h1>
+        <p class="lead text-secondary mx-auto" style="max-width: 680px;">
+          {demo.lead}
+        </p>
+      </header>
+
+      <!-- Interactive Playground Card -->
+      <section class="card surface-card border shadow-lg mb-5 overflow-hidden rounded-4">
+        <div class="card-header bg-transparent border-bottom p-4 d-flex flex-wrap align-items-center justify-content-between gap-3">
+          <div class="d-flex align-items-center gap-2">
+            <Icon name="material-symbols:tune" class="material-symbols-rounded text-accent fs-4" aria-hidden="true" />
+            <h2 class="h5 mb-0 fw-bold">{demo.interactivePlayground}</h2>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill d-flex align-items-center gap-1 px-3" id="demo-theme-toggle">
+              <Icon name="material-symbols:contrast" class="material-symbols-rounded icon-xs" aria-hidden="true" />
+              <span>{demo.toggleTheme}</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+          <!-- Live Preview Canvas -->
+          <div
+            id="preview-canvas"
+            class="preview-canvas rounded-4 p-5 d-flex align-items-center justify-content-center text-center mb-4 position-relative"
+            style="min-height: 240px;"
+          >
+            <div id="preview-text-element" class="text-glow-aberration fw-black transition-all" style="font-size: clamp(2rem, 6vw, 4.5rem); letter-spacing: 0.04em;">
+              {demo.defaultPreviewText}
+            </div>
+          </div>
+
+          <!-- Controls Grid -->
+          <div class="row g-4 pt-2">
+            <!-- Text Input -->
+            <div class="col-12 col-md-6">
+              <label for="custom-text-input" class="form-label fw-bold text-primary small text-uppercase">
+                {demo.customTextInput}
+              </label>
+              <div class="input-group">
+                <span class="input-group-text bg-body-tertiary border-end-0">
+                  <Icon name="material-symbols:edit" class="material-symbols-rounded icon-sm text-secondary" aria-hidden="true" />
+                </span>
+                <input
+                  type="text"
+                  id="custom-text-input"
+                  class="form-control bg-body-tertiary border-start-0 ps-1"
+                  value={demo.defaultPreviewText}
+                  placeholder={demo.defaultPreviewText}
+                  maxlength="40"
+                />
+              </div>
+            </div>
+
+            <!-- Intensity Presets -->
+            <div class="col-12 col-md-6">
+              <label class="form-label fw-bold text-primary small text-uppercase">
+                樣式強度 (Intensity Variants)
+              </label>
+              <div class="btn-group w-100" role="group" aria-label="Intensity variants">
+                <input type="radio" class="btn-check" name="intensityRadio" id="intensity-subtle" autocomplete="off" />
+                <label class="btn btn-outline-secondary" for="intensity-subtle">{demo.intensitySubtle}</label>
+
+                <input type="radio" class="btn-check" name="intensityRadio" id="intensity-standard" autocomplete="off" checked />
+                <label class="btn btn-outline-secondary" for="intensity-standard">{demo.intensityStandard}</label>
+
+                <input type="radio" class="btn-check" name="intensityRadio" id="intensity-intense" autocomplete="off" />
+                <label class="btn btn-outline-secondary" for="intensity-intense">{demo.intensityIntense}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Side-by-side Dark vs Light Mode Comparison -->
+      <section class="mb-5">
+        <h2 class="h4 fw-bold mb-4 d-flex align-items-center gap-2">
+          <Icon name="material-symbols:compare" class="material-symbols-rounded text-accent fs-4" aria-hidden="true" />
+          <span>深淺色模式設計策略對比</span>
+        </h2>
+        <div class="row g-4">
+          <!-- Light Mode Preview Card -->
+          <div class="col-12 col-lg-6">
+            <div class="p-4 rounded-4 border h-100 position-relative" style="background-color: #f8fafc; color: #0f172a;" data-bs-theme="light">
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="badge rounded-pill bg-light text-dark border px-3 py-1 fw-semibold d-inline-flex align-items-center gap-1">
+                  <Icon name="material-symbols:light-mode" class="material-symbols-rounded icon-xs text-warning" aria-hidden="true" />
+                  <span>{demo.lightModeTitle}</span>
+                </div>
+                <span class="badge text-bg-secondary font-monospace">color: #0f172a</span>
+              </div>
+              <div class="py-4 text-center my-3 border rounded-3 bg-white">
+                <span class="text-glow-aberration fs-1 fw-black d-inline-block">
+                  CHROMATIC GLOW
+                </span>
+              </div>
+              <p class="text-secondary small mb-0 lh-base">
+                {demo.lightModeDesc}
+              </p>
+            </div>
+          </div>
+
+          <!-- Dark Mode Preview Card -->
+          <div class="col-12 col-lg-6">
+            <div class="p-4 rounded-4 border h-100 position-relative" style="background-color: #090d16; color: #ffffff;" data-bs-theme="dark">
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="badge rounded-pill bg-dark text-white border border-secondary px-3 py-1 fw-semibold d-inline-flex align-items-center gap-1">
+                  <Icon name="material-symbols:dark-mode" class="material-symbols-rounded icon-xs text-info" aria-hidden="true" />
+                  <span>{demo.darkModeTitle}</span>
+                </div>
+                <span class="badge text-bg-dark border border-secondary font-monospace">color: #ffffff</span>
+              </div>
+              <div class="py-4 text-center my-3 border border-secondary rounded-3" style="background-color: #0f1623;">
+                <span class="text-glow-aberration fs-1 fw-black d-inline-block">
+                  CHROMATIC GLOW
+                </span>
+              </div>
+              <p class="text-secondary-subtle small mb-0 lh-base" style="color: #94a3b8;">
+                {demo.darkModeDesc}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5-Layer Breakdown Section -->
+      <section class="card surface-card border rounded-4 shadow-sm mb-5 p-4 p-md-5">
+        <h2 class="h4 fw-bold mb-3 d-flex align-items-center gap-2">
+          <Icon name="material-symbols:layers" class="material-symbols-rounded text-accent fs-4" aria-hidden="true" />
+          <span>{demo.layerBreakdown}</span>
+        </h2>
+        <p class="text-secondary mb-4">
+          此效果由五層精密定位的 <code>text-shadow</code> 疊加運算而成，同時達成垂直色差分離（Chromatic Shift）與多光譜漫射（Diffuse Bloom）。
+        </p>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th scope="col" style="width: 25%;">層級名稱</th>
+                <th scope="col" style="width: 35%;">CSS 陰影參數 (Dark Mode)</th>
+                <th scope="col" style="width: 35%;">CSS 陰影參數 (Light Mode)</th>
+                <th scope="col" style="width: 5%;">效果</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="fw-semibold">{demo.layerTopChroma}</td>
+                <td><code class="text-info">0 -4px 4px rgba(0, 220, 255, 0.9)</code></td>
+                <td><code class="text-primary">0 -3px 4px rgba(0, 160, 245, 0.9)</code></td>
+                <td><span class="badge bg-info-subtle text-info border">頂部青藍色散</span></td>
+              </tr>
+              <tr>
+                <td class="fw-semibold">{demo.layerBottomChroma}</td>
+                <td><code class="text-warning">0 4px 4px rgba(255, 120, 0, 0.9)</code></td>
+                <td><code class="text-danger">0 3px 4px rgba(249, 115, 22, 0.92)</code></td>
+                <td><span class="badge bg-warning-subtle text-warning border">底部暖橘色散</span></td>
+              </tr>
+              <tr>
+                <td class="fw-semibold">{demo.layerCoreGlow}</td>
+                <td><code>0 0 20px rgba(255, 255, 255, 0.9)</code></td>
+                <td><code>0 0 14px rgba(15, 23, 42, 0.16)</code></td>
+                <td><span class="badge bg-secondary-subtle text-secondary border">核心輪廓錨定</span></td>
+              </tr>
+              <tr>
+                <td class="fw-semibold">{demo.layerMidBloom}</td>
+                <td><code>0 0 45px rgba(255, 255, 255, 0.6)</code></td>
+                <td><code>0 0 35px rgba(79, 70, 229, 0.2)</code></td>
+                <td><span class="badge bg-primary-subtle text-primary border">中層光暈光譜</span></td>
+              </tr>
+              <tr>
+                <td class="fw-semibold">{demo.layerAmbientGlow}</td>
+                <td><code>0 0 90px rgba(255, 255, 255, 0.3)</code></td>
+                <td><code>0 0 75px rgba(14, 165, 233, 0.15)</code></td>
+                <td><span class="badge bg-info-subtle text-info border">外圍環境輝光</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Integration & Usage Guide -->
+      <section class="card surface-card border rounded-4 shadow-sm mb-5 p-4 p-md-5">
+        <h2 class="h4 fw-bold mb-3 d-flex align-items-center gap-2">
+          <Icon name="material-symbols:code" class="material-symbols-rounded text-accent fs-4" aria-hidden="true" />
+          <span>{demo.integrationGuide}</span>
+        </h2>
+        <p class="text-secondary mb-4">
+          本特效已抽象化為全域 CSS Variables 與工具類別 <code>.text-glow-aberration</code>，在 Astro 或 Tailwind 專案中皆可直接使用。
+        </p>
+
+        <!-- Code Tabs -->
+        <div class="code-block-wrapper position-relative border rounded-3 overflow-hidden bg-body-tertiary p-3">
+          <div class="d-flex align-items-center justify-content-between mb-2 pb-2 border-bottom">
+            <span class="font-monospace small text-secondary">Astro Component Usage</span>
+            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-0 px-2 small" id="copy-astro-snippet">
+              <Icon name="material-symbols:content-copy" class="material-symbols-rounded icon-xs me-1" aria-hidden="true" />
+              <span>{demo.copyCode}</span>
+            </button>
+          </div>
+          <pre class="m-0"><code class="text-primary font-monospace small" id="astro-snippet-text">{`<!-- 在任何 .astro 頁面或元件中直接套用 -->
+<h1 class="text-glow-aberration">
+  CHROMATIC GLOW
+</h1>
+
+<!-- 強度修飾類別 (可選) -->
+<p class="text-glow-aberration-subtle">Subtle Glow</p>
+<h2 class="text-glow-aberration-intense">Intense Glow</h2>`}</code></pre>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script is:inline>
+    (function () {
+      const textInput = document.getElementById('custom-text-input');
+      const previewEl = document.getElementById('preview-text-element');
+      const heroText = document.getElementById('hero-display-text');
+      const themeBtn = document.getElementById('demo-theme-toggle');
+      const radioSubtle = document.getElementById('intensity-subtle');
+      const radioStandard = document.getElementById('intensity-standard');
+      const radioIntense = document.getElementById('intensity-intense');
+      const copyBtn = document.getElementById('copy-astro-snippet');
+
+      // Live text typing
+      if (textInput && previewEl) {
+        textInput.addEventListener('input', function (e) {
+          const val = e.target.value.trim() || 'CHROMATIC GLOW';
+          previewEl.textContent = val;
+          if (heroText) heroText.textContent = val;
+        });
+      }
+
+      // Intensity variants
+      function updateIntensity() {
+        if (!previewEl) return;
+        previewEl.classList.remove('text-glow-aberration', 'text-glow-aberration-subtle', 'text-glow-aberration-intense');
+        if (radioSubtle && radioSubtle.checked) {
+          previewEl.classList.add('text-glow-aberration-subtle');
+        } else if (radioIntense && radioIntense.checked) {
+          previewEl.classList.add('text-glow-aberration-intense');
+        } else {
+          previewEl.classList.add('text-glow-aberration');
+        }
+      }
+
+      if (radioSubtle) radioSubtle.addEventListener('change', updateIntensity);
+      if (radioStandard) radioStandard.addEventListener('change', updateIntensity);
+      if (radioIntense) radioIntense.addEventListener('change', updateIntensity);
+
+      // Theme toggle in demo
+      if (themeBtn) {
+        themeBtn.addEventListener('click', function () {
+          const doc = document.documentElement;
+          const current = doc.getAttribute('data-bs-theme') || 'light';
+          const next = current === 'dark' ? 'light' : 'dark';
+          doc.setAttribute('data-bs-theme', next);
+          localStorage.setItem('theme', next);
+        });
+      }
+
+      // Copy snippet
+      if (copyBtn) {
+        copyBtn.addEventListener('click', function () {
+          const snippet = document.getElementById('astro-snippet-text');
+          if (!snippet) return;
+          navigator.clipboard.writeText(snippet.innerText).then(function () {
+            const original = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<span class="text-success fw-bold">✓ Copied!</span>';
+            setTimeout(function () {
+              copyBtn.innerHTML = original;
+            }, 2000);
+          });
+        });
+      }
+    })();
+  </script>
+</Base>

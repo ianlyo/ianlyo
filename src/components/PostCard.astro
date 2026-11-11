@@ -7,7 +7,7 @@ interface Props { post: Post; lang?: Lang }
 const { post, lang = 'zh-Hant' } = Astro.props;
 const ui = t(lang).blog;
 ---
-<article class="surface-card">
+<article class="surface-card reveal">
   <a href={`/blog/${post.id}/`} class="post-card-link">
     <h2>{post.data.title}</h2>
     <p>{post.data.description}</p>

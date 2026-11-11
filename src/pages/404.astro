@@ -1,0 +1,149 @@
+---
+import Base from '../layouts/Base.astro';
+import { t } from '../i18n/ui';
+
+// Cloudflare Pages serves this as 404.html for every unknown URL, so one page
+// must cover both languages. Copy comes from the i18n SSOT; the client picks
+// the language from the URL prefix (/en/...).
+const zh = t('zh-Hant').notFound;
+const en = t('en').notFound;
+---
+<Base title={zh.title} noindex altPath={null}>
+  <main class="page nf" id="nf">
+    <div class="nf-stars" aria-hidden="true"></div>
+    <div class="container nf-inner">
+      <div class="nf-astro" id="nf-astro" aria-hidden="true">
+        <svg viewBox="0 0 120 140" width="120" height="140">
+          <line x1="60" y1="130" x2="60" y2="140" stroke="currentColor" stroke-opacity=".3" stroke-width="2" stroke-dasharray="3 4"/>
+          <rect x="30" y="62" width="60" height="58" rx="22" fill="#e8eaf6"/>
+          <rect x="38" y="70" width="44" height="16" rx="6" fill="#c5cae9"/>
+          <circle cx="60" cy="38" r="30" fill="#f5f5fa"/>
+          <rect x="38" y="24" width="44" height="28" rx="14" fill="#1a1d3a"/>
+          <circle cx="52" cy="38" r="3" fill="#7c8cff"/>
+          <circle cx="68" cy="38" r="3" fill="#7c8cff"/>
+          <rect x="14" y="70" width="18" height="12" rx="6" fill="#e8eaf6"/>
+          <rect x="88" y="70" width="18" height="12" rx="6" fill="#e8eaf6"/>
+        </svg>
+      </div>
+      <h1 class="nf-code glitch" data-text="404" aria-label="404">404</h1>
+      <h2 class="nf-title" id="nf-title">{zh.title}</h2>
+      <p class="nf-quote" id="nf-quote" aria-live="polite"></p>
+      <p class="nf-lead" id="nf-lead">{zh.lead}</p>
+      <div class="nf-actions">
+        <a class="btn btn-primary" id="nf-home" href="/">{zh.home}</a>
+        <button class="btn btn-outline" id="nf-back" type="button">{zh.back}</button>
+        <button class="btn btn-outline" id="nf-egg" type="button">{zh.egg}</button>
+      </div>
+      <p class="nf-score" id="nf-score" hidden></p>
+    </div>
+    <canvas id="nf-confetti" aria-hidden="true"></canvas>
+  </main>
+
+  <script is:inline define:vars={{ dict: { 'zh-Hant': zh, en } }}>
+    (function () {
+      var isEn = location.pathname.indexOf('/en/') === 0 || location.pathname === '/en';
+      var d = dict[isEn ? 'en' : 'zh-Hant'];
+      var $ = function (id) { return document.getElementById(id); };
+      document.documentElement.lang = isEn ? 'en' : 'zh-Hant';
+      document.title = d.title + ' | ianlyo';
+      $('nf-title').textContent = d.title;
+      $('nf-lead').textContent = d.lead;
+      $('nf-home').textContent = d.home;
+      $('nf-home').href = isEn ? '/en/' : '/';
+      $('nf-back').textContent = d.back;
+      $('nf-egg').textContent = d.egg;
+      $('nf-quote').textContent = d.quotes[Math.floor(Math.random() * d.quotes.length)];
+
+      $('nf-back').addEventListener('click', function () {
+        if (history.length > 1) history.back(); else location.href = $('nf-home').href;
+      });
+
+      // Parallax: astronaut + stars follow the pointer.
+      var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var root = $('nf');
+      if (!reduce) {
+        root.addEventListener('pointermove', function (e) {
+          var x = (e.clientX / innerWidth - 0.5) * 2;
+          var y = (e.clientY / innerHeight - 0.5) * 2;
+          root.style.setProperty('--px', x.toFixed(3));
+          root.style.setProperty('--py', y.toFixed(3));
+        });
+      }
+
+      // Easter egg: confetti + catch counter.
+      var cv = $('nf-confetti'), ctx = cv.getContext('2d'), parts = [], raf = 0, count = 0;
+      function size() { cv.width = innerWidth; cv.height = innerHeight; }
+      size(); addEventListener('resize', size);
+      var colors = ['#7c8cff', '#ff7ca8', '#ffd166', '#06d6a0', '#4cc9f0'];
+      function burst() {
+        for (var i = 0; i < 140; i++) {
+          parts.push({
+            x: innerWidth / 2, y: innerHeight * 0.6,
+            vx: (Math.random() - 0.5) * 16, vy: -Math.random() * 16 - 4,
+            s: Math.random() * 7 + 4, r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.4,
+            c: colors[i % colors.length], life: 140 + Math.random() * 60
+          });
+        }
+        if (!raf) raf = requestAnimationFrame(tick);
+      }
+      function tick() {
+        ctx.clearRect(0, 0, cv.width, cv.height);
+        parts = parts.filter(function (p) { return p.life-- > 0 && p.y < cv.height + 20; });
+        parts.forEach(function (p) {
+          p.vy += 0.35; p.x += p.vx; p.y += p.vy; p.vx *= 0.99; p.r += p.vr;
+          ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r);
+          ctx.fillStyle = p.c; ctx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); ctx.restore();
+        });
+        raf = parts.length ? requestAnimationFrame(tick) : 0;
+        if (!raf) ctx.clearRect(0, 0, cv.width, cv.height);
+      }
+      function celebrate() {
+        count++;
+        var s = $('nf-score'); s.hidden = false; s.textContent = d.score + count;
+        if (!reduce) burst();
+      }
+      $('nf-egg').addEventListener('click', celebrate);
+      $('nf-astro').addEventListener('click', celebrate);
+    })();
+  </script>
+
+  <style is:global>
+    .nf { position: relative; min-height: 70vh; display: grid; place-items: center; overflow: hidden; --px: 0; --py: 0; }
+    .nf-inner { position: relative; z-index: 1; text-align: center; padding-block: 3rem; }
+    .nf-stars { position: absolute; inset: -5%; opacity: .6; pointer-events: none;
+      background-image:
+        radial-gradient(1.5px 1.5px at 20% 30%, currentColor 50%, transparent 51%),
+        radial-gradient(1px 1px at 70% 20%, currentColor 50%, transparent 51%),
+        radial-gradient(2px 2px at 85% 70%, currentColor 50%, transparent 51%),
+        radial-gradient(1px 1px at 35% 80%, currentColor 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 55% 55%, currentColor 50%, transparent 51%);
+      transform: translate(calc(var(--px) * -14px), calc(var(--py) * -14px)); transition: transform .15s ease-out; }
+    .nf-astro { display: inline-block; cursor: pointer; color: var(--text-muted, #888);
+      transform: translate(calc(var(--px) * 22px), calc(var(--py) * 22px)); transition: transform .15s ease-out; }
+    .nf-astro svg { animation: nf-float 5s ease-in-out infinite; filter: drop-shadow(0 10px 20px rgba(124,140,255,.35)); }
+    @keyframes nf-float { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-16px) rotate(4deg); } }
+
+    .nf-code { font-size: clamp(5rem, 22vw, 11rem); font-weight: 800; line-height: 1; margin: .5rem 0 0; letter-spacing: .04em; }
+    .glitch { position: relative; display: inline-block; }
+    .glitch::before, .glitch::after { content: attr(data-text); position: absolute; inset: 0; overflow: hidden; }
+    .glitch::before { color: #ff4d8d; transform: translate(-3px, 0); clip-path: inset(0 0 55% 0); animation: nf-glitch 2.4s steps(1) infinite; }
+    .glitch::after { color: #4cc9f0; transform: translate(3px, 0); clip-path: inset(55% 0 0 0); animation: nf-glitch 2.4s steps(1) infinite reverse; }
+    @keyframes nf-glitch {
+      0%,88%,100% { transform: translate(0,0); }
+      90% { transform: translate(-5px, 2px); } 92% { transform: translate(5px, -2px); }
+      94% { transform: translate(-3px, -1px); } 96% { transform: translate(4px, 1px); }
+    }
+
+    .nf-title { font-size: 1.5rem; margin: .5rem 0; }
+    .nf-quote { font-size: 1.15rem; font-weight: 600; color: var(--accent, #7c8cff); min-height: 1.6em; margin: .25rem 0; }
+    .nf-lead { color: var(--text-muted, #888); margin: 0 0 1.5rem; }
+    .nf-actions { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+    .nf-score { margin-top: 1rem; font-variant-numeric: tabular-nums; }
+    #nf-confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .nf-astro svg, .glitch::before, .glitch::after { animation: none; }
+      .nf-astro, .nf-stars { transition: none; transform: none; }
+    }
+  </style>
+</Base>

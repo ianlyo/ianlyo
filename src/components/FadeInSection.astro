@@ -1,0 +1,26 @@
+---
+/**
+ * FadeInSection.astro
+ * Reusable wrapper component for Apple-style scroll-triggered fade-in & slide-up animations.
+ */
+interface Props {
+  as?: 'section' | 'div' | 'article' | 'aside' | 'main' | 'header';
+  class?: string;
+  delay?: 100 | 200 | 300 | 400 | '100' | '200' | '300' | '400';
+  id?: string;
+  [key: string]: unknown;
+}
+
+const {
+  as: Tag = 'section',
+  class: className = '',
+  delay,
+  ...rest
+} = Astro.props;
+
+const delayClass = delay ? `reveal-delay-${delay}` : '';
+---
+
+<Tag class:list={['reveal', delayClass, className]} {...rest}>
+  <slot />
+</Tag>
