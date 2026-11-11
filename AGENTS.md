@@ -17,7 +17,7 @@ When maintaining or updating this project, follow these instructions strictly:
 - Read [`docs/MAINTENANCE_GUIDE.md`](docs/MAINTENANCE_GUIDE.md) for publishing workflows and release guidelines.
 
 ## 3. Screenshots & Media Design
-- Screenshots in `/beta/<app-id>/` are rendered via `src/components/ScreenshotGallery.astro`.
+- Screenshots in `/apps-dev/<app-id>/` are rendered via `src/components/ScreenshotGallery.astro`.
 - Follow Apple.com design standards:
   - Responsive large cards with rounded corners (`border-radius: 28px`, mobile `16px`).
   - Image-focused without distracting text captions underneath (`圖片為主不用文字`).

@@ -10,6 +10,14 @@ export default defineConfig({
   },
   trailingSlash: 'always',
   build: { format: 'directory' },
+  redirects: {
+    '/beta': '/apps-dev/',
+    '/beta/health-debug': '/apps-dev/health-debug/',
+    '/beta/focus-log': '/apps-dev/focus-log/',
+    '/en/beta': '/en/apps-dev/',
+    '/en/beta/health-debug': '/en/apps-dev/health-debug/',
+    '/en/beta/focus-log': '/en/apps-dev/focus-log/',
+  },
   i18n: {
     defaultLocale: 'zh-Hant',
     locales: ['zh-Hant', 'en'],

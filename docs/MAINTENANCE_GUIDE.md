@@ -28,7 +28,7 @@ You never need to touch the frontend codebase. Everything is done by adding or e
 2. 將應用程式圖示與高解析截圖（建議 1080×2400 或原始手機尺寸）放入 `public/apps/<app-id>/` 目錄。
 3. 填寫 YAML 內的各項欄位；截圖清單加入 `screenshots:` 陣列，頁面會自動以 Apple 風格的大尺寸橫向輪播呈現（圖片為主不用多餘文字，附帶 `<` 與 `>` 圓形按鈕、指示條與觸控滑動支援）。
 4. 若尚未有測試或商店連結，可保留為 `""`（頁面上會以停用狀態的「佔位」按鈕顯示）。
-5. Push 到 GitHub 後，頁面會自動生成於 `/beta/<app-id>/` 以及 `/en/beta/<app-id>/`。
+5. Push 到 GitHub 後，頁面會自動生成於 `/apps-dev/<app-id>/` 以及 `/en/apps-dev/<app-id>/`。
 
 ---
 

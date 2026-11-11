@@ -42,12 +42,12 @@ const jsonLd = {
   inLanguage: lang,
   ...(d.playStoreUrl ? { downloadUrl: d.playStoreUrl } : {}),
 };
-const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/beta/${app.id}/`);
+const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id}/`);
 ---
 <Base lang={lang} title={`${d.name} - ${ui.title}`} description={tagline} image={ogImage} imageAlt={`${d.name} preview`} jsonLd={jsonLd} altPath={altPath}>
-  <main class="page">
+  <main class="page" data-pagefind-body>
     <div class="container page-narrow">
-      <a href={localePath(lang, '/beta/')} class="meta mb-3 back-link">
+      <a href={localePath(lang, '/apps-dev/')} class="meta mb-3 back-link" data-pagefind-ignore>
         <Icon name="material-symbols:arrow-back" class="material-symbols-rounded icon-sm" aria-hidden="true" />
         <span>{ui.back}</span>
       </a>
@@ -55,10 +55,10 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/beta/${app.id}/`)
       <!-- 1. Hero -->
       <header class="app-hero mb-3">
         {d.icon
-          ? <img class="app-icon" src={d.icon} alt={`${d.name} icon`} width="96" height="96" />
+          ? <img class="app-icon" src={d.icon} alt={`${d.name} icon`} width="96" height="96" data-pagefind-meta="image[src]" />
           : <div class="app-icon app-icon-fallback" aria-hidden="true">{d.name.charAt(0)}</div>}
         <div>
-          <h1 class="mb-1" style="font-weight:800">{d.name}</h1>
+          <h1 class="mb-1" style="font-weight:800" data-pagefind-meta="title">{d.name}</h1>
           <p class="mb-2" style="color:var(--text-secondary)">{tagline}</p>
           <div class="meta">
             <span class={`status-badge s-${d.status}`}>
@@ -75,7 +75,7 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/beta/${app.id}/`)
       </header>
 
       <!-- Prominent install buttons -->
-      <div class="cta-row mb-2">
+      <div class="cta-row mb-2" data-pagefind-ignore>
         <a class="btn-install" href="#install"><i class="bi bi-google-play"></i> {ui.join}</a>
         {d.githubUrl && <a class="btn-ghost" href={d.githubUrl} target="_blank" rel="noopener"><i class="bi bi-github"></i> {ui.githubBtn}</a>}
       </div>

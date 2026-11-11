@@ -6,7 +6,7 @@ interface Props { app: CollectionEntry<'apps'>; lang: Lang }
 const { app, lang } = Astro.props;
 const ui = t(lang).beta;
 const d = app.data;
-const href = localePath(lang, `/beta/${app.id}/`);
+const href = localePath(lang, `/apps-dev/${app.id}/`);
 ---
 <a class="surface-card" href={href}>
   <div class="d-flex gap-3 align-items-center mb-3">

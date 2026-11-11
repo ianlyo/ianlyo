@@ -30,7 +30,7 @@ templates/                   新增文章與 App 的範本檔案
 | 多語系 / i18n | Astro 內建 i18n 路由；預設繁體中文（`/`），英文在 `/en/` |
 | 部落格 / Blog | Content Collection、8 大固定分類、自訂標籤、分頁、閱讀時間預估、相關文章、自動目錄、程式碼高亮、RSS (`/rss.xml`) |
 | 搜尋 / Search | [Pagefind](https://pagefind.app) 靜態全文檢索索引（建置時自動產生於 `/search/`） |
-| Beta 測試中心 / Beta Hub | `/beta/` 與 `/beta/<id>/`（及 `/en/...`）自動由 `apps/*.yaml` 生成 |
+| Apps 中心 / Apps Hub | `/apps-dev/` 與 `/apps-dev/<id>/`（及 `/en/...`）自動由 `apps/*.yaml` 生成 |
 | SEO 優化 | 完整標題、描述、標準網址（Canonical）、Open Graph、Twitter Cards、hreflang、JSON-LD 結構化資料、`sitemap-index.xml`、`robots.txt` |
 | 主題切換 / Theme | 亮色 / 暗色 / 系統自動跟隨，防閃爍腳本（保持原有邏輯與 LocalStorage） |
 | 保留設定 / Preserved | `CNAME`、Teal 主色調、字體、GitHub API 專案瀏覽器 (`script.js`)、PWA、隱私權政策路徑 |

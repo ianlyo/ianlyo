@@ -149,7 +149,7 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
 
     <!-- Desktop nav links (hidden on mobile, visible on desktop) -->
     <div class="nav-links d-none d-md-flex">
-      <a href={localePath(lang, '/beta/')} class:list={[{ active: isActive('/beta') }]}>
+      <a href={localePath(lang, '/apps-dev/')} class:list={[{ active: isActive('/apps-dev') }]}>
         <Icon name="material-symbols:apps" class="material-symbols-rounded icon-xs" aria-hidden="true" />
         <span>{ui.nav.beta}</span>
       </a>
@@ -161,7 +161,7 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
         <Icon name="material-symbols:code" class="material-symbols-rounded icon-xs" aria-hidden="true" />
         <span>{ui.nav.projects}</span>
       </a>
-      <a href="/search/" aria-label={ui.nav.search} title={ui.nav.search}><Icon name="material-symbols:search" class="material-symbols-rounded" aria-hidden="true" /></a>
+      <a href={localePath(lang, '/search/')} aria-label={ui.nav.search} title={ui.nav.search}><Icon name="material-symbols:search" class="material-symbols-rounded" aria-hidden="true" /></a>
       <a href={SITE.github.reposUrl} target="_blank" rel="noopener" aria-label="GitHub" title="GitHub">
         <i class="bi bi-github" aria-hidden="true"></i>
       </a>
@@ -175,7 +175,7 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
 
     <!-- Right controls (Search on mobile + Theme toggle on all) -->
     <div class="nav-right">
-      <a href="/search/" class="nav-icon-btn d-inline-flex d-md-none" aria-label={ui.nav.search} title={ui.nav.search}>
+      <a href={localePath(lang, '/search/')} class="nav-icon-btn d-inline-flex d-md-none" aria-label={ui.nav.search} title={ui.nav.search}>
         <Icon name="material-symbols:search" class="material-symbols-rounded" aria-hidden="true" />
       </a>
       <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme">
@@ -206,7 +206,7 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
           </a>
         </li>
         <li>
-          <a href={localePath(lang, '/beta/')} class:list={['nav-drawer-item', { active: isActive('/beta') }]}>
+          <a href={localePath(lang, '/apps-dev/')} class:list={['nav-drawer-item', { active: isActive('/apps-dev') }]}>
             <Icon name="material-symbols:apps" class="material-symbols-rounded" aria-hidden="true" />
             <span>{ui.nav.beta}</span>
           </a>
@@ -224,7 +224,7 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
           </a>
         </li>
         <li>
-          <a href="/search/" class:list={['nav-drawer-item', { active: path.startsWith('/search') }]}>
+          <a href={localePath(lang, '/search/')} class:list={['nav-drawer-item', { active: path.includes('/search') }]}>
             <Icon name="material-symbols:search" class="material-symbols-rounded" aria-hidden="true" />
             <span>{ui.nav.search}</span>
           </a>

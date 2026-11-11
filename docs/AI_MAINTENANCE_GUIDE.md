@@ -22,7 +22,7 @@
 
 ## 2. 截圖區段（Apple 風格輪播展示）規範
 
-在 App 詳情頁（`/beta/<app-id>/`），截圖區段採用獨立封裝元件 [`src/components/ScreenshotGallery.astro`](../src/components/ScreenshotGallery.astro)：
+在 App 詳情頁（`/apps-dev/<app-id>/`），截圖區段採用獨立封裝元件 [`src/components/ScreenshotGallery.astro`](../src/components/ScreenshotGallery.astro)：
 
 ### 設計特色與規定：
 1. **圖片為主，不用文字**：
