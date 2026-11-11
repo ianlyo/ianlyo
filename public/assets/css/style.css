@@ -37,8 +37,8 @@
     --active-card-shadow: 0 8px 24px -4px rgba(13, 148, 136, 0.2), 0 0 0 1.5px var(--accent-primary);
     
     /* Navigation & Frosted Glass (Ultra-Clear Liquid Glass) */
-    --nav-bg: rgba(248, 250, 252, 0.38);
-    --nav-border: rgba(226, 232, 240, 0.35);
+    --nav-bg: rgba(248, 250, 252, 0.42);
+    --nav-border: rgba(226, 232, 240, 0.45);
     
     /* Hero Atmosphere */
     --card-gradient-top: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
@@ -93,8 +93,8 @@
     --active-card-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.5), 0 0 16px var(--accent-glow), 0 0 0 1.5px var(--accent-primary);
     
     /* Navigation & Frosted Glass (Ultra-Clear Liquid Glass) */
-    --nav-bg: rgba(11, 17, 24, 0.38);
-    --nav-border: rgba(255, 255, 255, 0.08);
+    --nav-bg: rgba(11, 17, 24, 0.42);
+    --nav-border: rgba(255, 255, 255, 0.1);
     
     /* Hero Atmosphere */
     --card-gradient-top: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
@@ -231,7 +231,7 @@ a:hover {
     transition: transform 0.36s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* 液態玻璃頂部透鏡高光弧線 (Liquid Glass Top Specular Arc) */
+/* 頂部高光倒角弧光 (Top Specular Arc) */
 .site-nav::before {
     content: '';
     position: absolute;
@@ -247,29 +247,6 @@ a:hover {
     );
     pointer-events: none;
     filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.5));
-}
-
-/* 液態玻璃底緣多色譜稜鏡折射彩光帶 (Liquid Glass Prism Edge Spectrum) */
-.site-nav::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(45, 212, 191, 0.6) 12%,
-        rgba(14, 165, 233, 0.7) 30%,
-        rgba(255, 255, 255, 0.95) 50%,
-        rgba(168, 85, 247, 0.6) 70%,
-        rgba(45, 212, 191, 0.6) 88%,
-        rgba(255, 255, 255, 0) 100%
-    );
-    pointer-events: none;
-    opacity: 0.95;
-    filter: drop-shadow(0 2px 6px rgba(45, 212, 191, 0.45));
 }
 
 [data-bs-theme="dark"] .site-nav {
@@ -288,21 +265,6 @@ a:hover {
         rgba(255, 255, 255, 0) 100%
     );
     filter: drop-shadow(0 1px 3px rgba(255, 255, 255, 0.25));
-}
-
-[data-bs-theme="dark"] .site-nav::after {
-    opacity: 0.85;
-    background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(45, 212, 191, 0.75) 15%,
-        rgba(56, 189, 248, 0.85) 35%,
-        rgba(255, 255, 255, 0.9) 50%,
-        rgba(192, 132, 252, 0.75) 65%,
-        rgba(45, 212, 191, 0.75) 85%,
-        rgba(255, 255, 255, 0) 100%
-    );
-    filter: drop-shadow(0 2px 8px rgba(45, 212, 191, 0.4));
 }
 
 @media (max-width: 768px) {
