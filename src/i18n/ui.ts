@@ -9,7 +9,7 @@ export const ui = {
       home: '返回首頁',
       back: '返回上一頁',
       egg: '別按我 🎉',
-      score: '抓到幾次：',
+      score: '得分：',
       quotes: [
         '這個頁面被外星人綁架了。',
         '連 Google 都找不到這裡。',
@@ -153,7 +153,7 @@ export const ui = {
       home: 'Back to home',
       back: 'Go back',
       egg: 'Do not press me 🎉',
-      score: 'Catches: ',
+      score: 'Score: ',
       quotes: [
         'This page was abducted by aliens.',
         'Even Google cannot find this place.',

@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { t } from '../i18n/ui';
+import { SITE } from '../config/site';
 
 // Cloudflare Pages serves this as 404.html for every unknown URL, so one page
 // must cover both languages. Copy comes from the i18n SSOT; the client picks
@@ -12,20 +13,7 @@ const en = t('en').notFound;
   <main class="page nf" id="nf">
     <div class="nf-stars" aria-hidden="true"></div>
     <div class="container nf-inner">
-      <div class="nf-astro" id="nf-astro" aria-hidden="true">
-        <svg viewBox="0 0 120 140" width="120" height="140">
-          <line x1="60" y1="130" x2="60" y2="140" stroke="currentColor" stroke-opacity=".3" stroke-width="2" stroke-dasharray="3 4"/>
-          <rect x="30" y="62" width="60" height="58" rx="22" fill="#e8eaf6"/>
-          <rect x="38" y="70" width="44" height="16" rx="6" fill="#c5cae9"/>
-          <circle cx="60" cy="38" r="30" fill="#f5f5fa"/>
-          <rect x="38" y="24" width="44" height="28" rx="14" fill="#1a1d3a"/>
-          <circle cx="52" cy="38" r="3" fill="#7c8cff"/>
-          <circle cx="68" cy="38" r="3" fill="#7c8cff"/>
-          <rect x="14" y="70" width="18" height="12" rx="6" fill="#e8eaf6"/>
-          <rect x="88" y="70" width="18" height="12" rx="6" fill="#e8eaf6"/>
-        </svg>
-      </div>
-      <h1 class="nf-code glitch" id="nf-code" data-text="404" aria-label="404">404</h1>
+      <h1 class="nf-code glitch" id="nf-code" data-text="404" aria-label="404" title="Drag me!">404</h1>
       <h2 class="nf-title" id="nf-title">{zh.title}</h2>
       <p class="nf-quote" id="nf-quote" aria-live="polite"></p>
       <p class="nf-lead" id="nf-lead">{zh.lead}</p>
@@ -36,6 +24,28 @@ const en = t('en').notFound;
       </div>
       <p class="nf-score" id="nf-score" hidden></p>
     </div>
+
+    <!-- 浮動在右上角的 GitHub 頭像 (可拖曳與互動) -->
+    <div class="nf-avatar-wrap" id="nf-avatar" title="Drag me!">
+      <img src={SITE.github.avatarUrl} alt={SITE.name} class="nf-avatar-img" width="88" height="88" loading="eager" />
+      <span class="nf-avatar-halo" aria-hidden="true"></span>
+    </div>
+
+    <!-- 浮動在右下角的太空人 / 機器人 (可拖曳與互動) -->
+    <div class="nf-astro" id="nf-astro" title="Drag me!">
+      <svg viewBox="0 0 120 140" width="110" height="128">
+        <line x1="60" y1="130" x2="60" y2="140" stroke="currentColor" stroke-opacity=".3" stroke-width="2" stroke-dasharray="3 4"/>
+        <rect x="30" y="62" width="60" height="58" rx="22" fill="#e8eaf6"/>
+        <rect x="38" y="70" width="44" height="16" rx="6" fill="#c5cae9"/>
+        <circle cx="60" cy="38" r="30" fill="#f5f5fa"/>
+        <rect x="38" y="24" width="44" height="28" rx="14" fill="#1a1d3a"/>
+        <circle cx="52" cy="38" r="3" fill="#7c8cff"/>
+        <circle cx="68" cy="38" r="3" fill="#7c8cff"/>
+        <rect x="14" y="70" width="18" height="12" rx="6" fill="#e8eaf6"/>
+        <rect x="88" y="70" width="18" height="12" rx="6" fill="#e8eaf6"/>
+      </svg>
+    </div>
+
     <canvas id="nf-confetti" aria-hidden="true"></canvas>
   </main>
 
@@ -98,46 +108,252 @@ const en = t('en').notFound;
         if (!raf) ctx.clearRect(0, 0, cv.width, cv.height);
       }
       function celebrate() {
-        count++;
-        var s = $('nf-score'); s.hidden = false; s.textContent = d.score + count;
+        addScore(1);
         if (!reduce) burst();
       }
+
+      function addScore(pts) {
+        count += pts;
+        var s = $('nf-score');
+        s.hidden = false;
+        s.textContent = d.score + count;
+        s.classList.remove('score-pop');
+        // trigger reflow for css animation
+        void s.offsetWidth;
+        s.classList.add('score-pop');
+      }
+
       $('nf-egg').addEventListener('click', celebrate);
 
-      // Independent drag: each element keeps its own offset via the CSS `translate` property.
+      // Physics & Collision System for Draggable Objects
       var justDragged = false;
-      function makeDraggable(el) {
-        var ox = 0, oy = 0, sx = 0, sy = 0, moved = false;
+      var bodies = []; // { el, ox, oy, vx, vy, isDragging, sx, sy, moved }
+
+      function registerBody(el) {
+        var body = {
+          el: el,
+          ox: 0,
+          oy: 0,
+          vx: 0,
+          vy: 0,
+          isDragging: false,
+          sx: 0,
+          sy: 0,
+          moved: false,
+          lastX: 0,
+          lastY: 0,
+          lastT: 0,
+          hitCooldown: 0
+        };
+
         el.addEventListener('pointerdown', function (e) {
-          sx = e.clientX - ox; sy = e.clientY - oy; moved = false;
+          body.sx = e.clientX - body.ox;
+          body.sy = e.clientY - body.oy;
+          body.moved = false;
+          body.isDragging = true;
+          body.vx = 0;
+          body.vy = 0;
+          body.lastX = e.clientX;
+          body.lastY = e.clientY;
+          body.lastT = performance.now();
           el.setPointerCapture(e.pointerId);
           el.classList.add('is-dragging');
         });
+
         el.addEventListener('pointermove', function (e) {
-          if (!el.hasPointerCapture(e.pointerId)) return;
-          var nx = e.clientX - sx, ny = e.clientY - sy;
-          if (Math.abs(nx - ox) + Math.abs(ny - oy) > 3) moved = true;
-          ox = nx; oy = ny;
-          el.style.translate = ox + 'px ' + oy + 'px';
+          if (!body.isDragging) return;
+          var nx = e.clientX - body.sx;
+          var ny = e.clientY - body.sy;
+          if (Math.abs(nx - body.ox) + Math.abs(ny - body.oy) > 3) body.moved = true;
+
+          var now = performance.now();
+          var dt = Math.max(1, now - body.lastT);
+          body.vx = (e.clientX - body.lastX) / dt * 16;
+          body.vy = (e.clientY - body.lastY) / dt * 16;
+          body.lastX = e.clientX;
+          body.lastY = e.clientY;
+          body.lastT = now;
+
+          body.ox = nx;
+          body.oy = ny;
+          el.style.translate = body.ox + 'px ' + body.oy + 'px';
         });
+
         function end(e) {
           if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
+          body.isDragging = false;
           el.classList.remove('is-dragging');
-          if (moved) { justDragged = true; setTimeout(function () { justDragged = false; }, 0); }
+          if (body.moved) {
+            justDragged = true;
+            setTimeout(function () { justDragged = false; }, 0);
+          }
         }
+
         el.addEventListener('pointerup', end);
         el.addEventListener('pointercancel', end);
-        el.addEventListener('dblclick', function () { ox = oy = 0; el.style.translate = ''; });
+        el.addEventListener('dblclick', function () {
+          body.ox = 0;
+          body.oy = 0;
+          body.vx = 0;
+          body.vy = 0;
+          el.style.translate = '';
+        });
+
+        bodies.push(body);
+        return body;
       }
-      makeDraggable($('nf-astro'));
-      makeDraggable($('nf-code'));
+
+      var bAstro = registerBody($('nf-astro'));
+      var bAvatar = registerBody($('nf-avatar'));
+      var bCode = registerBody($('nf-code'));
+
       $('nf-astro').addEventListener('click', function () { if (!justDragged) celebrate(); });
+      $('nf-avatar').addEventListener('click', function () { if (!justDragged) celebrate(); });
+
+      // Collision loop with simple circle/box approximation
+      function physicsTick() {
+        requestAnimationFrame(physicsTick);
+
+        // 1. Update positions & boundary recovery
+        var pad = 10;
+        var targetX = window.innerWidth * 0.5;
+        var targetY = window.innerHeight * 0.72; // 中下區域 (Bottom-Center area)
+
+        for (var i = 0; i < bodies.length; i++) {
+          var b = bodies[i];
+          if (!b.isDragging) {
+            var rect = b.el.getBoundingClientRect();
+            var cx = rect.left + rect.width / 2;
+            var cy = rect.top + rect.height / 2;
+
+            // 檢查是否完全或大部分脫離可視視窗 (超出邊界)
+            var isOffscreen = (rect.right < pad || rect.left > window.innerWidth - pad ||
+                               rect.bottom < pad || rect.top > window.innerHeight - pad);
+
+            // 撞擊邊緣計分判斷 (當物件具備速度並觸碰或衝出螢幕邊緣)
+            var now = performance.now();
+            var speed = Math.hypot(b.vx, b.vy);
+            if (speed > 1.2 && now - b.hitCooldown > 350) {
+              var hitWall = (rect.left <= 0 || rect.right >= window.innerWidth ||
+                             rect.top <= 0 || rect.bottom >= window.innerHeight);
+              if (hitWall || isOffscreen) {
+                b.hitCooldown = now;
+                addScore(1);
+              }
+            }
+
+            if (isOffscreen) {
+              b.recovering = true;
+            }
+
+            if (b.recovering) {
+              // 慢慢平滑地漂浮導向「中下位置」
+              var toTargetX = targetX - cx;
+              var toTargetY = targetY - cy;
+              var distToTarget = Math.hypot(toTargetX, toTargetY);
+
+              // 溫柔平緩的失重浮力加速度
+              b.vx += (toTargetX / distToTarget) * 0.35;
+              b.vy += (toTargetY / distToTarget) * 0.35;
+              b.vx *= 0.90; // 高阻尼避免劇烈晃動
+              b.vy *= 0.90;
+
+              // 當已經安全浮回中下區域附近，結束 recovery 狀態交還自由慣性
+              if (distToTarget < 80) {
+                b.recovering = false;
+              }
+            }
+
+            if (Math.abs(b.vx) > 0.05 || Math.abs(b.vy) > 0.05) {
+              b.ox += b.vx;
+              b.oy += b.vy;
+              if (!b.recovering) {
+                b.vx *= 0.94; // normal friction
+                b.vy *= 0.94;
+              }
+              b.el.style.translate = b.ox.toFixed(2) + 'px ' + b.oy.toFixed(2) + 'px';
+            } else {
+              b.vx = 0;
+              b.vy = 0;
+            }
+          } else {
+            b.recovering = false;
+          }
+        }
+
+        // 2. Pairwise collision check
+        for (var i = 0; i < bodies.length; i++) {
+          for (var j = i + 1; j < bodies.length; j++) {
+            var b1 = bodies[i], b2 = bodies[j];
+            var r1 = b1.el.getBoundingClientRect();
+            var r2 = b2.el.getBoundingClientRect();
+
+            var c1x = r1.left + r1.width / 2;
+            var c1y = r1.top + r1.height / 2;
+            var c2x = r2.left + r2.width / 2;
+            var c2y = r2.top + r2.height / 2;
+
+            var dx = c2x - c1x;
+            var dy = c2y - c1y;
+            var dist = Math.hypot(dx, dy);
+            // Effective radius calculation
+            var minR = (Math.min(r1.width, r1.height) + Math.min(r2.width, r2.height)) * 0.44;
+
+            if (dist < minR && dist > 0) {
+              var overlap = minR - dist;
+              var nx = dx / dist;
+              var ny = dy / dist;
+
+              // Elastic push & rebound
+              if (b1.isDragging && !b2.isDragging) {
+                b2.ox += nx * overlap;
+                b2.oy += ny * overlap;
+                b2.vx = nx * Math.max(Math.hypot(b1.vx, b1.vy), 6) * 1.2;
+                b2.vy = ny * Math.max(Math.hypot(b1.vx, b1.vy), 6) * 1.2;
+                b2.el.style.translate = b2.ox.toFixed(2) + 'px ' + b2.oy.toFixed(2) + 'px';
+              } else if (!b1.isDragging && b2.isDragging) {
+                b1.ox -= nx * overlap;
+                b1.oy -= ny * overlap;
+                b1.vx = -nx * Math.max(Math.hypot(b2.vx, b2.vy), 6) * 1.2;
+                b1.vy = -ny * Math.max(Math.hypot(b2.vx, b2.vy), 6) * 1.2;
+                b1.el.style.translate = b1.ox.toFixed(2) + 'px ' + b1.oy.toFixed(2) + 'px';
+              } else if (!b1.isDragging && !b2.isDragging) {
+                b1.ox -= nx * (overlap * 0.5);
+                b1.oy -= ny * (overlap * 0.5);
+                b2.ox += nx * (overlap * 0.5);
+                b2.oy += ny * (overlap * 0.5);
+
+                var relVx = b1.vx - b2.vx;
+                var relVy = b1.vy - b2.vy;
+                var impulse = (relVx * nx + relVy * ny) * 1.1;
+                b1.vx -= impulse * nx;
+                b1.vy -= impulse * ny;
+                b2.vx += impulse * nx;
+                b2.vy += impulse * ny;
+
+                b1.el.style.translate = b1.ox.toFixed(2) + 'px ' + b1.oy.toFixed(2) + 'px';
+                b2.el.style.translate = b2.ox.toFixed(2) + 'px ' + b2.oy.toFixed(2) + 'px';
+              }
+            }
+          }
+        }
+      }
+
+      physicsTick();
     })();
   </script>
 
   <style is:global>
     .nf { position: relative; min-height: 70vh; display: grid; place-items: center; overflow: hidden; --px: 0; --py: 0; }
-    .nf-inner { position: relative; z-index: 1; text-align: center; padding-block: 3rem; }
+    .nf-inner {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding-block: clamp(2rem, 6vh, 4.5rem);
+      padding-inline: 1rem;
+      max-width: 680px;
+      margin-inline: auto;
+    }
     .nf-stars { position: absolute; inset: -5%; opacity: .6; pointer-events: none;
       background-image:
         radial-gradient(1.5px 1.5px at 20% 30%, currentColor 50%, transparent 51%),
@@ -146,34 +362,179 @@ const en = t('en').notFound;
         radial-gradient(1px 1px at 35% 80%, currentColor 50%, transparent 51%),
         radial-gradient(1.5px 1.5px at 55% 55%, currentColor 50%, transparent 51%);
       transform: translate(calc(var(--px) * -14px), calc(var(--py) * -14px)); transition: transform .15s ease-out; }
-    .nf-astro { display: inline-block; cursor: pointer; color: var(--text-muted, #888);
-      transform: translate(calc(var(--px) * 22px), calc(var(--py) * 22px)); transition: transform .15s ease-out; }
-    .nf-astro, .nf-code { cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
-    .nf-astro.is-dragging, .nf-code.is-dragging { cursor: grabbing; z-index: 2; position: relative; }
+    .nf-astro {
+      position: absolute;
+      right: clamp(1.5rem, 5vw, 4rem);
+      bottom: clamp(1.5rem, 5vw, 3.5rem);
+      z-index: 2;
+      display: inline-block;
+      cursor: grab;
+      color: var(--text-muted, #888);
+    }
+    .nf-avatar-wrap {
+      position: absolute;
+      right: clamp(1.5rem, 5vw, 4rem);
+      top: clamp(1.5rem, 5vw, 3.5rem);
+      z-index: 2;
+      display: inline-block;
+      cursor: grab;
+      border-radius: 50%;
+    }
+    .nf-avatar-img {
+      display: block;
+      border-radius: 50%;
+      border: 3px solid var(--border-strong, #cbd5e1);
+      box-shadow: 0 8px 24px -4px var(--accent-glow);
+      pointer-events: none;
+      animation: nf-avatar-float 6s ease-in-out infinite;
+    }
+    .nf-avatar-halo {
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: var(--hero-title-gradient);
+      z-index: -1;
+      opacity: 0.6;
+      filter: blur(6px);
+      animation: nf-grad-shift 8s ease infinite alternate;
+    }
+    @keyframes nf-avatar-float {
+      0%, 100% { transform: translateY(0) rotate(3deg); }
+      50% { transform: translateY(-14px) rotate(-3deg); }
+    }
+    .nf-astro, .nf-code, .nf-avatar-wrap {
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      will-change: translate;
+    }
+    .nf-astro.is-dragging, .nf-code.is-dragging, .nf-avatar-wrap.is-dragging {
+      cursor: grabbing;
+      z-index: 20;
+    }
     .nf-astro svg { animation: nf-float 5s ease-in-out infinite; filter: drop-shadow(0 10px 20px rgba(124,140,255,.35)); }
     @keyframes nf-float { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-16px) rotate(4deg); } }
 
-    .nf-code { font-size: clamp(5rem, 22vw, 11rem); font-weight: 800; line-height: 1; margin: .5rem 0 0; letter-spacing: .04em; }
+    .nf-code {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: clamp(5.5rem, 24vw, 11.5rem);
+      font-weight: 900;
+      line-height: 0.95;
+      margin: 0.5rem 0 0;
+      letter-spacing: -0.04em;
+      background-image: var(--hero-title-gradient);
+      background-size: 260% 260%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: nf-grad-shift 10s ease infinite alternate;
+      filter: drop-shadow(0 12px 32px var(--accent-glow));
+    }
+    @keyframes nf-grad-shift {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
     .glitch { position: relative; display: inline-block; }
-    .glitch::before, .glitch::after { content: attr(data-text); position: absolute; inset: 0; overflow: hidden; }
-    .glitch::before { color: #ff4d8d; transform: translate(-3px, 0); clip-path: inset(0 0 55% 0); animation: nf-glitch 2.4s steps(1) infinite; }
-    .glitch::after { color: #4cc9f0; transform: translate(3px, 0); clip-path: inset(55% 0 0 0); animation: nf-glitch 2.4s steps(1) infinite reverse; }
+    .glitch::before, .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background-image: var(--hero-title-gradient);
+      background-size: 260% 260%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+    .glitch::before {
+      transform: translate(-3px, 0);
+      clip-path: inset(0 0 55% 0);
+      filter: drop-shadow(0 -2px 6px var(--glow-chroma-top, rgba(0, 160, 245, 0.75)));
+      animation: nf-glitch 3.2s steps(1) infinite;
+    }
+    .glitch::after {
+      transform: translate(3px, 0);
+      clip-path: inset(55% 0 0 0);
+      filter: drop-shadow(0 2px 6px var(--glow-chroma-bottom, rgba(249, 115, 22, 0.75)));
+      animation: nf-glitch 3.2s steps(1) infinite reverse;
+    }
     @keyframes nf-glitch {
-      0%,88%,100% { transform: translate(0,0); }
-      90% { transform: translate(-5px, 2px); } 92% { transform: translate(5px, -2px); }
-      94% { transform: translate(-3px, -1px); } 96% { transform: translate(4px, 1px); }
+      0%,92%,100% { transform: translate(0,0); opacity: 0; }
+      93% { transform: translate(-4px, 1px); opacity: 0.9; }
+      95% { transform: translate(4px, -1px); opacity: 0.95; }
+      97% { transform: translate(-2px, 0.5px); opacity: 0.8; }
+      99% { transform: translate(2px, -0.5px); opacity: 0.9; }
     }
 
     .nf-title { font-size: 1.5rem; margin: .5rem 0; }
     .nf-quote { font-size: 1.15rem; font-weight: 600; color: var(--accent, #7c8cff); min-height: 1.6em; margin: .25rem 0; }
     .nf-lead { color: var(--text-muted, #888); margin: 0 0 1.5rem; }
     .nf-actions { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
-    .nf-score { margin-top: 1rem; font-variant-numeric: tabular-nums; }
+    .nf-score {
+      display: inline-block;
+      margin-top: 1.25rem;
+      padding: 0.35rem 1rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent-primary, #7c8cff);
+      background: var(--bg-surface-subtle, rgba(124, 140, 255, 0.08));
+      border: 1px solid var(--border-subtle, rgba(124, 140, 255, 0.25));
+      border-radius: 999px;
+      box-shadow: 0 4px 14px -2px var(--accent-glow);
+      font-variant-numeric: tabular-nums;
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .nf-score.score-pop {
+      animation: nf-score-bounce 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes nf-score-bounce {
+      0% { transform: scale(0.9); }
+      50% { transform: scale(1.18); }
+      100% { transform: scale(1); }
+    }
     #nf-confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
 
     @media (prefers-reduced-motion: reduce) {
       .nf-astro svg, .glitch::before, .glitch::after { animation: none; }
       .nf-astro, .nf-stars { transition: none; transform: none; }
+    }
+
+    /* 手機與窄螢幕佈局優化 (Mobile & Narrow Viewports < 768px) */
+    @media (max-width: 768px) {
+      .nf { min-height: 80vh; }
+      .nf-code { font-size: clamp(4.2rem, 26vw, 7.5rem); }
+      .nf-title { font-size: 1.35rem; }
+      .nf-quote { font-size: 1rem; padding-inline: 0.5rem; }
+      .nf-lead { font-size: 0.95rem; margin-bottom: 1.25rem; }
+      .nf-actions { gap: 0.5rem; }
+      .nf-actions .btn { padding: 0.55rem 1.15rem; font-size: 0.95rem; }
+      .nf-avatar-wrap {
+        right: 1.25rem;
+        top: 1rem;
+      }
+      .nf-avatar-img {
+        width: 68px;
+        height: 68px;
+      }
+      .nf-astro {
+        right: 1.25rem;
+        bottom: 1.25rem;
+      }
+      .nf-astro svg {
+        width: 82px;
+        height: 96px;
+      }
+    }
+
+    /* 桌面超寬與大螢幕增強 (Desktop & Large screens >= 1200px) */
+    @media (min-width: 1200px) {
+      .nf { min-height: 78vh; }
+      .nf-avatar-img { width: 96px; height: 96px; }
+      .nf-astro svg { width: 124px; height: 144px; }
+      .nf-quote { font-size: 1.25rem; }
     }
   </style>
 </Base>
