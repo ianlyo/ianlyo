@@ -311,6 +311,13 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
 
     const supportsBackdropFilterUrl = (() => {
       try {
+        // WebKit (Safari / iOS / iPadOS) 的 backdrop-filter 必須使用 -webkit- 前綴
+        // 且 WebKit 雖然語法上可能接受 url() 字串，但實質上無法在 backdrop-filter 中解析或渲染 SVG filter，
+        // 甚至會導致整個 backdrop-filter 失效而退化為完全無模糊。
+        // 因此若為 WebKit / Safari 環境，直接回傳 false，讓其走原生高保真的 -webkit-backdrop-filter blur 模式。
+        const isWebKit = /AppleWebKit/i.test(navigator.userAgent) && !/Chrome|Chromium|Edg/i.test(navigator.userAgent);
+        if (isWebKit) return false;
+
         const testEl = document.createElement('div');
         testEl.style.cssText = 'backdrop-filter: url(#test)';
         return (
@@ -365,16 +372,17 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
           drawer.style['-webkit-backdrop-filter'] = drawerFilterValue;
         }
       } else {
-        // Fallback for environments where backdrop-filter: url() is unsupported
+        // Fallback for WebKit (Safari / iPadOS / iOS) & environments where backdrop-filter: url() is unsupported
+        // 確保 WebKit 原生 GPU 渲染層能完美繪製 Apple 原生 Liquid Glass 磨砂效果
         if (nav) {
-          nav.style.backdropFilter = 'blur(36px) saturate(210%)';
-          // @ts-ignore
-          nav.style['-webkit-backdrop-filter'] = 'blur(36px) saturate(210%)';
+          const navFallback = 'blur(36px) saturate(210%) contrast(1.05)';
+          nav.style.setProperty('-webkit-backdrop-filter', navFallback);
+          nav.style.backdropFilter = navFallback;
         }
         if (drawer) {
-          drawer.style.backdropFilter = 'blur(48px) saturate(210%)';
-          // @ts-ignore
-          drawer.style['-webkit-backdrop-filter'] = 'blur(48px) saturate(210%)';
+          const drawerFallback = 'blur(48px) saturate(210%) contrast(1.05)';
+          drawer.style.setProperty('-webkit-backdrop-filter', drawerFallback);
+          drawer.style.backdropFilter = drawerFallback;
         }
       }
     }
