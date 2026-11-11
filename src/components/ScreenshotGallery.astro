@@ -29,7 +29,7 @@ const serializedScreenshots = screenshots.map((s) => ({
   <div class="gallery-viewport-stage">
     <div class="gallery-header-wrap">
       <h2 class="block-title">
-        <Icon name="material-symbols:photo-library" class="material-symbols-rounded text-accent" aria-hidden="true" />
+        <Icon name="lucide:images" class="ui-icon text-accent" aria-hidden="true" />
         <span>{sectionTitle}</span>
       </h2>
     </div>
@@ -73,7 +73,7 @@ const serializedScreenshots = screenshots.map((s) => ({
                     decoding="async"
                   />
                   <span class="zoom-badge" aria-hidden="true">
-                    <Icon name="material-symbols:zoom-in" class="material-symbols-rounded" />
+                    <Icon name="lucide:zoom-in" class="ui-icon" />
                   </span>
                 </button>
               </div>
@@ -104,7 +104,7 @@ const serializedScreenshots = screenshots.map((s) => ({
               aria-label={ui.prevScreenshot}
               disabled
             >
-              <Icon name="material-symbols:chevron-left" class="material-symbols-rounded" aria-hidden="true" />
+              <Icon name="lucide:chevron-left" class="ui-icon" aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -112,7 +112,7 @@ const serializedScreenshots = screenshots.map((s) => ({
               data-action="next"
               aria-label={ui.nextScreenshot}
             >
-              <Icon name="material-symbols:chevron-right" class="material-symbols-rounded" aria-hidden="true" />
+              <Icon name="lucide:chevron-right" class="ui-icon" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -138,7 +138,7 @@ const serializedScreenshots = screenshots.map((s) => ({
                 aria-label={ui.lightboxClose}
                 title={ui.lightboxClose}
               >
-                <Icon name="material-symbols:arrow-back" class="material-symbols-rounded" aria-hidden="true" />
+                <Icon name="lucide:arrow-left" class="ui-icon" aria-hidden="true" />
                 <span class="lightbox-title" id={`lightbox-title-${appId}`}></span>
               </button>
 
@@ -151,7 +151,7 @@ const serializedScreenshots = screenshots.map((s) => ({
                   aria-label={ui.lightboxClose}
                   title={ui.lightboxClose}
                 >
-                  <Icon name="material-symbols:close" class="material-symbols-rounded" aria-hidden="true" />
+                  <Icon name="lucide:x" class="ui-icon" aria-hidden="true" />
                 </button>
               </div>
             </div>
@@ -164,7 +164,7 @@ const serializedScreenshots = screenshots.map((s) => ({
                 data-lightbox-prev
                 aria-label={ui.prevScreenshot}
               >
-                <Icon name="material-symbols:chevron-left" class="material-symbols-rounded" aria-hidden="true" />
+                <Icon name="lucide:chevron-left" class="ui-icon" aria-hidden="true" />
               </button>
 
               <div class="lightbox-img-wrap" id={`lightbox-wrap-${appId}`}>
@@ -183,7 +183,7 @@ const serializedScreenshots = screenshots.map((s) => ({
                 data-lightbox-next
                 aria-label={ui.nextScreenshot}
               >
-                <Icon name="material-symbols:chevron-right" class="material-symbols-rounded" aria-hidden="true" />
+                <Icon name="lucide:chevron-right" class="ui-icon" aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -389,8 +389,11 @@ const serializedScreenshots = screenshots.map((s) => ({
     transition: opacity 0.2s ease, transform 0.2s ease;
     pointer-events: none;
   }
-  .zoom-badge .material-symbols-rounded {
+  .zoom-badge .material-symbols-rounded,
+  .zoom-badge .ui-icon {
     font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
   }
 
   /* Apple-style bottom controls */
@@ -485,8 +488,11 @@ const serializedScreenshots = screenshots.map((s) => ({
     pointer-events: none;
   }
 
-  .apple-nav-btn .material-symbols-rounded {
+  .apple-nav-btn .material-symbols-rounded,
+  .apple-nav-btn .ui-icon {
     font-size: 1.45rem;
+    width: 1.45rem;
+    height: 1.45rem;
   }
 
   /* ==========================================================================
@@ -626,8 +632,11 @@ const serializedScreenshots = screenshots.map((s) => ({
     opacity: 0.2;
     cursor: not-allowed;
   }
-  .lightbox-nav-btn .material-symbols-rounded {
+  .lightbox-nav-btn .material-symbols-rounded,
+  .lightbox-nav-btn .ui-icon {
     font-size: 1.6rem;
+    width: 1.6rem;
+    height: 1.6rem;
   }
 
   .lightbox-img-wrap {

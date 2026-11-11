@@ -20,21 +20,21 @@ const f = ui.filters;
         <p class="lead">{ui.hero.lead}</p>
         <div class="hero-stats" aria-label="GitHub activity">
           <div class="stat-box">
-            <Icon name="material-symbols:folder-open" class="material-symbols-rounded stat-icon" aria-hidden="true" />
+            <Icon name="lucide:folder" class="stat-icon" aria-hidden="true" />
             <div class="stat-box-info">
               <strong id="repo-stat">--</strong>
               <span>{ui.stats.repos}</span>
             </div>
           </div>
           <div class="stat-box">
-            <Icon name="material-symbols:star" class="material-symbols-rounded stat-icon" aria-hidden="true" />
+            <Icon name="lucide:star" class="stat-icon" aria-hidden="true" />
             <div class="stat-box-info">
               <strong id="star-stat">--</strong>
               <span>{ui.stats.stars}</span>
             </div>
           </div>
           <div class="stat-box">
-            <Icon name="material-symbols:code" class="material-symbols-rounded stat-icon" aria-hidden="true" />
+            <Icon name="lucide:code-2" class="stat-icon" aria-hidden="true" />
             <div class="stat-box-info">
               <strong id="language-stat">--</strong>
               <span>{ui.stats.langs}</span>
@@ -44,22 +44,22 @@ const f = ui.filters;
         <div class="hero-actions">
           <a href={localePath(lang, '/apps-dev/')} class="btn btn-primary d-inline-flex align-items-center gap-2">
             <span>{ui.hero.cta1}</span>
-            <Icon name="material-symbols:arrow-forward" class="material-symbols-rounded icon-sm" aria-hidden="true" />
+            <Icon name="lucide:arrow-right" class="ui-icon icon-sm" aria-hidden="true" />
           </a>
           <a href="/blog/" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
-            <Icon name="material-symbols:article" class="material-symbols-rounded icon-sm" aria-hidden="true" />
+            <Icon name="lucide:newspaper" class="ui-icon icon-sm" aria-hidden="true" />
             <span>{ui.hero.cta2}</span>
           </a>
           <a href={SITE.github.reposUrl} target="_blank" rel="noopener" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
             <span>{ui.hero.cta3}</span>
-            <Icon name="material-symbols:open-in-new" class="material-symbols-rounded icon-sm" aria-hidden="true" />
+            <Icon name="lucide:external-link" class="ui-icon icon-sm" aria-hidden="true" />
           </a>
         </div>
       </div>
       <div class="col-12 hero-contribution">
         <div class="contribution-card">
           <div class="contribution-header justify-content-end">
-            <a href={SITE.github.reposUrl} target="_blank" rel="noopener" class="contribution-github-link"><i class="bi bi-github"></i><span>{SITE.github.user}</span></a>
+            <a href={SITE.github.reposUrl} target="_blank" rel="noopener" class="contribution-github-link"><Icon name="simple-icons:github" class="ui-icon me-1" aria-hidden="true" /><span>{SITE.github.user}</span></a>
           </div>
           <div class="contribution-graph-wrapper">
             <img class="contribution-graph" id="contribution-graph-img" src={SITE.github.contributionChartUrl} alt={`${SITE.github.user} GitHub contribution graph`} loading="lazy" />
@@ -76,12 +76,12 @@ const f = ui.filters;
       <p class="eyebrow mb-2">{ui.home.betaEyebrow}</p>
       <div class="d-flex justify-content-between align-items-end mb-3 flex-wrap gap-2">
         <h2 class="block-title mb-0">
-          <Icon name="material-symbols:apps" class="material-symbols-rounded text-accent" aria-hidden="true" />
+          <Icon name="lucide:layout-grid" class="ui-icon text-accent" aria-hidden="true" />
           <span>{ui.home.betaTitle}</span>
         </h2>
         <a href={localePath(lang, '/apps-dev/')} class="section-link font-weight-semibold">
           <span>{ui.home.betaAll}</span>
-          <Icon name="material-symbols:arrow-forward" class="material-symbols-rounded icon-sm" aria-hidden="true" />
+          <Icon name="lucide:arrow-right" class="ui-icon icon-sm" aria-hidden="true" />
         </a>
       </div>
       <div class="card-grid">{apps.map((app) => <AppCard app={app} lang={lang} />)}</div>
@@ -94,12 +94,12 @@ const f = ui.filters;
         <p class="eyebrow mb-2">{ui.home.blogEyebrow}</p>
         <div class="d-flex justify-content-between align-items-end mb-3 flex-wrap gap-2">
           <h2 class="block-title mb-0">
-            <Icon name="material-symbols:article" class="material-symbols-rounded text-accent" aria-hidden="true" />
+            <Icon name="lucide:newspaper" class="ui-icon text-accent" aria-hidden="true" />
             <span>{ui.home.blogTitle}</span>
           </h2>
           <a href="/blog/" class="section-link font-weight-semibold">
             <span>{ui.home.blogAll}</span>
-            <Icon name="material-symbols:arrow-forward" class="material-symbols-rounded icon-sm" aria-hidden="true" />
+            <Icon name="lucide:arrow-right" class="ui-icon icon-sm" aria-hidden="true" />
           </a>
         </div>
         <div class="card-grid">
@@ -108,8 +108,8 @@ const f = ui.filters;
               <h3>{p.data.title}</h3>
               <p>{p.data.description}</p>
               <div class="meta mt-2">
-                <span><Icon name="material-symbols:calendar-today" class="material-symbols-rounded icon-xs" aria-hidden="true" />{formatDate(p.data.pubDate, lang)}</span>
-                <span><Icon name="material-symbols:schedule" class="material-symbols-rounded icon-xs" aria-hidden="true" />{readingTime(p.body)} {ui.blog.readingTime}</span>
+                <span><Icon name="lucide:calendar" class="ui-icon icon-xs" aria-hidden="true" />{formatDate(p.data.pubDate, lang)}</span>
+                <span><Icon name="lucide:clock" class="ui-icon icon-xs" aria-hidden="true" />{readingTime(p.body)} {ui.blog.readingTime}</span>
               </div>
             </a>
           ))}
@@ -124,7 +124,7 @@ const f = ui.filters;
         <div>
           <p class="eyebrow mb-2">{ui.home.browse}</p>
           <h2 id="projects-title" class="d-flex align-items-center gap-2">
-            <Icon name="material-symbols:code" class="material-symbols-rounded text-accent" aria-hidden="true" />
+            <Icon name="lucide:code-2" class="ui-icon text-accent" aria-hidden="true" />
             <span>{ui.home.explore}</span>
           </h2>
         </div>
@@ -133,15 +133,15 @@ const f = ui.filters;
       <!-- Desktop Capabilities Cards (>= 769px) -->
       <div class="capabilities-grid mb-4 d-none d-md-grid">
         {[
-          ['all', 'dashboard', '01', f.all],
+          ['all', 'layout-grid', '01', f.all],
           ['mobile', 'smartphone', '02', f.mobile],
           ['python', 'terminal', '03', f.cli],
-          ['web', 'devices', '04', f.web],
+          ['web', 'monitor-smartphone', '04', f.web],
         ].map(([key, icon, num, text]) => (
           <button class:list={['capability-item', 'category-filter', { 'is-active': key === 'all' }]} type="button" data-category={key}>
             <div class="capability-header">
               <span class="capability-number">{num}</span>
-              <div class="capability-icon"><Icon name={`material-symbols:${String(icon).replaceAll('_','-')}`} class="material-symbols-rounded" aria-hidden="true" /></div>
+              <div class="capability-icon"><Icon name={`lucide:${icon}`} class="ui-icon" aria-hidden="true" /></div>
             </div>
             <strong class="capability-title">{(text as readonly string[])[0]}</strong>
             <p class="capability-desc">{(text as readonly string[])[1]}</p>
@@ -152,13 +152,13 @@ const f = ui.filters;
       <div class="project-tools" role="search">
         <label class="visually-hidden" for="project-search">{ui.projects.searchLabel}</label>
         <div class="project-search-wrapper">
-          <Icon name="material-symbols:search" class="material-symbols-rounded project-search-icon" aria-hidden="true" />
+          <Icon name="lucide:search" class="ui-icon project-search-icon" aria-hidden="true" />
           <input id="project-search" type="search" placeholder={ui.projects.searchPlaceholder} autocomplete="off" />
         </div>
         <!-- Mobile Category Dropdown (< 768px) -->
         <label class="visually-hidden" for="mobile-category-filter">{ui.projects.categoryLabel}</label>
         <div class="category-filter-wrapper d-flex d-md-none">
-          <Icon name="material-symbols:grid-view" class="material-symbols-rounded category-filter-icon" aria-hidden="true" />
+          <Icon name="lucide:layout-grid" class="ui-icon category-filter-icon" aria-hidden="true" />
           <select id="mobile-category-filter">
             <option value="all">{ui.projects.allCategories}</option>
             <option value="mobile">{f.mobile[0]}</option>
@@ -168,11 +168,11 @@ const f = ui.filters;
         </div>
         <label class="visually-hidden" for="language-filter">{ui.projects.languageLabel}</label>
         <div class="language-filter-wrapper">
-          <Icon name="material-symbols:tune" class="material-symbols-rounded language-filter-icon" aria-hidden="true" />
+          <Icon name="lucide:sliders-horizontal" class="ui-icon language-filter-icon" aria-hidden="true" />
           <select id="language-filter"><option value="">{ui.projects.allLanguages}</option></select>
         </div>
         <button id="clear-filters" class="clear-filters" type="button" hidden>
-          <Icon name="material-symbols:close" class="material-symbols-rounded icon-sm" aria-hidden="true" />
+          <Icon name="lucide:x" class="ui-icon icon-sm" aria-hidden="true" />
           <span>{ui.projects.clearFilters}</span>
         </button>
       </div>

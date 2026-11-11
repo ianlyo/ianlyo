@@ -1,38 +1,33 @@
 /* site.css - styles for the blog, beta hub and app landing pages.
    Uses the CSS variables defined in style.css (so light/dark themes just work). */
 
-/* Google Material Symbols & Icons defaults */
+/* Global Icon defaults (supporting Lucide & SVG icons) */
+.nav-icon,
+.ui-icon,
 .material-symbols-outlined,
 .material-symbols-rounded,
 .material-icons {
-  font-family: 'Material Symbols Rounded', sans-serif;
-  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-  vertical-align: middle;
-  line-height: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  user-select: none;
-  font-style: normal;
-  font-size: 1.25em;
+  vertical-align: middle;
+  line-height: 1;
   width: 1em;
   height: 1em;
   flex-shrink: 0;
-  text-transform: none;
-  letter-spacing: normal;
-  word-wrap: normal;
-  white-space: nowrap;
-  direction: ltr;
-  -webkit-font-smoothing: antialiased;
-}
-.material-symbols-rounded.filled,
-.material-symbols-outlined.filled {
-  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  user-select: none;
+  font-style: normal;
 }
 
 /* Sizing utilities */
-.material-symbols-rounded.icon-xs { font-size: 0.88em; width: 0.88em; height: 0.88em; }
-.material-symbols-rounded.icon-sm { font-size: 1.05em; width: 1.05em; height: 1.05em; }
+.icon-xs { font-size: 0.95em; width: 0.95em; height: 0.95em; }
+.icon-sm { font-size: 1.1em; width: 1.1em; height: 1.1em; }
+.icon-md { font-size: 1.35em; width: 1.35em; height: 1.35em; }
+.icon-lg { font-size: 1.75em; width: 1.75em; height: 1.75em; }
+.icon-xl { font-size: 2.25em; width: 2.25em; height: 2.25em; }
+
+.material-symbols-rounded.icon-xs { font-size: 0.95em; width: 0.95em; height: 0.95em; }
+.material-symbols-rounded.icon-sm { font-size: 1.1em; width: 1.1em; height: 1.1em; }
 .material-symbols-rounded.icon-md { font-size: 1.35em; width: 1.35em; height: 1.35em; }
 .material-symbols-rounded.icon-lg { font-size: 1.75em; width: 1.75em; height: 1.75em; }
 .material-symbols-rounded.icon-xl { font-size: 2.25em; width: 2.25em; height: 2.25em; }
@@ -46,20 +41,52 @@
   color: var(--accent-primary) !important;
   font-weight: 700;
 }
-.nav-links { display: flex; align-items: center; gap: 0.75rem; }
-.nav-links a { display: inline-flex; align-items: center; gap: .35rem; }
+.nav-links { display: flex; align-items: center; gap: 0.6rem; }
+.nav-links a { display: inline-flex; align-items: center; gap: .5rem; line-height: 1; }
+.nav-links a .nav-icon {
+  width: 1.15rem;
+  height: 1.15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  line-height: 1;
+  flex-shrink: 0;
+  stroke-width: 2.1;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.2s ease;
+}
+.nav-links a:hover .nav-icon {
+  transform: scale(1.12);
+}
+.nav-links a.nav-action-icon {
+  padding: 8px;
+  width: 38px;
+  height: 38px;
+  justify-content: center;
+  border-radius: var(--radius-full);
+}
+.nav-links a.nav-action-icon .nav-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
 .lang-switch {
   font-size: .85rem;
   font-weight: 600;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-full);
-  padding: .25rem .75rem;
+  padding: .38rem .9rem;
   display: inline-flex;
   align-items: center;
-  gap: .35rem;
+  gap: .45rem;
   color: var(--text-primary) !important;
   text-decoration: none;
   transition: all .2s ease;
+  line-height: 1;
+}
+.lang-switch .nav-icon {
+  width: 1.15rem;
+  height: 1.15rem;
+  stroke-width: 2;
 }
 .lang-switch:hover {
   border-color: var(--accent-primary);
@@ -112,10 +139,14 @@ body {
   text-decoration: none;
   transform: translateX(4px);
 }
-.section-link .material-symbols-rounded {
+.section-link .material-symbols-rounded,
+.section-link .ui-icon,
+.section-link .nav-icon {
   transition: transform .2s ease;
 }
-.section-link:hover .material-symbols-rounded {
+.section-link:hover .material-symbols-rounded,
+.section-link:hover .ui-icon,
+.section-link:hover .nav-icon {
   transform: translateX(2px);
 }
 
@@ -259,11 +290,12 @@ img.app-icon { background: transparent; }
 .spec-table { width: 100%; border-collapse: collapse; }
 .spec-table th, .spec-table td { text-align: left; padding: .65rem .25rem; border-bottom: 1px solid var(--border-subtle); font-size: .95rem; }
 .spec-table th { color: var(--text-muted); font-weight: 500; width: 40%; }
-.spec-table th .material-symbols-rounded { vertical-align: -0.15em; margin-right: 0.35rem; color: var(--accent-primary); font-size: 1.1em; }
+.spec-table th .material-symbols-rounded,
+.spec-table th .ui-icon { vertical-align: -0.15em; margin-right: 0.35rem; color: var(--accent-primary); font-size: 1.1em; }
 details.faq { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--bg-surface); padding: .85rem 1.1rem; margin-bottom: .6rem; transition: border-color .2s ease; }
 details.faq summary { cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: space-between; list-style: none; }
 details.faq summary::-webkit-details-marker { display: none; }
-details.faq .faq-arrow { color: var(--text-muted); transition: transform .25s ease, color .25s ease; font-size: 1.35rem; }
+details.faq .faq-arrow { color: var(--text-muted); transition: transform .25s ease, color .25s ease; font-size: 1.35rem; width: 1.35rem; height: 1.35rem; }
 details.faq[open] { border-color: var(--border-hover); }
 details.faq[open] .faq-arrow { transform: rotate(180deg); color: var(--accent-primary); }
 details.faq p { margin: .6rem 0 0; color: var(--text-secondary); }
@@ -272,7 +304,8 @@ details.faq p { margin: .6rem 0 0; color: var(--text-secondary); }
 .changelog-entry h3 { font-size: 1.02rem; margin: 0; font-weight: 700; }
 .changelog-entry ul { margin: .4rem 0 0; padding-left: 1.1rem; color: var(--text-secondary); }
 h2.block-title { font-size: 1.4rem; font-weight: 800; margin: 0 0 1rem; letter-spacing: -.01em; display: flex; align-items: center; gap: .55rem; }
-h2.block-title .material-symbols-rounded { font-size: 1.35rem; }
+h2.block-title .material-symbols-rounded,
+h2.block-title .ui-icon { font-size: 1.35rem; width: 1.35rem; height: 1.35rem; }
 
 /* Blog search link */
 .blog-search-link {
@@ -404,6 +437,11 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
 .nav-hamburger-btn:active,
 .nav-icon-btn:active {
   transform: scale(0.92);
+}
+.nav-hamburger-btn .nav-icon,
+.nav-icon-btn .nav-icon {
+  width: 1.45rem;
+  height: 1.45rem;
 }
 .nav-hamburger-btn .material-symbols-rounded,
 .nav-icon-btn .material-symbols-rounded {
@@ -579,14 +617,19 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
 }
 
 .nav-drawer-item .material-symbols-rounded,
+.nav-drawer-item .nav-icon,
 .nav-drawer-item i {
   font-size: 1.35rem;
+  width: 1.35rem;
+  height: 1.35rem;
   color: #475569;
   flex-shrink: 0;
+  stroke-width: 2;
   transition: color 0.2s ease, transform 0.2s ease;
 }
 
 [data-bs-theme="dark"] .nav-drawer-item .material-symbols-rounded,
+[data-bs-theme="dark"] .nav-drawer-item .nav-icon,
 [data-bs-theme="dark"] .nav-drawer-item i {
   color: #94a3b8;
 }
@@ -607,6 +650,7 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
 }
 
 .nav-drawer-item:hover .material-symbols-rounded,
+.nav-drawer-item:hover .nav-icon,
 .nav-drawer-item:hover i {
   color: var(--accent-primary);
 }
@@ -632,11 +676,13 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
 }
 
 .nav-drawer-item.active .material-symbols-rounded,
+.nav-drawer-item.active .nav-icon,
 .nav-drawer-item.active i {
   color: #4338ca;
 }
 
 [data-bs-theme="dark"] .nav-drawer-item.active .material-symbols-rounded,
+[data-bs-theme="dark"] .nav-drawer-item.active .nav-icon,
 [data-bs-theme="dark"] .nav-drawer-item.active i {
   color: #818cf8;
 }

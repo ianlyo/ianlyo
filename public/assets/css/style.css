@@ -408,7 +408,7 @@ a:hover {
     justify-content: center;
     width: 40px;
     height: 40px;
-    margin-left: 14px !important;
+    margin-left: 8px !important;
     padding: 0;
     border-radius: var(--radius-md) !important;
     background: var(--theme-toggle-bg) !important;
@@ -433,13 +433,17 @@ a:hover {
 }
 
 .theme-toggle i,
+.theme-toggle .nav-icon,
 .theme-toggle .material-symbols-rounded {
-    font-size: 1.25rem;
+    font-size: 1.35rem;
+    width: 1.35rem;
+    height: 1.35rem;
     color: var(--theme-toggle-color);
     transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease;
 }
 
 .theme-toggle:hover i,
+.theme-toggle:hover .nav-icon,
 .theme-toggle:hover .material-symbols-rounded {
     color: var(--accent-primary);
     transform: rotate(20deg);
@@ -457,6 +461,36 @@ a:hover {
 
 .theme-icon-dark {
     color: #38bdf8 !important;
+}
+
+/* Theme toggle refinements: circular, icon swap animation, focus ring */
+.theme-toggle {
+    border-radius: 50% !important;
+    overflow: hidden;
+}
+
+.theme-toggle:hover i,
+.theme-toggle:hover .nav-icon,
+.theme-toggle:hover .material-symbols-rounded {
+    transform: none;
+}
+
+.theme-toggle:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 3px;
+}
+
+.theme-toggle.is-switching .nav-icon {
+    animation: theme-icon-swap 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes theme-icon-swap {
+    0% { transform: rotate(-90deg) scale(0.4); opacity: 0; }
+    100% { transform: rotate(0) scale(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .theme-toggle.is-switching .nav-icon { animation: none; }
 }
 
 /* ==========================================================================
@@ -568,6 +602,8 @@ a:hover {
 
 .stat-box .stat-icon {
     font-size: 1.85rem;
+    width: 1.85rem;
+    height: 1.85rem;
     color: var(--accent-primary);
     opacity: 0.85;
     transition: transform 0.25s ease, opacity 0.25s ease;
@@ -836,8 +872,12 @@ a:hover {
     transition: all 0.25s ease;
 }
 
-.capability-icon .material-symbols-rounded {
+.capability-icon .material-symbols-rounded,
+.capability-icon .ui-icon,
+.capability-icon .nav-icon {
     font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
 }
 
 .category-filter:hover .capability-icon,

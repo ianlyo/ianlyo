@@ -16,17 +16,17 @@ const href = localePath(lang, `/apps-dev/${app.id}/`);
     <div>
       <h3 class="mb-1">{d.name}</h3>
       <span class={`status-badge s-${d.status}`}>
-        {d.status === 'released' && <Icon name="material-symbols:check-circle" class="material-symbols-rounded icon-xs" aria-hidden="true" />}
-        {(d.status === 'closed-beta' || d.status === 'open-beta') && <Icon name="material-symbols:science" class="material-symbols-rounded icon-xs" aria-hidden="true" />}
-        {d.status === 'coming-soon' && <Icon name="material-symbols:hourglass-empty" class="material-symbols-rounded icon-xs" aria-hidden="true" />}
-        {d.status === 'paused' && <Icon name="material-symbols:pause-circle" class="material-symbols-rounded icon-xs" aria-hidden="true" />}
+        {d.status === 'released' && <Icon name="lucide:circle-check" class="ui-icon icon-xs" aria-hidden="true" />}
+        {(d.status === 'closed-beta' || d.status === 'open-beta') && <Icon name="lucide:flask-conical" class="ui-icon icon-xs" aria-hidden="true" />}
+        {d.status === 'coming-soon' && <Icon name="lucide:hourglass" class="ui-icon icon-xs" aria-hidden="true" />}
+        {d.status === 'paused' && <Icon name="lucide:circle-pause" class="ui-icon icon-xs" aria-hidden="true" />}
         <span>{ui.statusLabels[d.status]}</span>
       </span>
     </div>
   </div>
   <p>{pick(d.tagline, lang)}</p>
   <div class="meta mt-3">
-    <span><Icon name="material-symbols:sell" class="material-symbols-rounded icon-xs" aria-hidden="true" /><span>{ui.version} {d.version}</span></span>
-    <span><Icon name="material-symbols:android" class="material-symbols-rounded icon-xs" aria-hidden="true" /><span>Android {d.minAndroid}+</span></span>
+    <span><Icon name="lucide:tag" class="ui-icon icon-xs" aria-hidden="true" /><span>{ui.version} {d.version}</span></span>
+    <span><Icon name="lucide:smartphone" class="ui-icon icon-xs" aria-hidden="true" /><span>Android {d.minAndroid}+</span></span>
   </div>
 </a>
