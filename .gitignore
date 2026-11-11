@@ -44,5 +44,19 @@ policy.yaml
 # Generated documents
 *.pdf
 
+# Logs & Temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Coverage & Test reports
+coverage/
+*.lcov
+
+# Windows specific
+$RECYCLE.BIN/
+
 # Astro
 .astro/
+
