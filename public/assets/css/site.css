@@ -357,6 +357,8 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
   background: rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(8px) saturate(140%) brightness(1.08);
   -webkit-backdrop-filter: blur(8px) saturate(140%) brightness(1.08);
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
   z-index: 1040;
   opacity: 0;
   pointer-events: none;
@@ -383,9 +385,11 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
   height: 100vh;
   height: 100dvh;
   width: min(320px, 82vw);
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(48px) saturate(210%);
-  -webkit-backdrop-filter: blur(48px) saturate(210%);
+  background: rgba(255, 255, 255, 0.52);
+  backdrop-filter: blur(40px) saturate(210%) contrast(1.04);
+  -webkit-backdrop-filter: blur(40px) saturate(210%) contrast(1.04);
+  -webkit-transform: translate3d(-100%, 0, 0);
+  transform: translate3d(-100%, 0, 0);
   border-radius: 0 28px 28px 0;
   border-right: 1px solid rgba(255, 255, 255, 0.65);
   box-shadow: 
@@ -393,8 +397,7 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
     inset 0 1.5px 0 0 rgba(255, 255, 255, 0.9),
     inset -1.5px 0 0 0 rgba(255, 255, 255, 0.6);
   z-index: 1050;
-  transform: translateX(-100%);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), -webkit-transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -422,7 +425,7 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
 }
 
 [data-bs-theme="dark"] .nav-drawer {
-  background: rgba(17, 26, 36, 0.72);
+  background: rgba(17, 26, 36, 0.52);
   border-right: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow: 
     16px 0 52px rgba(0, 0, 0, 0.65),
@@ -439,7 +442,8 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
   );
 }
 .nav-drawer.is-open {
-  transform: translateX(0);
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
 }
 
 .nav-drawer-header {
