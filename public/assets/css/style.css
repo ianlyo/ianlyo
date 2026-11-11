@@ -36,9 +36,9 @@
     --shadow-glow: 0 0 24px var(--accent-glow);
     --active-card-shadow: 0 8px 24px -4px rgba(13, 148, 136, 0.2), 0 0 0 1.5px var(--accent-primary);
     
-    /* Navigation & Frosted Glass */
-    --nav-bg: rgba(248, 250, 252, 0.6);
-    --nav-border: rgba(226, 232, 240, 0.6);
+    /* Navigation & Frosted Glass (Ultra-Clear Liquid Glass) */
+    --nav-bg: rgba(248, 250, 252, 0.38);
+    --nav-border: rgba(226, 232, 240, 0.35);
     
     /* Hero Atmosphere */
     --card-gradient-top: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
@@ -92,8 +92,8 @@
     --shadow-glow: 0 0 28px rgba(45, 212, 191, 0.22);
     --active-card-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.5), 0 0 16px var(--accent-glow), 0 0 0 1.5px var(--accent-primary);
     
-    /* Navigation & Frosted Glass */
-    --nav-bg: rgba(11, 17, 24, 0.6);
+    /* Navigation & Frosted Glass (Ultra-Clear Liquid Glass) */
+    --nav-bg: rgba(11, 17, 24, 0.38);
     --nav-border: rgba(255, 255, 255, 0.08);
     
     /* Hero Atmosphere */
@@ -221,10 +221,88 @@ a:hover {
     padding: 12px max(24px, calc((100vw - 1140px) / 2));
     background: var(--nav-bg);
     border-bottom: 1px solid var(--nav-border);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.36s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, border-color 0.3s ease;
+    backdrop-filter: blur(36px) saturate(210%);
+    -webkit-backdrop-filter: blur(36px) saturate(210%);
+    box-shadow: 
+        0 8px 32px 0 rgba(0, 0, 0, 0.12),
+        inset 0 1.5px 0 0 rgba(255, 255, 255, 0.75),
+        inset 0 0 16px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -1.5px 0 0 rgba(255, 255, 255, 0.3);
+    transition: transform 0.36s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 液態玻璃頂部透鏡高光弧線 (Liquid Glass Top Specular Arc) */
+.site-nav::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 8%;
+    right: 8%;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.85) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    pointer-events: none;
+    filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.5));
+}
+
+/* 液態玻璃底緣多色譜稜鏡折射彩光帶 (Liquid Glass Prism Edge Spectrum) */
+.site-nav::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(45, 212, 191, 0.6) 12%,
+        rgba(14, 165, 233, 0.7) 30%,
+        rgba(255, 255, 255, 0.95) 50%,
+        rgba(168, 85, 247, 0.6) 70%,
+        rgba(45, 212, 191, 0.6) 88%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    pointer-events: none;
+    opacity: 0.95;
+    filter: drop-shadow(0 2px 6px rgba(45, 212, 191, 0.45));
+}
+
+[data-bs-theme="dark"] .site-nav {
+    box-shadow: 
+        0 14px 44px 0 rgba(0, 0, 0, 0.6),
+        inset 0 1.5px 0 0 rgba(255, 255, 255, 0.35),
+        inset 0 0 16px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1.5px 0 0 rgba(255, 255, 255, 0.15);
+}
+
+[data-bs-theme="dark"] .site-nav::before {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.6) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    filter: drop-shadow(0 1px 3px rgba(255, 255, 255, 0.25));
+}
+
+[data-bs-theme="dark"] .site-nav::after {
+    opacity: 0.85;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(45, 212, 191, 0.75) 15%,
+        rgba(56, 189, 248, 0.85) 35%,
+        rgba(255, 255, 255, 0.9) 50%,
+        rgba(192, 132, 252, 0.75) 65%,
+        rgba(45, 212, 191, 0.75) 85%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    filter: drop-shadow(0 2px 8px rgba(45, 212, 191, 0.4));
 }
 
 @media (max-width: 768px) {
@@ -270,11 +348,11 @@ a:hover {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-family: 'DM Sans', 'Noto Sans TC', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
     text-transform: uppercase;
     text-decoration: none;
     padding: 8px 14px;
