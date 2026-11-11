@@ -469,3 +469,58 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
   gap: 0.35rem;
 }
 
+
+/* ---- Pagefind search UI (theme-aware, light + dark) ---- */
+.search-box {
+  --pagefind-ui-scale: 1;
+  --pagefind-ui-primary: var(--accent-primary);
+  --pagefind-ui-text: var(--text-primary);
+  --pagefind-ui-background: var(--bg-surface);
+  --pagefind-ui-border: var(--border-strong);
+  --pagefind-ui-tag: var(--bg-surface-subtle);
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-radius: 14px;
+  --pagefind-ui-image-border-radius: 12px;
+  --pagefind-ui-image-box-ratio: 3 / 2;
+  --pagefind-ui-font: inherit;
+}
+.search-box .pagefind-ui__search-input {
+  background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-strong);
+  font-weight: 500; height: 56px; transition: border-color .2s, box-shadow .2s;
+}
+.search-box .pagefind-ui__search-input::placeholder { color: var(--text-muted); opacity: 1; }
+.search-box .pagefind-ui__search-input:focus { outline: 0; border-color: var(--accent-primary); box-shadow: 0 0 0 3px var(--accent-glow); }
+.search-box .pagefind-ui__search-input:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+.search-box .pagefind-ui__form::before { background-color: var(--text-muted); opacity: 1; }
+.search-box .pagefind-ui__search-clear {
+  background: var(--bg-surface-subtle); color: var(--text-secondary); border-radius: 999px; height: 36px; top: 10px; right: 10px; padding: 0 .9rem;
+}
+.search-box .pagefind-ui__search-clear:hover { color: var(--accent-primary); background: var(--accent-subtle); }
+.search-box .pagefind-ui__message { color: var(--text-secondary); font-weight: 500; }
+.search-box .pagefind-ui__results-area { margin-top: 1.25rem; }
+.search-box .pagefind-ui__result {
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-md, 14px); background: var(--bg-surface);
+  padding: 1rem 1.25rem; margin-bottom: .85rem; transition: border-color .2s, background .2s;
+}
+.search-box .pagefind-ui__result:first-of-type { border-top: 1px solid var(--border-subtle); }
+.search-box .pagefind-ui__result:last-of-type { border-bottom: 1px solid var(--border-subtle); }
+.search-box .pagefind-ui__result:hover { border-color: var(--border-hover); background: var(--bg-card-hover); }
+.search-box .pagefind-ui__result-link { color: var(--text-primary); font-weight: 700; text-decoration: none; }
+.search-box .pagefind-ui__result-link:hover { color: var(--accent-primary); text-decoration: none; }
+.search-box .pagefind-ui__result-excerpt { color: var(--text-secondary); }
+.search-box .pagefind-ui__result-title { margin-bottom: .25rem; }
+.search-box .pagefind-ui__result-nested { border-left: 2px solid var(--border-subtle); padding-left: 1rem; }
+.search-box mark { background: var(--accent-subtle); color: var(--accent-primary); border-radius: 4px; padding: 0 .2em; font-weight: 600; }
+.search-box .pagefind-ui__result-thumb { background: var(--bg-surface-subtle); }
+.search-box .pagefind-ui__button {
+  background: transparent; color: var(--text-primary); border: 1px solid var(--border-strong); border-radius: 999px; transition: all .2s;
+}
+.search-box .pagefind-ui__button:hover { border-color: var(--accent-primary); color: var(--accent-primary); background: var(--accent-subtle); }
+.search-box .pagefind-ui__filter-panel, .search-box .pagefind-ui__filter-name, .search-box .pagefind-ui__filter-label { color: var(--text-primary); }
+.search-box .pagefind-ui__filter-checkbox { background: var(--bg-surface); border-color: var(--border-strong); }
+.search-box .pagefind-ui__filter-checkbox:checked { background: var(--accent-primary); border-color: var(--accent-primary); }
+.search-box .pagefind-ui__drawer { color: var(--text-primary); }
+@media (max-width: 767.98px) {
+  .search-box .pagefind-ui__result { padding: .85rem 1rem; }
+  .search-box .pagefind-ui__search-input { height: 52px; }
+}

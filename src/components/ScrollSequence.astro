@@ -1,16 +1,25 @@
----
+﻿---
 /**
  * ScrollSequence - Apple-style scroll-pinned content switcher.
  * The section pins to the viewport; scrolling cross-fades the text on the left
  * with a phone screenshot on the right (stacked on mobile).
  * Edit only the steps (pass them via the `steps` prop).
  */
+export type ZoomOrigin = 'top left' | 'top center' | 'top right' | 'center' | 'bottom left' | 'bottom center' | 'bottom right';
+export interface ZoomConfig {
+  scale?: number; // desktop scale (default 1.75)
+  mobileScale?: number; // mobile scale (default 1.45)
+  origin?: ZoomOrigin; // desktop origin (default 'top center')
+  mobileOrigin?: ZoomOrigin; // mobile origin (default 'top left')
+}
+
 export interface ScrollStep {
   id: number;
   image?: string; // optional screenshot shown in the phone frame
   images?: string[]; // several screenshots shown one after another within this step
   video?: string; // optional video (.mp4 / .webm) scrubbed/played while scrolling through this step
-  zoom?: boolean; // zoom the phone in so only the top of the screen is visible
+  /** Zoom the phone in. 	rue uses defaults; an object overrides scale/origin per device. */
+  zoom?: boolean | ZoomConfig;
   title: string;
   subtitle: string;
   href?: string;
@@ -25,6 +34,8 @@ interface Props {
   label?: string;
   theme?: 'dark' | 'auto';
   frameType?: 'phone' | 'card' | 'none';
+  /** Where the mobile caption card sits */
+  captionPosition?: 'bottom' | 'top';
 }
 
 const defaultSteps: ScrollStep[] = [
@@ -38,19 +49,22 @@ const {
   scrollPerStep = 1500,
   label = 'Scroll sequence',
   theme = 'dark',
-  frameType = 'phone'
+  frameType = 'phone',
+  captionPosition = 'bottom'
 } = Astro.props;
+
+const zoomData = (z: ScrollStep['zoom']) => (z ? JSON.stringify(typeof z === 'object' ? z : {}) : undefined);
 ---
 {scrollSteps.length > 0 && (
   <section
-    class:list={['scroll-sequence', `theme-${theme}`, `frame-${frameType}`]}
+    class:list={['scroll-sequence', `theme-${theme}`, `frame-${frameType}`, `caption-${captionPosition}`]}
     data-scroll-per-step={scrollPerStep}
     aria-label={label}
   >
     <div class="stage">
       <div class="text-layer">
         {scrollSteps.map((s, i) => (
-          <div class="text-step" data-step={s.id} data-zoom={s.zoom ? "1" : undefined} style={i === 0 ? 'opacity:1;transform:none' : undefined}>
+          <div class="text-step" data-step={s.id} data-zoom={zoomData(s.zoom)} style={i === 0 ? 'opacity:1;transform:none' : undefined}>
             <span class="step-count">{String(i + 1).padStart(2, '0')} / {String(scrollSteps.length).padStart(2, '0')}</span>
             <h2>{s.href ? <a href={s.href}>{s.title}</a> : s.title}</h2>
             <p>{s.subtitle}</p>
@@ -298,6 +312,12 @@ const {
     .phone-screen {
       border-radius: 22px;
     }
+    .scroll-sequence.caption-top .text-layer {
+      bottom: auto;
+      top: 4.5rem;
+      place-items: start center;
+    }
+    .scroll-sequence.caption-top::after { display: none; }
     .text-layer {
       position: absolute;
       left: 0;
@@ -485,9 +505,17 @@ const {
 
       const perStep = Number(root.dataset.scrollPerStep) || 1800;
       const isMobile = window.innerWidth <= 768;
-      const ZOOM = isMobile ? 1.18 : 1.75;
+      const defaultOrigin = 'top center';
+      const zoomCfg = (el: HTMLElement) => {
+        let c: Record<string, any> = {};
+        try { c = JSON.parse(el.dataset.zoom || '{}'); } catch {}
+        return {
+          scale: (isMobile ? c.mobileScale : c.scale) ?? (isMobile ? 1.45 : 1.75),
+          origin: (isMobile ? c.mobileOrigin : c.origin) ?? (isMobile ? 'top left' : 'top center'),
+        };
+      };
       const yShift = isMobile ? 12 : 40;
-      phone.style.transformOrigin = 'top center';
+      phone.style.transformOrigin = defaultOrigin;
 
       // Reset initial positions per device breakpoint
       texts.forEach((text, idx) => {
@@ -523,8 +551,8 @@ const {
         const label = `step${i}`;
         const frames = framesOf(i);
         const prevFrames = i > 0 ? framesOf(i - 1) : [];
-        const zoom = text.dataset.zoom === '1';
-        const prevZoom = i > 0 && texts[i - 1].dataset.zoom === '1';
+        const zoom = text.dataset.zoom !== undefined;
+        const prevZoom = i > 0 && texts[i - 1].dataset.zoom !== undefined;
         const videoEl = frames[0]?.querySelector<HTMLVideoElement>('video');
         // Steps with video get ample scrub time (4.5s virtual timeline duration) for detailed playback
         const holdDuration = videoEl ? 4.5 : 2.0 + frames.length;
@@ -538,8 +566,30 @@ const {
           tl.to(frames[0], { opacity: 1, duration: 1 }, label);
         }
         // c. zoom the phone in (or back out) together with the text
-        if (zoom) tl.to(phone, { scale: ZOOM, duration: 1.5, ease: 'power2.inOut' }, label);
-        else if (prevZoom) tl.to(phone, { scale: 1, duration: 1, ease: 'power2.inOut' }, label);
+        if (zoom) {
+          const zc = zoomCfg(text);
+          tl.to(
+            phone,
+            {
+              scale: zc.scale,
+              transformOrigin: zc.origin,
+              duration: 1.5,
+              ease: 'power2.inOut',
+            },
+            label
+          );
+        } else if (prevZoom) {
+          tl.to(
+            phone,
+            {
+              scale: 1,
+              transformOrigin: defaultOrigin,
+              duration: 1,
+              ease: 'power2.inOut',
+            },
+            label
+          );
+        }
         // d1. if step contains a video, scrub/play video across the step's active scroll range
         if (videoEl) {
           const setVideoProgress = bindScrollVideo(videoEl);
@@ -573,6 +623,8 @@ const {
   initScrollSequence();
   document.addEventListener('astro:page-load', initScrollSequence);
 </script>
+
+
 
 
 

@@ -1,4 +1,4 @@
-import { defineCollection, z } from 'astro:content';
+﻿import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 /** Text with a Traditional Chinese (required) and English (optional) version. */
@@ -52,7 +52,7 @@ const apps = defineCollection({
     tagline: localized,
     description: localized,
     features: z
-      .array(z.object({ title: localized, description: localized, image: z.string().optional(), images: z.array(z.string()).optional(), video: z.string().optional(), zoom: z.boolean().optional() }))
+      .array(z.object({ title: localized, description: localized, image: z.string().optional(), images: z.array(z.string()).optional(), video: z.string().optional(), zoom: z.union([z.boolean(), z.object({ scale: z.number().optional(), mobileScale: z.number().optional(), origin: z.enum(['top left','top center','top right','center','bottom left','bottom center','bottom right']).optional(), mobileOrigin: z.enum(['top left','top center','top right','center','bottom left','bottom center','bottom right']).optional() })]).optional() }))
       .default([]),
     /** Permissions the app requests (shown as chips). */
     permissions: z.array(z.string()).default([]),
@@ -77,5 +77,7 @@ const apps = defineCollection({
 });
 
 export const collections = { blog, apps };
+
+
 
 
