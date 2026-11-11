@@ -66,7 +66,7 @@ const zoomData = (z: ScrollStep['zoom']) => (z ? JSON.stringify(typeof z === 'ob
         {scrollSteps.map((s, i) => (
           <div class="text-step" data-step={s.id} data-zoom={zoomData(s.zoom)} style={i === 0 ? 'opacity:1;transform:none' : undefined}>
             <span class="step-count">{String(i + 1).padStart(2, '0')} / {String(scrollSteps.length).padStart(2, '0')}</span>
-            <h2>{s.href ? <a href={s.href}>{s.title}</a> : s.title}</h2>
+            <h2 class="scroll-gradient-text" data-gsap-gradient="true">{s.href ? <a href={s.href}>{s.title}</a> : s.title}</h2>
             <p>{s.subtitle}</p>
           </div>
         ))}
@@ -119,9 +119,6 @@ const zoomData = (z: ScrollStep['zoom']) => (z ? JSON.stringify(typeof z === 'ob
   :global([data-bs-theme="dark"]) .scroll-sequence.theme-auto {
     background: radial-gradient(ellipse at 70% 50%, #162432, #0b1118 75%);
     color: #fff;
-  }
-  .scroll-sequence.theme-auto .text-step h2 {
-    color: var(--text-primary);
   }
   .scroll-sequence.theme-auto .text-step p {
     color: var(--text-secondary);
@@ -210,12 +207,15 @@ const zoomData = (z: ScrollStep['zoom']) => (z ? JSON.stringify(typeof z === 'ob
     letter-spacing: -0.02em;
     line-height: 1.15;
     margin: 0 0 1rem;
-    color: #fff;
     word-break: break-word;
     overflow-wrap: break-word;
   }
   .text-step h2 a {
-    color: inherit;
+    background: inherit;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
     text-decoration: none;
   }
   .text-step p {
@@ -556,10 +556,35 @@ const zoomData = (z: ScrollStep['zoom']) => (z ? JSON.stringify(typeof z === 'ob
         const videoEl = frames[0]?.querySelector<HTMLVideoElement>('video');
         // Steps with video get ample scrub time (4.5s virtual timeline duration) for detailed playback
         const holdDuration = videoEl ? 4.5 : 2.0 + frames.length;
+        const headingEl = text.querySelector<HTMLElement>('h2');
 
         tl.addLabel(label);
         // a. text slides in and fades in
         tl.to(text, { opacity: 1, y: 0, duration: 1 }, label);
+        // a2. animate heading gradient color & glow across this step's active scroll duration
+        if (headingEl) {
+          const gradProxy = { p: 0 };
+          const baseOffset = (i * 0.22) % 1;
+          const applyGrad = (p: number) => {
+            const phase = (baseOffset + p * 0.85) % 1;
+            headingEl.style.setProperty('--hero-grad-x', `${(phase * 100).toFixed(2)}%`);
+            headingEl.style.setProperty('--hero-grad-y', `${(50 + Math.sin(phase * Math.PI * 2) * 50).toFixed(2)}%`);
+            headingEl.style.setProperty('--hero-hue', `${(Math.sin(p * Math.PI) * 45 + i * 12).toFixed(1)}deg`);
+            headingEl.style.setProperty('--hero-glow', Math.sin(p * Math.PI).toFixed(3));
+          };
+          applyGrad(0);
+          tl.fromTo(
+            gradProxy,
+            { p: 0 },
+            {
+              p: 1,
+              duration: holdDuration + 1,
+              ease: 'none',
+              onUpdate: () => applyGrad(gradProxy.p),
+            },
+            label
+          );
+        }
         // b. this step's first screenshot/video replaces the previous step's last one
         if (i > 0) {
           tl.to(prevFrames[prevFrames.length - 1], { opacity: 0, duration: 1 }, label);

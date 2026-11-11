@@ -123,8 +123,8 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-  <link rel="stylesheet" href="/assets/css/style.css?v=2.2" />
-  <link rel="stylesheet" href="/assets/css/site.css?v=2.3" />
+  <link rel="stylesheet" href="/assets/css/style.css?v=2.5" />
+  <link rel="stylesheet" href="/assets/css/site.css?v=2.4" />
 </head>
 <body>
   <!-- Reading scroll progress indicator -->
@@ -266,7 +266,7 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
     </div>
   </footer>
 
-  <script is:inline src="/assets/js/script.js?v=2.0"></script>
+  <script is:inline src="/assets/js/script.js?v=2.1"></script>
   <style is:global>
     .scroll-progress-bar {
       position: fixed;
@@ -278,8 +278,8 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
       pointer-events: none;
       opacity: 0;
       transition: width 0.1s ease-out, opacity 0.25s ease;
-      background: linear-gradient(90deg, rgba(13, 148, 136, 0.65) 0%, rgba(14, 165, 233, 0.75) 100%);
-      box-shadow: 0 2px 8px rgba(13, 148, 136, 0.28), 0 1px 3px rgba(0, 0, 0, 0.08);
+      background: linear-gradient(90deg, rgba(79, 70, 229, 0.7) 0%, rgba(14, 165, 233, 0.78) 50%, rgba(168, 85, 247, 0.78) 100%);
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3), 0 1px 3px rgba(0, 0, 0, 0.08);
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
     }
@@ -288,16 +288,16 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
       opacity: 1;
     }
 
-    /* 淺色模式：精準落影搭配主題青色柔和光暈，兼具立體感與清晰度 */
+    /* 淺色模式：精準落影搭配電光靛藍柔和光暈，兼具立體感與清晰度 */
     [data-bs-theme='light'] .scroll-progress-bar {
-      background: linear-gradient(90deg, rgba(13, 148, 136, 0.65) 0%, rgba(14, 165, 233, 0.75) 100%);
-      box-shadow: 0 2px 8px rgba(13, 148, 136, 0.32), 0 1px 4px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(90deg, rgba(79, 70, 229, 0.7) 0%, rgba(14, 165, 233, 0.78) 50%, rgba(168, 85, 247, 0.78) 100%);
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.32), 0 1px 4px rgba(0, 0, 0, 0.1);
     }
 
-    /* 深色模式：未來科技感霓虹光暈 (Neon Glow)，在深色底上深邃優雅 */
+    /* 深色模式：未來科技感霓虹極光光暈 (Neon Glow)，在深色底上深邃優雅 */
     [data-bs-theme='dark'] .scroll-progress-bar {
-      background: linear-gradient(90deg, rgba(45, 212, 191, 0.75) 0%, rgba(56, 189, 248, 0.85) 100%);
-      box-shadow: 0 0 12px rgba(45, 212, 191, 0.55), 0 2px 8px rgba(56, 189, 248, 0.35);
+      background: linear-gradient(90deg, rgba(129, 140, 248, 0.8) 0%, rgba(56, 189, 248, 0.85) 50%, rgba(192, 132, 252, 0.85) 100%);
+      box-shadow: 0 0 12px rgba(129, 140, 248, 0.55), 0 2px 8px rgba(56, 189, 248, 0.35);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -457,17 +457,48 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
 
       function setupScrollProgress() {
         var progressBar = document.getElementById('scroll-progress');
-        if (!progressBar) return;
+        var gradientEls = Array.prototype.slice.call(
+          document.querySelectorAll('.hero-title em, .scroll-gradient-text, [data-scroll-gradient]')
+        );
         var ticking = false;
+
+        function applyGradientProgress(el, ratio, phaseOffset) {
+          var r = Math.min(1, Math.max(0, ratio));
+          var phase = (r + (phaseOffset || 0)) % 1;
+          el.style.setProperty('--hero-grad-x', (phase * 100).toFixed(2) + '%');
+          el.style.setProperty('--hero-grad-y', (50 + Math.sin(phase * Math.PI * 2) * 50).toFixed(2) + '%');
+          el.style.setProperty('--hero-hue', (Math.sin(phase * Math.PI) * 42).toFixed(1) + 'deg');
+          el.style.setProperty('--hero-glow', Math.sin(r * Math.PI).toFixed(3));
+        }
+
         function update() {
           var scroll = window.scrollY || document.documentElement.scrollTop;
-          var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-          var progress = height > 0 ? (scroll / height) * 100 : 0;
-          progressBar.style.width = Math.min(100, Math.max(0, progress)) + '%';
-          if (scroll > 8) {
-            progressBar.classList.add('is-visible');
-          } else {
-            progressBar.classList.remove('is-visible');
+          var vh = window.innerHeight || document.documentElement.clientHeight || 800;
+          if (progressBar) {
+            var height = document.documentElement.scrollHeight - vh;
+            var progress = height > 0 ? (scroll / height) * 100 : 0;
+            progressBar.style.width = Math.min(100, Math.max(0, progress)) + '%';
+            if (scroll > 8) {
+              progressBar.classList.add('is-visible');
+            } else {
+              progressBar.classList.remove('is-visible');
+            }
+          }
+          for (var i = 0; i < gradientEls.length; i++) {
+            var el = gradientEls[i];
+            if (el.getAttribute('data-gsap-gradient') === 'true') continue;
+            var rect = el.getBoundingClientRect();
+            var ratio;
+            if (rect.top + scroll < vh * 0.85) {
+              // Top-of-page / Hero elements: drive immediately from scroll=0
+              var range = Math.max(vh * 0.65, 320);
+              ratio = scroll / range;
+            } else {
+              // In-page headings: drive as element crosses viewport
+              var total = vh + rect.height;
+              ratio = total > 0 ? (vh - rect.top) / total : 0;
+            }
+            applyGradientProgress(el, ratio, (i % 4) * 0.15);
           }
           ticking = false;
         }
@@ -477,6 +508,7 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
             ticking = true;
           }
         }, { passive: true });
+        window.addEventListener('resize', update, { passive: true });
         update();
       }
 

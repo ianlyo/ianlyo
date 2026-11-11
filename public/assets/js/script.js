@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Dynamically update contribution graph base color
             if (graphImg) {
-                const accentColor = isDark ? '2dd4bf' : '0d9488';
+                const accentColor = isDark ? '818cf8' : '4f46e5';
                 graphImg.src = `https://ghchart.rshah.org/${accentColor}/ianlyo`;
             }
         }

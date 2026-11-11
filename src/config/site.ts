@@ -17,7 +17,7 @@ export const SITE = {
   /** 正式網址（需與 astro.config.mjs 的 site 一致，結尾含 /） */
   url: 'https://linnu.dpdns.org/',
   /** 瀏覽器主題色 */
-  themeColor: '#0d9488',
+  themeColor: '#4f46e5',
   /** 預設社群分享圖（放在 public/ 底下） */
   ogImage: '/og/default.png',
   /** 社群分享圖替代文字 */
@@ -33,6 +33,6 @@ export const SITE = {
     reposUrl: `https://github.com/${githubUser}?tab=repositories`,
     avatarUrl: `https://github.com/${githubUser}.png`,
     /** 首頁貢獻圖 */
-    contributionChartUrl: `https://ghchart.rshah.org/0d9488/${githubUser}`,
+    contributionChartUrl: `https://ghchart.rshah.org/4f46e5/${githubUser}`,
   },
 } as const;

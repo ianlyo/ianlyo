@@ -58,7 +58,7 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
           ? <img class="app-icon" src={d.icon} alt={`${d.name} icon`} width="96" height="96" data-pagefind-meta="image[src]" />
           : <div class="app-icon app-icon-fallback" aria-hidden="true">{d.name.charAt(0)}</div>}
         <div>
-          <h1 class="mb-1" style="font-weight:800" data-pagefind-meta="title">{d.name}</h1>
+          <h1 class="mb-1 scroll-gradient-text" style="font-weight:800" data-pagefind-meta="title">{d.name}</h1>
           <p class="mb-2" style="color:var(--text-secondary)">{tagline}</p>
           <div class="meta">
             <span class={`status-badge s-${d.status}`}>

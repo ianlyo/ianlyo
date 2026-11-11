@@ -625,32 +625,32 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
 
 /* 聚焦／啟用中的項目：Apple 質感膠囊 */
 .nav-drawer-item.active {
-  background: rgba(13, 148, 136, 0.12);
-  color: #0f766e;
+  background: rgba(79, 70, 229, 0.12);
+  color: #4338ca;
   font-weight: 700;
-  border: 1px solid rgba(13, 148, 136, 0.28);
+  border: 1px solid rgba(79, 70, 229, 0.28);
   box-shadow: 
-    0 2px 10px rgba(13, 148, 136, 0.12),
+    0 2px 10px rgba(79, 70, 229, 0.12),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
 }
 
 [data-bs-theme="dark"] .nav-drawer-item.active {
-  background: rgba(45, 212, 191, 0.16);
-  color: #2dd4bf;
-  border: 1px solid rgba(45, 212, 191, 0.35);
+  background: rgba(129, 140, 248, 0.16);
+  color: #818cf8;
+  border: 1px solid rgba(129, 140, 248, 0.35);
   box-shadow: 
-    0 4px 16px rgba(45, 212, 191, 0.18),
+    0 4px 16px rgba(129, 140, 248, 0.2),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
 }
 
 .nav-drawer-item.active .material-symbols-rounded,
 .nav-drawer-item.active i {
-  color: #0f766e;
+  color: #4338ca;
 }
 
 [data-bs-theme="dark"] .nav-drawer-item.active .material-symbols-rounded,
 [data-bs-theme="dark"] .nav-drawer-item.active i {
-  color: #2dd4bf;
+  color: #818cf8;
 }
 
 .nav-drawer-divider {
