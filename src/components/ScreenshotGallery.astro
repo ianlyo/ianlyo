@@ -1013,8 +1013,8 @@ const serializedScreenshots = screenshots.map((s) => ({
         gallery.classList.remove('is-centered');
 
         const isMobile = window.innerWidth <= 768;
-        // 輕快敏捷滾動行程：大幅縮短釘選距離（約縮短 45%~50%），讓使用者更快瀏覽並順暢切換至下個區段
-        const scrollDistance = () => Math.round(getDistance() * (isMobile ? 0.52 : 0.62) + 20);
+        // 極速輕快滾動行程：大幅縮短滾動距離至 0.22~0.28，使用者只需滑動 1~2 下滾輪或大拇指輕滑即可快速掠過整段截圖輪播
+        const scrollDistance = () => Math.round(getDistance() * (isMobile ? 0.22 : 0.28) + 10);
 
         const tween = gsap.to(track, {
           x: () => -getDistance(),

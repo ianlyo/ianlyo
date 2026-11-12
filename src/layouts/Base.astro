@@ -176,6 +176,9 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
       <a href={localePath(lang, '/search/')} class="nav-icon-btn d-inline-flex d-md-none" aria-label={ui.nav.search} title={ui.nav.search}>
         <Icon name="lucide:search" class="nav-icon" aria-hidden="true" />
       </a>
+      <button class="nav-icon-btn" id="share-btn" type="button" aria-label={ui.nav.share} title={ui.nav.share} data-share-title={pageTitle} data-share-text={pageDesc} data-share-url={canonical} data-copied={ui.nav.shareCopied}>
+        <Icon name="lucide:share-2" class="nav-icon" aria-hidden="true" />
+      </button>
       <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme">
         <Icon name="lucide:sun-medium" class="nav-icon" aria-hidden="true" />
       </button>
@@ -264,6 +267,61 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
     </div>
   </footer>
 
+  <div class="share-toast" id="share-toast" role="status" aria-live="polite"></div>
+  <script is:inline>
+    (function () {
+      function bind() {
+        var btn = document.getElementById('share-btn');
+        if (!btn || btn.dataset.bound) return;
+        btn.dataset.bound = '1';
+        var toast = document.getElementById('share-toast');
+        function showToast(msg) {
+          if (!toast) return;
+          toast.textContent = msg;
+          toast.classList.add('is-visible');
+          clearTimeout(showToast.t);
+          showToast.t = setTimeout(function () { toast.classList.remove('is-visible'); }, 2000);
+        }
+        btn.addEventListener('click', async function () {
+          var data = { title: btn.dataset.shareTitle, text: btn.dataset.shareText, url: btn.dataset.shareUrl };
+          if (navigator.share) {
+            try {
+              await navigator.share(data);
+              return;
+            } catch (err) {
+              if (err && err.name === 'AbortError') return;
+            }
+          }
+          try {
+            await navigator.clipboard.writeText(data.url);
+            showToast(btn.dataset.copied);
+          } catch (e) {
+            window.prompt('', data.url);
+          }
+        });
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind); else bind();
+      document.addEventListener('astro:page-load', bind);
+    })();
+  </script>
+  <style is:global>
+    .share-toast {
+      position: fixed;
+      left: 50%;
+      bottom: 2rem;
+      transform: translate(-50%, 20px);
+      padding: 0.6rem 1.1rem;
+      border-radius: 999px;
+      background: rgba(30, 30, 34, 0.92);
+      color: #fff;
+      font-size: 0.9rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      z-index: 3000;
+    }
+    .share-toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+  </style>
   <script is:inline src="/assets/js/script.js?v=2.2"></script>
   <script src="../scripts/scrollReveal.ts"></script>
   <style is:global>

@@ -74,6 +74,14 @@ screenshots:
     alt: { zh: 健康數據紀錄, en: Health data records }
   - src: /apps/health-debug/googlefit.png
     alt: { zh: 寫入 Health Connect 並由 Google Fit 讀取驗證, en: Health Connect data read in Google Fit }
+  - src: /apps/health-debug/about-screen_Health Debug.png
+    alt: { zh: 關於頁面, en: About screen }
+  - src: /apps/health-debug/settings-screen_Health Debug.png
+    alt: { zh: 設定頁面, en: Settings screen }
+  - src: /apps/health-debug/system-health-1.png
+    alt: { zh: 系統健康服務狀態 1, en: System Health status 1 }
+  - src: /apps/health-debug/system-health-2.png
+    alt: { zh: 系統健康服務狀態 2, en: System Health status 2 }
 specs: []
 faq:
   - q: { zh: 我需要什麼才能參加測試？, en: What do I need to join the beta? }

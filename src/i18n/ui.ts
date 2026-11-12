@@ -21,7 +21,7 @@ export const ui = {
     },
     siteTitle: 'ianlyo — 應用 · 開源 · 筆記',
     siteDescription: '把日常問題變成 App 與工具。個人作品集、Apps 展示與技術筆記。',
-    nav: { home: '首頁', projects: '專案', beta: 'Apps', blog: '部落格', search: '搜尋', github: 'GitHub', menuOpen: '開啟選單', menuClose: '關閉選單' },
+    nav: { home: '首頁', projects: '專案', beta: 'Apps', blog: '部落格', search: '搜尋', github: 'GitHub', menuOpen: '開啟選單', menuClose: '關閉選單', share: '分享', shareCopied: '連結已複製' },
     hero: {
       title1: '把日常問題',
       title2: '變成 App 與工具。',
@@ -165,7 +165,7 @@ export const ui = {
     },
     siteTitle: 'ianlyo — Apps, Open Source & Notes',
     siteDescription: 'Turning everyday problems into apps & tools. Portfolio, technical notes and apps showcase.',
-    nav: { home: 'Home', projects: 'Projects', beta: 'Apps', blog: 'Blog', search: 'Search', github: 'GitHub', menuOpen: 'Open menu', menuClose: 'Close menu' },
+    nav: { home: 'Home', projects: 'Projects', beta: 'Apps', blog: 'Blog', search: 'Search', github: 'GitHub', menuOpen: 'Open menu', menuClose: 'Close menu', share: 'Share', shareCopied: 'Link copied' },
     hero: {
       title1: 'Turning everyday problems',
       title2: 'into apps & tools.',
