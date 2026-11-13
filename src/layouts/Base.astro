@@ -294,7 +294,7 @@ const themeMetaMap = Object.fromEntries(
       <div class="footer-content">
         <p class="footer-copy">
           <a href={SITE.github.reposUrl} target="_blank" rel="noopener" class="footer-repo-btn" aria-label="GitHub"><Icon name="simple-icons:github" class="ui-icon" aria-hidden="true" /></a>
-          © <span id="current-year"></span> {SITE.name}
+          © <span id="current-year">{new Date().getFullYear()}</span> {SITE.name}
         </p>
         <div class="footer-links">
           {otherPath && (

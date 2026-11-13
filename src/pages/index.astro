@@ -1,10 +1,4 @@
 ---
-import Base from '../layouts/Base.astro';
 import Home from '../components/Home.astro';
-import { SITE } from '../config/site';
-const jsonLd = [
-  { '@context': 'https://schema.org', '@type': 'WebSite', name: SITE.name, url: SITE.url, inLanguage: 'zh-Hant' },
-  { '@context': 'https://schema.org', '@type': 'Person', name: SITE.author, url: SITE.url, sameAs: [SITE.github.profileUrl] },
-];
 ---
-<Base lang="zh-Hant" jsonLd={jsonLd}><Home lang="zh-Hant" /></Base>
+<Home lang="zh-Hant" />

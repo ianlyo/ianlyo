@@ -1,6 +1,7 @@
 ---
 import { Icon } from 'astro-icon/components';
 import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
 import { t, localePath, type Lang } from '../i18n/ui';
 import { SITE } from '../config/site';
 import { sortPosts, readingTime, formatDate } from '../utils/blog';
@@ -11,7 +12,12 @@ const ui = t(lang);
 const apps = (await getCollection('apps')).filter((a) => !a.data.hidden && a.data.status !== 'paused').slice(0, 3);
 const posts = sortPosts(await getCollection('blog')).slice(0, 3);
 const f = ui.filters;
+const jsonLd = [
+  { '@context': 'https://schema.org', '@type': 'WebSite', name: SITE.name, url: SITE.url, inLanguage: lang },
+  { '@context': 'https://schema.org', '@type': 'Person', name: SITE.author, url: SITE.url, sameAs: [SITE.github.profileUrl] },
+];
 ---
+<Base lang={lang} jsonLd={jsonLd}>
 <section id="home" class="hero-section">
   <div class="container">
     <div class="row align-items-center hero-grid">
@@ -195,3 +201,4 @@ const f = ui.filters;
     </div>
   </section>
 </main>
+</Base>

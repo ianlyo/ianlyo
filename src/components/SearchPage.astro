@@ -1,0 +1,36 @@
+---
+import { Icon } from 'astro-icon/components';
+import Base from '../layouts/Base.astro';
+import { t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const ui = t(lang).blog;
+const altPath = lang === 'en' ? '/search/' : '/en/search/';
+---
+<Base lang={lang} title={t(lang).nav.search} description={ui.lead} altPath={altPath} noindex>
+  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  <main class="page"><div class="container page-narrow">
+    <header class="page-head mb-4">
+      <h1 class="d-flex align-items-center gap-2">
+        <Icon name="lucide:search" class="ui-icon text-accent" aria-hidden="true" />
+        <span>{t(lang).nav.search}</span>
+      </h1>
+    </header>
+    <div id="search" class="search-box"></div>
+    <p id="search-dev-note" class="placeholder-note" hidden>{ui.pagefind.devNote}</p>
+  </div></main>
+  <script is:inline src="/pagefind/pagefind-ui.js" onerror="document.getElementById('search-dev-note').hidden=false"></script>
+  <script is:inline define:vars={{ tr: ui.pagefind }}>
+    window.addEventListener('DOMContentLoaded', function () {
+      if (!window.PagefindUI) return;
+      new PagefindUI({
+        element: '#search', showSubResults: true, resetStyles: false, autofocus: true,
+        translations: { placeholder: tr.placeholder, clear_search: tr.clear, load_more: tr.loadMore, search_label: tr.searchLabel, filters_label: tr.filters, zero_results: tr.zeroResults, many_results: tr.manyResults, one_result: tr.oneResult, alt_search: tr.altSearch, search_suggestion: tr.searchSuggestions }
+      });
+    });
+  </script>
+</Base>

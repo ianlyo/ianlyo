@@ -26,12 +26,6 @@
 .icon-lg { font-size: 1.75em; width: 1.75em; height: 1.75em; }
 .icon-xl { font-size: 2.25em; width: 2.25em; height: 2.25em; }
 
-.material-symbols-rounded.icon-xs { font-size: 0.95em; width: 0.95em; height: 0.95em; }
-.material-symbols-rounded.icon-sm { font-size: 1.1em; width: 1.1em; height: 1.1em; }
-.material-symbols-rounded.icon-md { font-size: 1.35em; width: 1.35em; height: 1.35em; }
-.material-symbols-rounded.icon-lg { font-size: 1.75em; width: 1.75em; height: 1.75em; }
-.material-symbols-rounded.icon-xl { font-size: 2.25em; width: 2.25em; height: 2.25em; }
-
 .text-accent { color: var(--accent-primary) !important; }
 
 .skip-link { position: absolute; left: -999px; top: 0; background: var(--accent-primary); color: var(--accent-text); padding: .5rem 1rem; z-index: 2000; }
