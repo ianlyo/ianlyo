@@ -1,5 +1,6 @@
 ---
 import '@fontsource-variable/chiron-goround-tc';
+import '../styles/bootstrap-used.css';
 import '../styles/style.css';
 import '../styles/site.css';
 import { Icon } from 'astro-icon/components';
@@ -118,8 +119,6 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
     })();
   </script>
 
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
   <!-- Reading scroll progress indicator -->
@@ -321,7 +320,7 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
     }
     .share-toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
   </style>
-  <script is:inline defer src="/assets/js/script.js?v=2.3"></script>
+  <script is:inline defer src="/assets/js/script.js?v=2.4"></script>
   <script src="../scripts/scrollReveal.ts"></script>
   <style is:global>
     /* ==========================================================================
@@ -512,7 +511,7 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
         });
         var cachedMetrics = [];
         var docHeight = 0;
-        var vh = window.innerHeight || document.documentElement.clientHeight || 800;
+        var vh = 800;
         var ticking = false;
 
         function measure() {

@@ -265,7 +265,9 @@ async function initializeProjects() {
         updateGitHubStats();
         initializeCategoryFilters();
         populateLanguageFilter();
-        renderProjects();
+        requestAnimationFrame(() => {
+            renderProjects();
+        });
     }
 }
 
