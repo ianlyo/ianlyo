@@ -401,9 +401,9 @@ const en = t('en').notFound;
         updateCharDisplay();
       }
 
-      var bAstro = registerBody($('nf-astro'));
-      var bAvatar = registerBody($('nf-avatar'));
-      var bCode = registerBody($('nf-code'));
+      registerBody($('nf-astro'));
+      registerBody($('nf-avatar'));
+      registerBody($('nf-code'));
 
       $('nf-astro').addEventListener('click', function () {
         if (!justDragged) {

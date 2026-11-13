@@ -1,4 +1,5 @@
-﻿import { defineCollection, z } from 'astro:content';
+﻿import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 
 /** Text with a Traditional Chinese (required) and English (optional) version. */
@@ -8,7 +9,7 @@ const localized = z.object({
 });
 
 /** Optional URL: empty string means "not set yet" (the UI shows a placeholder). */
-const optionalUrl = z.union([z.literal(''), z.string().url()]).default('');
+const optionalUrl = z.union([z.literal(''), z.url()]).default('');
 
 export const BLOG_CATEGORIES = [
   'Android Development',
@@ -65,7 +66,7 @@ const apps = defineCollection({
       .default([]),
     googleGroupUrl: optionalUrl,
     /** Additional Google Groups (shown as extra buttons in step 1). */
-    extraGroups: z.array(z.object({ name: z.string(), url: z.string().url() })).default([]),
+    extraGroups: z.array(z.object({ name: z.string(), url: z.url() })).default([]),
     optInUrl: optionalUrl,
     playStoreUrl: optionalUrl,
     githubUrl: optionalUrl,
