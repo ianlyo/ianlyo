@@ -32,7 +32,8 @@ When maintaining or updating this project, follow these instructions strictly:
 
 ## 5. Shared UI Components & Material 3 Switch
 - **NEVER** hand-roll raw `<button role="switch">` elements; always use `src/components/Switch.astro`.
-- `Switch.astro` implements Material Design 3 Switch specs (`52px × 32px` track, `24px × 24px` thumb with `lucide:x` and `lucide:check` `16px` icons) and integrates Astro View Transitions (`transition:name` defaulting to `id` and `view-transition-class: vt-switch` in `src/styles/site.css`).
+- `Switch.astro` implements Material Design 3 Switch specs (`52px × 32px` track, `24px × 24px` thumb with `lucide:x` and `lucide:check` `16px` icons) and integrates `astro:transitions` (`transition:name` defaulting to `id`, `transition:animate={fade({ duration: '0.28s' })}`, and `view-transition-class: vt-switch` in `src/styles/site.css`).
+- Client-side scripts interacting with routed UI must use `astro:page-load` (via `onLoad`) and `navigate` from `astro:transitions/client` alongside `<ClientRouter />` in `src/layouts/Base.astro`.
 
 ## 6. Verification
 Always verify changes with:

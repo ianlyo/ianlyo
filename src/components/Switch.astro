@@ -1,11 +1,13 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
+import { fade } from 'astro:transitions';
 import { Icon } from 'astro-icon/components';
 
 export interface Props extends Omit<HTMLAttributes<'button'>, 'type' | 'role'> {
   id: string;
   checked?: boolean;
   transitionName?: string | false;
+  transitionAnimate?: 'initial' | 'slide' | 'fade' | 'none' | ReturnType<typeof fade>;
   class?: string;
 }
 
@@ -13,6 +15,7 @@ const {
   id,
   checked = false,
   transitionName = id,
+  transitionAnimate = fade({ duration: '0.28s' }),
   class: className,
   ...rest
 } = Astro.props;
@@ -25,6 +28,7 @@ const {
   role="switch"
   aria-checked={checked ? 'true' : 'false'}
   transition:name={transitionName || undefined}
+  transition:animate={transitionAnimate}
   {...rest}
 >
   <span class="switch-thumb" aria-hidden="true">

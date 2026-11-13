@@ -447,9 +447,27 @@ html[data-font-scale='xlarge'] {
   font-size: 125%;
 }
 
-html[data-high-contrast='true'] {
-  --border-subtle: rgba(128, 128, 128, 0.52);
-  --border-strong: rgba(128, 128, 128, 0.72);
+/* 高對比模式（使用高權重選擇器覆寫所有色彩主題變數，免去逐主題維護） */
+html[data-color-theme][data-bs-theme="light"][data-high-contrast="true"] {
+  --text-primary: #020617;
+  --text-secondary: #1e293b;
+  --text-muted: #334155;
+  --border-subtle: rgba(15, 23, 42, 0.34);
+  --border-strong: rgba(15, 23, 42, 0.58);
+  --border-hover: var(--accent-primary);
+  --nav-border: rgba(15, 23, 42, 0.28);
+  --theme-toggle-border: rgba(15, 23, 42, 0.5);
+}
+
+html[data-color-theme][data-bs-theme="dark"][data-high-contrast="true"] {
+  --text-primary: #ffffff;
+  --text-secondary: #e2e8f0;
+  --text-muted: #cbd5e1;
+  --border-subtle: rgba(248, 250, 252, 0.32);
+  --border-strong: rgba(248, 250, 252, 0.56);
+  --border-hover: var(--accent-primary);
+  --nav-border: rgba(248, 250, 252, 0.28);
+  --theme-toggle-border: rgba(248, 250, 252, 0.45);
 }
 
 html[data-high-contrast='true'] :focus-visible {
