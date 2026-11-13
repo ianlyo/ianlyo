@@ -1,6 +1,8 @@
+import { navigate } from 'astro:transitions/client';
 import { initThemeManager, cycleThemeMode } from './themeManager';
-import { initScrollReveal } from './scrollReveal';
+import { cleanupScrollReveal, initScrollReveal } from './scrollReveal';
 import { initializeProjects } from './githubProjects';
+import { applyStaggerChoreography, initViewTransitions } from './viewTransitions';
 import {
   createToastNotifier,
   fadeImageOnLoad,
@@ -29,6 +31,15 @@ let unifiedScrollController: { remeasure: () => void } | null = null;
 
 function registerServiceWorker(): void {
   if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return;
+  if (import.meta.env.DEV) {
+    /* 開發環境不啟用 Service Worker，並清除既有的本機快取註冊 */
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      registrations.forEach((reg) => {
+        void reg.unregister();
+      });
+    }).catch(() => {});
+    return;
+  }
   window.addEventListener(
     'load',
     () => {
@@ -99,6 +110,14 @@ function setupNavDrawer(): void {
   drawer.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeDrawer));
 }
 
+function replaceRouteWithTransition(href: string): void {
+  try {
+    void navigate(href, { history: 'replace' });
+  } catch {
+    window.location.replace(href);
+  }
+}
+
 function setupLangSwitch(): void {
   document.querySelectorAll<HTMLElement>('[data-lang-switch]').forEach((btn) => {
     if (btn.dataset.bound === 'true') return;
@@ -112,7 +131,7 @@ function setupLangSwitch(): void {
         (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0);
       if (href && isPlainClick) {
         e.preventDefault();
-        window.location.replace(href);
+        replaceRouteWithTransition(href);
       }
     });
   });
@@ -124,7 +143,7 @@ function setupLangSwitch(): void {
       const opt = sel.options[sel.selectedIndex];
       const href = opt?.getAttribute('data-href') || '';
       if (sel.value) safeSetStorage(LOCALE_STORAGE_KEY, sel.value);
-      if (href) window.location.replace(href);
+      if (href) replaceRouteWithTransition(href);
     });
   });
 }
@@ -238,10 +257,7 @@ function createMobileNavVisibilityUpdater(mobileQuery: MediaQueryList) {
   };
 }
 
-/**
- * Single rAF-throttled scroll loop coordinating reading progress bar,
- * hero/heading gradient parallax, and mobile navigation auto-hide.
- */
+/** 單一 rAF 節流滾動迴圈，協調整頁閱讀進度條、標題漸層視差與行動版導覽列自動隱藏 */
 function setupUnifiedScrollLoop(): void {
   if (unifiedScrollController) {
     unifiedScrollController.remeasure();
@@ -329,6 +345,15 @@ function setupContributionChartFade(): void {
   }
 }
 
+function cleanupSiteCore(): void {
+  setNavDrawerOpen(false);
+  document.body?.classList.remove('theme-transition');
+  if (document.body) {
+    document.body.style.overflow = '';
+  }
+  cleanupScrollReveal();
+}
+
 function initSiteCore(): void {
   const yearEl = document.getElementById('current-year');
   if (yearEl) {
@@ -343,9 +368,14 @@ function initSiteCore(): void {
   setupLangSwitch();
   setupShareButton();
   setupUnifiedScrollLoop();
+  applyStaggerChoreography();
   initScrollReveal();
   void initializeProjects(() => unifiedScrollController?.remeasure());
 }
 
 registerServiceWorker();
-registerPageLifecycle(initSiteCore);
+initViewTransitions();
+registerPageLifecycle({
+  onLoad: initSiteCore,
+  onBeforeSwap: cleanupSiteCore,
+});

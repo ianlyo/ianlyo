@@ -2,7 +2,7 @@
 import { Icon } from 'astro-icon/components';
 import Base from '../layouts/Base.astro';
 import PostCard from './PostCard.astro';
-import type { ResolvedPost } from '../utils/blog';
+import { slugify, type ResolvedPost } from '../utils/blog';
 import { t, localePath, blogCategoryLabel, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -25,7 +25,7 @@ const label = blogCategoryLabel(name, lang);
             <span>{ui.title}</span>
           </a>
         </p>
-        <h1 class="d-flex align-items-center gap-2 hero-enter enter-delay-1">
+        <h1 class="d-inline-flex align-items-center gap-2 hero-enter enter-delay-1" transition:name={`blog-category-${slugify(name)}`}>
           <Icon name="material-symbols:folder-open" class="material-symbols-rounded text-accent" aria-hidden="true" />
           <span>{label}</span>
         </h1>

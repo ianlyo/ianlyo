@@ -1,14 +1,14 @@
 /**
- * Shared Browser & DOM Utilities
+ * 共用瀏覽器與 DOM 工具模組
  *
- * Centralizes safe `localStorage` access, reduced-motion detection,
- * image loading transitions, toast notifications, scroll gradient CSS
- * variable updates, and Astro lifecycle hooks across client modules.
+ * 集中管理安全的 localStorage 存取、動態減少偏好偵測、
+ * 圖片載入淡入過渡、提示訊息觸發、滾動漸層 CSS 變數更新，
+ * 以及跨模組的 Astro 頁面生命週期註冊機制。
  */
 
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 
-/** Safely read a string value from `localStorage` without throwing in restricted contexts. */
+/** 安全讀取 localStorage 字串值，避免在受限環境拋出例外 */
 export function safeGetStorage(key: string): string | null {
   try {
     return localStorage.getItem(key);
@@ -17,19 +17,16 @@ export function safeGetStorage(key: string): string | null {
   }
 }
 
-/** Safely persist a string value in `localStorage` (ignores quota/privacy-mode errors). */
+/** 安全寫入 localStorage 字串值（忽略配額或隱私瀏覽限制錯誤） */
 export function safeSetStorage(key: string, value: string): void {
   try {
     localStorage.setItem(key, value);
   } catch {
-    // Ignore storage quota or private browsing restrictions
+    /* 忽略儲存空間配額或無痕模式寫入限制 */
   }
 }
 
-/**
- * Determine whether reduced motion is currently active, honoring both
- * the user's explicit site preference (`data-reduce-motion`) and OS preference.
- */
+/** 判斷目前是否啟用動態減少模式（同時考量網站設定與作業系統偏好） */
 export function isReducedMotionActive(): boolean {
   if (typeof document === 'undefined') return true;
   if (document.documentElement.getAttribute('data-reduce-motion') === 'true') return true;
@@ -37,9 +34,8 @@ export function isReducedMotionActive(): boolean {
 }
 
 /**
- * Fade an `<img>` element in smoothly once loaded (using `.is-loading` opacity class),
- * guarded by a timeout fallback so slow or cached failures never leave the image invisible.
- * When switching URLs dynamically, pass `nextSrc` so listeners attach before `img.src` mutates.
+ * 圖片載入完成後平滑淡入（使用 .is-loading 透明度類別），
+ * 並附帶逾時保護避免慢速或快取失敗導致圖片保持隱藏。
  */
 export function fadeImageOnLoad(
   img: HTMLImageElement | null,
@@ -63,10 +59,7 @@ export function fadeImageOnLoad(
   }
 }
 
-/**
- * Create a toast notification trigger bound to a floating `.share-toast` element.
- * Resets active timers cleanly when triggered repeatedly.
- */
+/** 建立綁定至 .share-toast 浮動元素的提示訊息觸發器 */
 export function createToastNotifier(toastEl: HTMLElement | null, durationMs = 2000): (message?: string) => void {
   let timer: number | undefined;
   return (message?: string) => {
@@ -78,10 +71,7 @@ export function createToastNotifier(toastEl: HTMLElement | null, durationMs = 20
   };
 }
 
-/**
- * Apply a normalized gradient phase (`[0, 1)`) to an element's `--hero-grad-x/y` CSS custom properties
- * so scroll-linked chromatic gradient shifts remain GPU-composited and uniform across components.
- */
+/** 將標準化漸層相位 [0, 1) 套用至元素的 --hero-grad-x/y CSS 自訂變數 */
 export function setScrollGradientPhase(el: HTMLElement, phase: number): void {
   const normalized = ((phase % 1) + 1) % 1;
   const gradX = `${(normalized * 100).toFixed(1)}%`;
@@ -90,16 +80,55 @@ export function setScrollGradientPhase(el: HTMLElement, phase: number): void {
   el.style.setProperty('--hero-grad-y', gradY);
 }
 
+export interface PageLifecycleHooks {
+  onLoad: () => void;
+  onBeforeSwap?: () => void;
+}
+
+const PAGE_GEN_KEY = '__sitePageGeneration';
+
+function getPageGeneration(): number {
+  if (typeof window === 'undefined') return 1;
+  const win = window as unknown as Record<string, number | undefined>;
+  return win[PAGE_GEN_KEY] ?? 1;
+}
+
+function initPageGenerationTracker(): void {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return;
+  const win = window as unknown as Record<string, unknown>;
+  if (win[PAGE_GEN_KEY] !== undefined) return;
+  win[PAGE_GEN_KEY] = 1;
+  document.addEventListener('astro:before-swap', () => {
+    win[PAGE_GEN_KEY] = ((win[PAGE_GEN_KEY] as number) || 1) + 1;
+  });
+}
+
 /**
- * Register a setup callback to execute on initial DOM readiness and subsequent
- * Astro View Transition page loads (`astro:page-load`).
+ * 統一註冊初始載入與 Astro View Transitions 換頁生命週期回呼，
+ * 確保每次頁面造訪時 onLoad 僅執行一次。
  */
-export function registerPageLifecycle(initFn: () => void): void {
+export function registerPageLifecycle(hooks: (() => void) | PageLifecycleHooks): void {
   if (typeof document === 'undefined') return;
+  initPageGenerationTracker();
+
+  const { onLoad, onBeforeSwap } = typeof hooks === 'function' ? { onLoad: hooks } : hooks;
+  let lastHandledGen = 0;
+
+  const runOnceForCurrentVisit = () => {
+    const gen = getPageGeneration();
+    if (lastHandledGen === gen) return;
+    lastHandledGen = gen;
+    onLoad();
+  };
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initFn);
+    document.addEventListener('DOMContentLoaded', runOnceForCurrentVisit, { once: true });
   } else {
-    initFn();
+    runOnceForCurrentVisit();
   }
-  document.addEventListener('astro:page-load', initFn);
+
+  document.addEventListener('astro:page-load', runOnceForCurrentVisit);
+  if (onBeforeSwap) {
+    document.addEventListener('astro:before-swap', onBeforeSwap);
+  }
 }

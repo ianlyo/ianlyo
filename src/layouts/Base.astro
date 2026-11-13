@@ -5,6 +5,7 @@ import '../styles/style.css';
 import '../styles/site.css';
 import '../styles/themes.css';
 import { Icon } from 'astro-icon/components';
+import { ClientRouter } from 'astro:transitions';
 import { t, localePath, switchLangPath, type Lang } from '../i18n/ui';
 import { SITE } from '../config/site';
 import { COLOR_THEMES, DEFAULT_COLOR_THEME } from '../config/themes';
@@ -19,9 +20,9 @@ interface Props {
   noindex?: boolean;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   publishedTime?: Date;
-  /** Path of the equivalent page in the other language (if it exists). Defaults to the language-swapped path. */
+  /** 另一語系對應頁面路徑（若存在），預設為語系切換路徑 */
   altPath?: string | null;
-  /** Optional override for canonical URL path (used by fallback blog pages). */
+  /** 覆寫標準網址路徑（供雙語備援文章頁面使用） */
   canonicalPath?: string;
 }
 
@@ -77,6 +78,7 @@ const drawerPrimaryLinks = [
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <ClientRouter />
   <title>{pageTitle}</title>
   <meta name="description" content={pageDesc} />
   <link rel="canonical" href={canonical} />
@@ -106,11 +108,11 @@ const drawerPrimaryLinks = [
   <meta name="twitter:image:alt" content={imageAlt} />
   {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
-  <!-- Anti-FOUC Theme & Auto Locale Detection Script -->
+  <!-- 防閃爍主題色系與自動語系偵測初始化腳本 -->
   <script is:inline define:vars={{ currentLang: lang, enTarget: enPath, zhTarget: zhPath, themeMetaMap, defaultColorTheme: DEFAULT_COLOR_THEME }}>
     (function () {
       try {
-        // 1. Theme & Color Palette initialization
+        /* 1. 深淺色模式與調色盤初始化 */
         var savedTheme = localStorage.getItem('theme');
         var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         var theme = !savedTheme || savedTheme === 'auto' ? (prefersDark ? 'dark' : 'light') : (savedTheme === 'dark' ? 'dark' : 'light');
@@ -125,7 +127,7 @@ const drawerPrimaryLinks = [
           metaTheme.setAttribute('content', themeMetaMap[colorTheme][theme]);
         }
 
-        // 1b. Accessibility & reading preferences initialization
+        /* 1b. 無障礙動態減少與閱讀偏好初始化 */
         var motionPref = localStorage.getItem('pref-reduce-motion') || 'off';
         var sysReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         var isReduced = motionPref === 'on' || (motionPref === 'system' && sysReduce);
@@ -140,7 +142,7 @@ const drawerPrimaryLinks = [
         var progressBarPref = localStorage.getItem('pref-progress-bar');
         document.documentElement.setAttribute('data-progress-bar', progressBarPref === 'false' ? 'false' : 'true');
 
-        // 2. Language auto-detection & preference routing
+        /* 2. 語言自動偵測與偏好路由導向（僅於初次進入或 bfcache 恢復時執行） */
         function syncLocaleRedirect() {
           var savedLang = localStorage.getItem('preferred-locale');
           if (!savedLang) {
@@ -166,23 +168,29 @@ const drawerPrimaryLinks = [
             window.location.replace(zhTarget + window.location.search + window.location.hash);
           }
         }
-        syncLocaleRedirect();
-        window.addEventListener('pageshow', function (e) {
-          if (e.persisted) syncLocaleRedirect();
-        });
+        if (!window.__localeRedirectBound) {
+          window.__localeRedirectBound = true;
+          syncLocaleRedirect();
+          window.addEventListener('pageshow', function (e) {
+            if (e.persisted) syncLocaleRedirect();
+          });
+        }
       } catch (e) {}
     })();
   </script>
   <noscript><style>.reveal{opacity:1!important;transform:none!important;}</style></noscript>
+  <slot name="head" />
 
 </head>
 <body>
-  <!-- Reading scroll progress indicator -->
+  <!-- 跨頁轉場頂部 2px 線性載入光軌 -->
+  <div class="vt-loading-bar" id="vt-loading-bar" aria-hidden="true"></div>
+  <!-- 頁面閱讀滾動進度指示條 -->
   <div class="scroll-progress-bar" id="scroll-progress" aria-hidden="true"></div>
   <a class="skip-link" href="#main">Skip to content</a>
-  <nav class="site-nav" aria-label="Main navigation">
+  <nav class="site-nav" aria-label="Main navigation" transition:name="site-header">
     <div class="nav-left">
-      <!-- Mobile hamburger toggle button (three lines like Google Photos) -->
+      <!-- 行動版三線漢堡選單開關按鈕 -->
       <button
         type="button"
         class="nav-hamburger-btn d-inline-flex d-md-none"
@@ -197,10 +205,11 @@ const drawerPrimaryLinks = [
       <a class="brand-mark" href={localePath(lang, '/')} aria-label={`${SITE.name} home`}>LNU<span>.</span></a>
     </div>
 
-    <!-- Desktop nav links (hidden on mobile, visible on desktop) -->
+    <!-- 桌面版導覽連結（於行動版隱藏） -->
     <div class="nav-links d-none d-md-flex">
       {navSectionLinks.map((item) => (
         <a href={item.href} class:list={[{ active: item.active }]}>
+          {item.active && <span class="nav-active-pill" transition:name="nav-active-pill" aria-hidden="true"></span>}
           <Icon name={item.icon} class="nav-icon" aria-hidden="true" />
           <span>{item.label}</span>
         </a>
@@ -213,7 +222,7 @@ const drawerPrimaryLinks = [
       </a>
     </div>
 
-    <!-- Right controls (Search on mobile + Theme toggle on all) -->
+    <!-- 右側功能按鈕列（行動版搜尋與全站主題切換） -->
     <div class="nav-right">
       <a href={localePath(lang, '/search/')} class="nav-icon-btn d-inline-flex d-md-none" aria-label={ui.nav.search} title={ui.nav.search}>
         <Icon name="lucide:search" class="nav-icon" aria-hidden="true" />
@@ -239,7 +248,7 @@ const drawerPrimaryLinks = [
     </div>
   </nav>
 
-  <!-- Google Photos-style slide-out navigation drawer (Mobile) -->
+  <!-- 行動版側邊滑出導覽抽屜（Material 3 風格） -->
   <div class="nav-drawer-backdrop" id="nav-drawer-backdrop" aria-hidden="true"></div>
   <aside class="nav-drawer" id="nav-drawer" aria-label="Mobile navigation" aria-hidden="true" inert>
     <div class="nav-drawer-header">
@@ -314,7 +323,7 @@ const drawerPrimaryLinks = [
             </label>
           )}
           <a href={localePath(lang, '/settings/')} class="d-inline-flex align-items-center gap-1"><Icon name="lucide:settings" class="ui-icon icon-xs" aria-hidden="true" /><span>{ui.nav.settings}</span></a>
-          <a href="/rss.xml" class="d-inline-flex align-items-center gap-1"><Icon name="lucide:rss" class="ui-icon icon-xs" aria-hidden="true" /><span>{ui.footer.rss}</span></a>
+          <a href="/rss.xml" class="d-inline-flex align-items-center gap-1" data-astro-reload><Icon name="lucide:rss" class="ui-icon icon-xs" aria-hidden="true" /><span>{ui.footer.rss}</span></a>
           <a href="#main" class="d-inline-flex align-items-center gap-1"><span>{ui.footer.top}</span><Icon name="lucide:arrow-up" class="ui-icon icon-xs" aria-hidden="true" /></a>
         </div>
       </div>

@@ -109,17 +109,20 @@ const jsonLd = [
           </a>
         </div>
         <div class="card-grid">
-          {posts.map((item) => (
-            <a class="surface-card reveal" href={localePath(lang, `/blog/${item.slug}/`)}>
-              <h3>{item.post.data.title}</h3>
-              <p>{item.post.data.description}</p>
-              <div class="meta mt-2">
-                <span><Icon name="lucide:calendar" class="ui-icon icon-xs" aria-hidden="true" />{formatDate(item.post.data.pubDate, lang)}</span>
-                <span><Icon name="lucide:clock" class="ui-icon icon-xs" aria-hidden="true" />{readingTime(item.post.body)} {ui.blog.readingTime}</span>
-                {item.isFallback && <span class="chip chip-muted">{ui.blog.originalBadge}</span>}
-              </div>
-            </a>
-          ))}
+          {posts.map((item) => {
+            const safeSlug = item.slug.replace(/[^a-zA-Z0-9_-]/g, '-');
+            return (
+              <a class="surface-card reveal" href={localePath(lang, `/blog/${item.slug}/`)} transition:name={`post-card-${safeSlug}`} style="view-transition-class: vt-card;">
+                <h3 transition:name={`post-title-${safeSlug}`}>{item.post.data.title}</h3>
+                <p>{item.post.data.description}</p>
+                <div class="meta mt-2">
+                  <span><Icon name="lucide:calendar" class="ui-icon icon-xs" aria-hidden="true" />{formatDate(item.post.data.pubDate, lang)}</span>
+                  <span><Icon name="lucide:clock" class="ui-icon icon-xs" aria-hidden="true" />{readingTime(item.post.body)} {ui.blog.readingTime}</span>
+                  {item.isFallback && <span class="chip chip-muted">{ui.blog.originalBadge}</span>}
+                </div>
+              </a>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -150,7 +153,7 @@ const jsonLd = [
         </div>
         <span id="project-count" class="section-count">…</span>
       </div>
-      <!-- Desktop Capabilities Cards (>= 769px) -->
+      <!-- 桌面版技術分類卡片 -->
       <div class="capabilities-grid mb-4 d-none d-md-grid">
         {[
           ['all', 'layout-grid', '01', f.all],
@@ -175,7 +178,7 @@ const jsonLd = [
           <Icon name="lucide:search" class="ui-icon project-search-icon" aria-hidden="true" />
           <input id="project-search" type="search" placeholder={ui.projects.searchPlaceholder} autocomplete="off" />
         </div>
-        <!-- Mobile Category Dropdown (< 768px) -->
+        <!-- 行動版分類下拉選單 -->
         <label class="visually-hidden" for="mobile-category-filter">{ui.projects.categoryLabel}</label>
         <div class="category-filter-wrapper d-flex d-md-none">
           <Icon name="lucide:layout-grid" class="ui-icon category-filter-icon" aria-hidden="true" />

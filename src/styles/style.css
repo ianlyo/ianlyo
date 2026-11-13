@@ -1,46 +1,44 @@
-﻿/* ==========================================================================
-   Design Tokens & System Variables
-   ========================================================================== */
+/* 設計系統全域變數與色彩代幣 */
 
 :root,
 [data-bs-theme="light"] {
     color-scheme: light;
     
-    /* Backgrounds */
+    /* 背景色階 */
     --bg-base: #f8fafc;
     --bg-surface: #ffffff;
     --bg-surface-subtle: #f1f5f9;
     --bg-card-hover: #ffffff;
     
-    /* Typography */
+    /* 文字色階 */
     --text-primary: #0f172a;
     --text-secondary: #475569;
     --text-muted: #526075;
     
-    /* Accents & Contrast (Electric Indigo & Cobalt) */
+    /* 強調色與對比色（電光靛藍） */
     --accent-primary: #4f46e5;
     --accent-primary-hover: #4338ca;
     --accent-text: #ffffff;
     --accent-subtle: rgba(79, 70, 229, 0.08);
     --accent-glow: rgba(79, 70, 229, 0.22);
     
-    /* Borders */
+    /* 邊框線條 */
     --border-subtle: #e2e8f0;
     --border-strong: #cbd5e1;
     --border-hover: rgba(79, 70, 229, 0.45);
     
-    /* Shadows */
+    /* 陰影層次 */
     --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
     --shadow-md: 0 4px 14px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -2px rgba(15, 23, 42, 0.04);
     --shadow-lg: 0 16px 36px -4px rgba(15, 23, 42, 0.1), 0 8px 14px -6px rgba(15, 23, 42, 0.05);
     --shadow-glow: 0 0 24px var(--accent-glow);
     --active-card-shadow: 0 8px 24px -4px rgba(79, 70, 229, 0.22), 0 0 0 1.5px var(--accent-primary);
     
-    /* Navigation & Frosted Glass (Ultra-Clear Liquid Glass) */
+    /* 導覽列與液態毛玻璃效果 */
     --nav-bg: rgba(248, 250, 252, 0.85);
     --nav-border: rgba(226, 232, 240, 0.65);
     
-    /* Hero Atmosphere */
+    /* 主視覺背景氛圍 */
     --hero-title-gradient: linear-gradient(
         115deg,
         #4f46e5 0%,
@@ -52,7 +50,7 @@
     --hero-ambient-glow: radial-gradient(circle at 85% 15%, rgba(79, 70, 229, 0.1) 0%, transparent 60%),
                          radial-gradient(circle at 10% 80%, rgba(14, 165, 233, 0.08) 0%, transparent 50%);
     
-    /* Chromatic Aberration Glow (Light Mode: High contrast, dark text with vivid chromatic fringe & subtle ambient bloom) */
+    /* 色散光暈特效（淺色模式：高對比深色文字搭配鮮明色散邊緣與環境光暈） */
     --glow-text-color: #0f172a;
     --glow-chroma-top: rgba(0, 160, 245, 0.9);
     --glow-chroma-bottom: rgba(249, 115, 22, 0.92);
@@ -66,21 +64,30 @@
         0 0 35px var(--glow-mid),
         0 0 75px var(--glow-ambient);
 
-    /* Radii */
+    /* 圓角半徑 */
     --radius-sm: 8px;
     --radius-md: 14px;
     --radius-lg: 20px;
     --radius-full: 9999px;
 
-    /* Motion & Easing Tokens */
-    --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
-    --ease-graceful: cubic-bezier(0.25, 0.85, 0.35, 1);
+    /* 多重物理緩動曲線與動態參數系統 */
+    /* 基礎線性推進：用於進度條、邊框繪製與背景光影的恆速位移 */
+    --ease-linear: linear;
+    /* 極致絲滑減速：用於主內容進退場與空間縱深過渡 */
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    /* 微彈性物理曲線：用於共享元素的幾何變形與尺寸插值 */
+    --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+    /* 輕微過衝回彈曲線：用於按鈕與圖示微互動回饋 */
+    --ease-spring-overshoot: cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* 優雅進場與透明淡入曲線 */
+    --ease-graceful: cubic-bezier(0.16, 1, 0.3, 1);
     --ease-fade: cubic-bezier(0.33, 0.66, 0.5, 1);
-    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     --reveal-duration: 0.72s;
     --reveal-distance: 20px;
+    /* 瀑布流線性交錯間隔（40ms 至 60ms 區間） */
+    --stagger-step: 50ms;
     
-    /* Controls & Chart */
+    /* 控制項與圖表濾鏡 */
     --chart-filter: none;
     --theme-toggle-bg: rgba(241, 245, 249, 0.95);
     --theme-toggle-border: #cbd5e1;
@@ -90,41 +97,41 @@
 [data-bs-theme="dark"] {
     color-scheme: dark;
     
-    /* Backgrounds (Midnight Obsidian) */
+    /* 深色模式背景（午夜黑曜石） */
     --bg-base: #090d16;
     --bg-surface: #0f1623;
     --bg-surface-subtle: #0c121d;
     --bg-card-hover: #151e30;
     
-    /* Typography */
+    /* 深色模式文字色階 */
     --text-primary: #f1f5f9;
     --text-secondary: #94a3b8;
     --text-muted: #94a3b8;
     
-    /* Accents & Contrast (Luminous Periwinkle Indigo) */
+    /* 深色模式強調色（星光紫藍） */
     --accent-primary: #818cf8;
     --accent-primary-hover: #a5b4fc;
     --accent-text: #090d16;
     --accent-subtle: rgba(129, 140, 248, 0.14);
     --accent-glow: rgba(129, 140, 248, 0.3);
     
-    /* Borders */
+    /* 深色模式邊框 */
     --border-subtle: rgba(255, 255, 255, 0.08);
     --border-strong: rgba(255, 255, 255, 0.16);
     --border-hover: rgba(129, 140, 248, 0.5);
     
-    /* Shadows */
+    /* 深色模式陰影 */
     --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.45);
     --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.55);
     --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.7);
     --shadow-glow: 0 0 28px rgba(129, 140, 248, 0.25);
     --active-card-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.55), 0 0 16px var(--accent-glow), 0 0 0 1.5px var(--accent-primary);
     
-    /* Navigation & Frosted Glass (Ultra-Clear Liquid Glass) */
+    /* 深色模式導覽列毛玻璃 */
     --nav-bg: rgba(9, 13, 22, 0.85);
     --nav-border: rgba(255, 255, 255, 0.12);
     
-    /* Hero Atmosphere */
+    /* 深色模式主視覺背景氛圍 */
     --hero-title-gradient: linear-gradient(
         115deg,
         #818cf8 0%,
@@ -136,13 +143,13 @@
     --hero-ambient-glow: radial-gradient(circle at 85% 15%, rgba(129, 140, 248, 0.14) 0%, transparent 65%),
                          radial-gradient(circle at 10% 80%, rgba(56, 189, 248, 0.09) 0%, transparent 50%);
     
-    /* Controls & Chart */
+    /* 深色模式控制項與圖表濾鏡 */
     --chart-filter: invert(0.88) hue-rotate(185deg) brightness(0.95) contrast(1.15);
     --theme-toggle-bg: rgba(21, 30, 48, 0.95);
     --theme-toggle-border: rgba(255, 255, 255, 0.14);
     --theme-toggle-color: #f1f5f9;
 
-    /* Chromatic Aberration Glow (Dark Mode: Cyberpunk high luminosity, white text with cyan & orange fringe & white ambient bloom) */
+    /* 色散光暈特效（深色模式：高亮度賽博風格，白色文字搭配青橙色散邊緣與光暈） */
     --glow-text-color: #ffffff;
     --glow-chroma-top: rgba(0, 220, 255, 0.9);
     --glow-chroma-bottom: rgba(255, 120, 0, 0.9);
@@ -157,9 +164,7 @@
         0 0 90px var(--glow-ambient);
 }
 
-/* ==========================================================================
-   Global Resets & Base Styles
-   ========================================================================== */
+/* 全域重設與基礎版面樣式 */
 
 *, *::before, *::after {
     box-sizing: border-box;
@@ -203,7 +208,7 @@ body {
     flex: 1 0 auto;
 }
 
-/* Smooth theme transitions */
+/* 平滑主題色彩過渡 */
 body.theme-transition,
 body.theme-transition .site-nav,
 body.theme-transition .nav-drawer,
@@ -216,7 +221,7 @@ body.theme-transition .site-footer {
     transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease !important;
 }
 
-/* Custom Selection */
+/* 自訂文字選取樣式 */
 ::selection {
     background: var(--accent-primary);
     color: var(--accent-text);
@@ -227,7 +232,7 @@ body.theme-transition .site-footer {
     color: var(--accent-text);
 }
 
-/* Custom Scrollbar */
+/* 自訂捲軸外觀 */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -239,7 +244,7 @@ body.theme-transition .site-footer {
 
 ::-webkit-scrollbar-thumb {
     background: var(--border-strong);
-    border-radius: var(--radius-full);
+    border-radius: var(--radius-full, 9999px);
     border: 2px solid var(--bg-base);
 }
 
@@ -247,7 +252,7 @@ body.theme-transition .site-footer {
     background: var(--accent-primary);
 }
 
-/* Focus Visibility Accessibility */
+/* 鍵盤焦點無障礙外框 */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
@@ -257,7 +262,7 @@ select:focus-visible {
     box-shadow: 0 0 0 4px var(--accent-glow) !important;
 }
 
-/* Global Link Reset - eliminates default browser & Bootstrap underlines */
+/* 全域連結底線重設 */
 a,
 a:hover,
 a:focus,
@@ -277,9 +282,7 @@ a:hover {
     text-decoration: none;
 }
 
-/* ==========================================================================
-   Navigation Bar (.site-nav)
-   ========================================================================== */
+/* 導覽列 (.site-nav) */
 
 .site-nav {
     position: fixed;
@@ -389,7 +392,7 @@ a:hover {
     text-transform: uppercase;
     text-decoration: none;
     padding: 8px 14px;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-sm, 8px);
     border: 1px solid transparent;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -409,7 +412,7 @@ a:hover {
     fill: currentColor;
 }
 
-/* Theme Toggle Button */
+/* 主題切換按鈕 */
 .theme-toggle {
     display: inline-flex;
     align-items: center;
@@ -418,7 +421,7 @@ a:hover {
     height: 40px;
     margin-left: 8px !important;
     padding: 0;
-    border-radius: var(--radius-md) !important;
+    border-radius: var(--radius-md, 14px) !important;
     background: var(--theme-toggle-bg) !important;
     border: 1px solid var(--theme-toggle-border) !important;
     color: var(--theme-toggle-color) !important;
@@ -447,7 +450,7 @@ a:hover {
     width: 1.35rem;
     height: 1.35rem;
     color: var(--theme-toggle-color);
-    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s ease;
+    transition: transform 0.35s var(--ease-spring-overshoot), color 0.25s ease;
 }
 
 .theme-toggle:hover i,
@@ -471,7 +474,7 @@ a:hover {
     color: #38bdf8 !important;
 }
 
-/* Theme toggle refinements: circular, icon swap animation, focus ring */
+/* 主題切換按鈕細部樣式：圓形外框、圖示旋轉切換動畫與焦點外框 */
 .theme-toggle {
     border-radius: 50% !important;
     overflow: hidden;
@@ -489,7 +492,7 @@ a:hover {
 }
 
 .theme-toggle.is-switching .nav-icon {
-    animation: theme-icon-swap 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: theme-icon-swap 0.45s var(--ease-spring-overshoot);
 }
 
 @keyframes theme-icon-swap {
@@ -501,9 +504,7 @@ a:hover {
     .theme-toggle.is-switching .nav-icon { animation: none; }
 }
 
-/* ==========================================================================
-   Hero Section (#home)
-   ========================================================================== */
+/* 主視覺區段 (#home) */
 
 .hero-section {
     position: relative;
@@ -580,7 +581,7 @@ a:hover {
     line-height: 1.7;
 }
 
-/* Hero Stats */
+/* 主視覺數據統計 */
 .hero-stats {
     display: flex;
     flex-wrap: wrap;
@@ -596,7 +597,7 @@ a:hover {
     padding: 14px 20px;
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-md, 14px);
     box-shadow: var(--shadow-sm);
     min-width: 140px;
     transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
@@ -646,7 +647,7 @@ a:hover {
     margin-top: 4px;
 }
 
-/* Hero Actions Buttons */
+/* 主視覺行動按鈕 */
 .hero-actions {
     display: flex;
     flex-wrap: wrap;
@@ -663,7 +664,7 @@ a:hover {
     font-weight: 700;
     font-size: 0.9rem;
     padding: 12px 24px;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-sm, 8px);
     transition: all 0.25s var(--ease-out-expo);
     text-decoration: none;
 }
@@ -701,7 +702,7 @@ a:hover {
     box-shadow: var(--shadow-sm);
 }
 
-/* Hero Contribution Card (Open Source Activity in Hero) */
+/* GitHub 開源貢獻圖表卡片 */
 .hero-contribution {
     width: 100%;
 }
@@ -710,7 +711,7 @@ a:hover {
     padding: 30px;
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-lg, 20px);
     box-shadow: var(--shadow-md);
     position: relative;
     overflow: hidden;
@@ -747,7 +748,7 @@ a:hover {
     padding: 6px 14px;
     background: var(--bg-surface-subtle);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-full);
+    border-radius: var(--radius-full, 9999px);
     color: var(--text-secondary);
     font-size: 0.8rem;
     font-weight: 600;
@@ -769,7 +770,7 @@ a:hover {
     padding: 16px;
     background: var(--bg-surface-subtle);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-md, 14px);
 }
 
 .contribution-graph {
@@ -786,9 +787,7 @@ a:hover {
     opacity: 0;
 }
 
-/* ==========================================================================
-   Capabilities Section (Focus Category Filters)
-   ========================================================================== */
+/* 技術領域與分類篩選區段 */
 
 .capabilities-section {
     padding: 80px 0;
@@ -836,7 +835,7 @@ a:hover {
     padding: 24px;
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-md, 14px);
     box-shadow: var(--shadow-sm);
     color: inherit;
     cursor: pointer;
@@ -886,7 +885,7 @@ a:hover {
     height: 36px;
     background: var(--bg-surface-subtle);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-sm, 8px);
     color: var(--accent-primary);
     font-size: 1.05rem;
     transition: all 0.25s ease;
@@ -941,7 +940,7 @@ a:hover {
     font-family: 'Chiron GoRound TC Variable', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 0.72rem;
     font-weight: 600;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-sm, 8px);
     background: var(--bg-surface-subtle);
     border: 1px solid var(--border-subtle);
     color: var(--text-muted);
@@ -955,9 +954,7 @@ a:hover {
     background: var(--accent-subtle);
 }
 
-/* ==========================================================================
-   Featured Section (#featured)
-   ========================================================================== */
+/* 精選專案區段 (#featured) */
 
 .featured-section {
     padding: 96px 0;
@@ -978,7 +975,7 @@ a:hover {
     padding: 28px;
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-md, 14px);
     box-shadow: var(--shadow-sm);
     transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
@@ -994,7 +991,7 @@ a:hover {
     align-self: flex-start;
     padding: 4px 10px;
     background: var(--accent-subtle);
-    border-radius: var(--radius-full);
+    border-radius: var(--radius-full, 9999px);
     color: var(--accent-primary);
     font-family: 'Chiron GoRound TC Variable', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 0.7rem;
@@ -1065,7 +1062,7 @@ a:hover {
     text-transform: uppercase;
 }
 
-/* Search & Filter Tools */
+/* 專案搜尋與篩選工具列 */
 .project-tools {
     display: flex;
     gap: 12px;
@@ -1113,7 +1110,7 @@ a:hover {
     padding: 10px 16px;
     background-color: var(--bg-surface);
     border: 1px solid var(--border-strong);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-sm, 8px);
     color: var(--text-primary);
     font-family: 'Chiron GoRound TC Variable', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 0.92rem;
@@ -1172,7 +1169,7 @@ a:hover {
     padding: 10px 18px;
     background: var(--bg-surface);
     border: 1px solid var(--border-strong);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-sm, 8px);
     color: var(--text-secondary);
     font-family: 'Chiron GoRound TC Variable', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 0.85rem;
@@ -1187,12 +1184,12 @@ a:hover {
     background: var(--accent-subtle);
 }
 
-/* Project Repository Cards */
+/* 專案儲存庫卡片 */
 .repo-card {
     height: 100%;
     background: var(--bg-surface) !important;
     border: 1px solid var(--border-subtle) !important;
-    border-radius: var(--radius-md) !important;
+    border-radius: var(--radius-md, 14px) !important;
     box-shadow: var(--shadow-sm) !important;
     position: relative;
     overflow: hidden;
@@ -1279,7 +1276,7 @@ a:hover {
     padding: 6px 14px;
     font-size: 0.8rem;
     font-weight: 700;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-sm, 8px);
     color: var(--text-primary);
     border: 1px solid var(--border-strong);
     background: transparent;
@@ -1315,7 +1312,7 @@ a:hover {
     padding: 12px 28px;
     background: var(--bg-surface);
     border: 1px solid var(--border-strong);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-sm, 8px);
     color: var(--text-primary);
     font-family: 'Chiron GoRound TC Variable', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 0.9rem;
@@ -1349,9 +1346,7 @@ a:hover {
     transform: rotate(180deg);
 }
 
-/* ==========================================================================
-   Footer (.site-footer)
-   ========================================================================== */
+/* 頁尾 (.site-footer) */
 
 .site-footer {
     margin-top: auto;
@@ -1383,7 +1378,7 @@ a:hover {
     justify-content: center;
     width: 32px;
     height: 32px;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-sm, 8px);
     color: var(--text-secondary);
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
@@ -1421,9 +1416,7 @@ a:hover {
     color: var(--accent-primary);
 }
 
-/* ==========================================================================
-   Responsive Breakpoints
-   ========================================================================== */
+/* 響應式斷點設定 */
 
 @media (max-width: 992px) {
     .capabilities-grid {
@@ -1592,7 +1585,7 @@ a:hover {
     }
 }
 
-/* Accessibility: Reduced Motion */
+/* 無障礙動態減少設定 */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
         animation-duration: 0.01ms !important;

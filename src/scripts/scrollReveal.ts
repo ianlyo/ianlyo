@@ -1,23 +1,22 @@
 /**
- * Apple-style Scroll-Triggered Fade-In & Slide-Up (.reveal)
+ * 滾動觸發淡入與線性交錯揭露系統 (.reveal)
  *
- * Automatically detects elements with `.reveal` (and modifiers `.reveal-fade`,
- * `.reveal-scale`, `.reveal-left`, `.reveal-right`) when they enter the viewport,
- * adding `.is-visible` for smooth GPU-composited entrance transitions and `.is-settled`
- * once the entrance finishes so interactive card hover transitions remain snappy.
+ * 自動偵測帶有 .reveal（及其修飾類別 .reveal-fade、.reveal-scale、.reveal-left、.reveal-right）
+ * 的元素進入可視區域，加上 .is-visible 觸發 GPU 合成進場過渡，並於過渡結束後標記 .is-settled
+ * 以恢復交互懸停反應速度。
  *
- * Supports:
- * - Immediate smooth fade-in for elements already in the viewport (and instant settle for above-viewport elements)
- * - Astro View Transitions (`astro:page-load`)
- * - Live Accessibility Settings (`data-reduce-motion` & `site:preferences-change` & `prefers-reduced-motion`)
- * - Fallback for browsers without IntersectionObserver
- * - Dynamic / client-side content re-scans via `initScrollReveal()`
+ * 支援特性：
+ * - 可視區域內批次線性交錯（--stagger-index 驅動，每項間隔 50ms）
+ * - 相容於 Astro View Transitions（astro:page-load）
+ * - 即時無障礙降級（data-reduce-motion、site:preferences-change 與 prefers-reduced-motion）
+ * - 動態渲染內容重新掃描（initScrollReveal）
  */
 
-import { isReducedMotionActive, registerPageLifecycle } from './domUtils';
+import { isReducedMotionActive } from './domUtils';
 
 const REVEAL_BASE_MS = 760;
 const REVEAL_SETTLE_BUFFER_MS = 140;
+const MAX_BATCH_STAGGER = 10;
 
 let activeObserver: IntersectionObserver | null = null;
 let prefListenerBound = false;
@@ -28,10 +27,13 @@ function parseDelayMs(el: HTMLElement): number {
     const first = raw.split(',')[0].trim();
     if (first.endsWith('ms')) return Math.max(0, parseFloat(first) || 0);
     if (first.endsWith('s')) return Math.max(0, (parseFloat(first) || 0) * 1000);
-  } catch {}
+  } catch {
+    // 忽略樣式讀取例外
+  }
   return 0;
 }
 
+/** 立即將元素設為已揭露且定型狀態 */
 export function settleRevealElement(el: HTMLElement): void {
   el.classList.add('is-visible', 'is-settled');
 }
@@ -82,10 +84,15 @@ function getObserver(): IntersectionObserver | null {
 
   activeObserver = new IntersectionObserver(
     (entries, observer) => {
+      let batchIndex = 0;
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const target = entry.target as HTMLElement;
           observer.unobserve(target);
+          if (target.style.getPropertyValue('--stagger-index') === '') {
+            target.style.setProperty('--stagger-index', String(Math.min(batchIndex, MAX_BATCH_STAGGER)));
+          }
+          batchIndex += 1;
           triggerRevealElement(target);
         }
       });
@@ -99,6 +106,7 @@ function getObserver(): IntersectionObserver | null {
   return activeObserver;
 }
 
+/** 掃描頁面中的 .reveal 元素並註冊滾動與首屏線性交錯進場 */
 export function initScrollReveal(): void {
   if (typeof window === 'undefined') return;
 
@@ -125,7 +133,7 @@ export function initScrollReveal(): void {
   const inViewBatch: HTMLElement[] = [];
   const belowView: HTMLElement[] = [];
 
-  // Batch all layout reads before any DOM mutations to avoid layout thrashing
+  /* 先批次讀取所有幾何位置，再進行 DOM 寫入以避免排版抖動 */
   elements.forEach((el) => {
     if (el.dataset.revealQueued === '1') return;
     const rect = el.getBoundingClientRect();
@@ -138,7 +146,6 @@ export function initScrollReveal(): void {
     }
   });
 
-  // Batch DOM writes and observer registrations
   aboveView.forEach((el) => {
     el.dataset.revealQueued = '1';
     settleRevealElement(el);
@@ -150,10 +157,13 @@ export function initScrollReveal(): void {
   });
 
   if (inViewBatch.length > 0) {
-    inViewBatch.forEach((el) => {
+    inViewBatch.forEach((el, idx) => {
       el.dataset.revealQueued = '1';
+      if (el.style.getPropertyValue('--stagger-index') === '') {
+        el.style.setProperty('--stagger-index', String(Math.min(idx, MAX_BATCH_STAGGER)));
+      }
     });
-    // Wait two frames so freshly inserted DOM elements paint their initial opacity: 0 state
+    /* 等待兩個動畫影格以確保新插入的 DOM 先繪製初始透明狀態 */
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
         inViewBatch.forEach((el) => triggerRevealElement(el));
@@ -162,8 +172,12 @@ export function initScrollReveal(): void {
   }
 }
 
-// Global exposure for dynamic scripts / developer tools
+/** 於 Astro 交換 DOM 前中斷現有的滾動觀察器 */
+export function cleanupScrollReveal(): void {
+  activeObserver?.disconnect();
+  activeObserver = null;
+}
+
 if (typeof window !== 'undefined') {
   (window as unknown as { initScrollReveal?: typeof initScrollReveal }).initScrollReveal = initScrollReveal;
-  registerPageLifecycle(() => initScrollReveal());
 }

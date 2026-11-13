@@ -428,7 +428,7 @@ const serializedScreenshots = screenshots.map((s) => ({
   .gallery-dot {
     width: 8px;
     height: 8px;
-    border-radius: var(--radius-full);
+    border-radius: var(--radius-full, 9999px);
     background: var(--text-muted);
     opacity: 0.35;
     border: none;
@@ -564,7 +564,7 @@ const serializedScreenshots = screenshots.map((s) => ({
     gap: 0.75rem;
     cursor: pointer;
     padding: 0.5rem;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-sm, 8px);
     transition: opacity 0.2s ease;
   }
   .lightbox-back-btn:hover {

@@ -12,10 +12,11 @@ interface Props {
 const { item, lang = 'zh-Hant' } = Astro.props;
 const { post, slug, isFallback } = item;
 const ui = t(lang).blog;
+const safeSlug = slug.replace(/[^a-zA-Z0-9_-]/g, '-');
 ---
-<article class="surface-card reveal" lang={isFallback ? post.data.lang : undefined}>
+<article class="surface-card reveal" lang={isFallback ? post.data.lang : undefined} transition:name={`post-card-${safeSlug}`} style="view-transition-class: vt-card;">
   <a href={localePath(lang, `/blog/${slug}/`)} class="post-card-link">
-    <h2>{post.data.title}</h2>
+    <h2 transition:name={`post-title-${safeSlug}`}>{post.data.title}</h2>
     <p>{post.data.description}</p>
   </a>
   <div class="meta mt-3">
@@ -27,7 +28,7 @@ const ui = t(lang).blog;
       <Icon name="lucide:clock" class="ui-icon icon-xs" aria-hidden="true" />
       <span>{readingTime(post.body)} {ui.readingTime}</span>
     </span>
-    <a class="chip d-inline-flex align-items-center gap-1" href={localePath(lang, `/blog/category/${slugify(post.data.category)}/`)}>
+    <a class="chip d-inline-flex align-items-center gap-1" href={localePath(lang, `/blog/category/${slugify(post.data.category)}/`)} transition:name={`post-cat-${safeSlug}`}>
       <Icon name="lucide:folder" class="ui-icon icon-xs" aria-hidden="true" />
       <span>{blogCategoryLabel(post.data.category, lang)}</span>
     </a>

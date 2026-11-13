@@ -129,7 +129,7 @@ const zoomData = (z: ScrollStep['zoom']) => (z ? JSON.stringify(typeof z === 'ob
   .scroll-sequence.frame-card .phone {
     aspect-ratio: 16 / 10;
     height: clamp(340px, 60dvh, 560px);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-lg, 20px);
   }
   .scroll-sequence.frame-card .phone::before,
   .scroll-sequence.frame-card .phone::after {
@@ -137,7 +137,7 @@ const zoomData = (z: ScrollStep['zoom']) => (z ? JSON.stringify(typeof z === 'ob
   }
   .scroll-sequence.frame-card .phone-screen {
     aspect-ratio: 16 / 10;
-    border-radius: calc(var(--radius-lg) - 4px);
+    border-radius: calc(var(--radius-lg, 20px) - 4px);
     background: var(--bg-surface);
   }
   .scroll-sequence.frame-card .media-frame img,

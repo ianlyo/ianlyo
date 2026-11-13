@@ -1,7 +1,4 @@
-/* ==========================================================================
-   Multi-Theme Color System (Paired with Light & Dark Modes)
-   & Global Accessibility / UI Preference Tokens
-   ========================================================================== */
+/* 多主題配色系統（搭配淺色與深色模式）與全域無障礙介面偏好變數 */
 
 :root,
 [data-bs-theme="light"] {
@@ -16,9 +13,7 @@
   --progress-bar-shadow: 0 0 12px rgba(129, 140, 248, 0.55), 0 2px 8px rgba(56, 189, 248, 0.35);
 }
 
-/* --------------------------------------------------------------------------
-   1. Electric Indigo (Default)
-   -------------------------------------------------------------------------- */
+/* 1. 電光靛藍（預設主題） */
 [data-color-theme="indigo"][data-bs-theme="light"] {
   --bg-base: #f8fafc;
   --bg-surface: #ffffff;
@@ -67,9 +62,7 @@
   --progress-bar-shadow: 0 0 12px rgba(129, 140, 248, 0.55), 0 2px 8px rgba(56, 189, 248, 0.35);
 }
 
-/* --------------------------------------------------------------------------
-   2. Ocean Cyan (極光海洋)
-   -------------------------------------------------------------------------- */
+/* 2. 極光海洋 */
 [data-color-theme="ocean"][data-bs-theme="light"] {
   --bg-base: #f5f9fc;
   --bg-surface: #ffffff;
@@ -130,9 +123,7 @@
   --theme-toggle-border: rgba(186, 230, 253, 0.16);
 }
 
-/* --------------------------------------------------------------------------
-   3. Emerald Mint (翡翠森林)
-   -------------------------------------------------------------------------- */
+/* 3. 翡翠森林 */
 [data-color-theme="emerald"][data-bs-theme="light"] {
   --bg-base: #f5fbf8;
   --bg-surface: #ffffff;
@@ -193,9 +184,7 @@
   --theme-toggle-border: rgba(167, 243, 208, 0.16);
 }
 
-/* --------------------------------------------------------------------------
-   4. Crimson Rose (緋紅櫻花)
-   -------------------------------------------------------------------------- */
+/* 4. 緋紅櫻花 */
 [data-color-theme="rose"][data-bs-theme="light"] {
   --bg-base: #fdf7f8;
   --bg-surface: #ffffff;
@@ -256,9 +245,7 @@
   --theme-toggle-border: rgba(254, 205, 211, 0.16);
 }
 
-/* --------------------------------------------------------------------------
-   5. Sunset Amber (流金琥珀)
-   -------------------------------------------------------------------------- */
+/* 5. 流金琥珀 */
 [data-color-theme="amber"][data-bs-theme="light"] {
   --bg-base: #fcfaf5;
   --bg-surface: #ffffff;
@@ -319,9 +306,7 @@
   --theme-toggle-border: rgba(253, 230, 138, 0.16);
 }
 
-/* --------------------------------------------------------------------------
-   6. Cosmic Violet (星雲紫羅蘭)
-   -------------------------------------------------------------------------- */
+/* 6. 星雲紫羅蘭 */
 [data-color-theme="violet"][data-bs-theme="light"] {
   --bg-base: #f9f7fd;
   --bg-surface: #ffffff;
@@ -382,9 +367,7 @@
   --theme-toggle-border: rgba(233, 213, 255, 0.16);
 }
 
-/* --------------------------------------------------------------------------
-   Bootstrap Variable Bridges (sync Bootstrap components with active theme)
-   -------------------------------------------------------------------------- */
+/* Bootstrap 變數橋接（同步 Bootstrap 元件與目前啟用主題） */
 [data-color-theme] {
   --bs-primary: var(--accent-primary);
   --bs-link-color: var(--accent-primary);
@@ -394,9 +377,7 @@
   --bs-border-color: var(--border-subtle);
 }
 
-/* --------------------------------------------------------------------------
-   Scroll Progress Bar, Toast & Global Accessibility Preferences
-   -------------------------------------------------------------------------- */
+/* 閱讀進度條、提示訊息與全域無障礙偏好設定 */
 .scroll-progress-bar {
   position: fixed;
   top: 0;
@@ -477,16 +458,20 @@ html[data-high-contrast='true'] :focus-visible {
 }
 
 html[data-progress-bar='false'] .scroll-progress-bar,
-html[data-reduce-motion='true'] .scroll-progress-bar {
+html[data-reduce-motion='true'] .scroll-progress-bar,
+html[data-reduce-motion='true'] .vt-loading-bar {
   display: none !important;
 }
 
 html[data-reduce-motion='true'] .reveal,
 html[data-reduce-motion='true'] .hero-enter,
 html[data-reduce-motion='true'] .hero-enter-scale,
-html[data-reduce-motion='true'] .hero-enter-fade {
+html[data-reduce-motion='true'] .hero-enter-fade,
+html[data-reduce-motion='true'] [data-stagger-item] {
   opacity: 1 !important;
   transform: none !important;
+  filter: none !important;
+  clip-path: none !important;
   transition: none !important;
   animation: none !important;
   will-change: auto !important;
@@ -505,4 +490,6 @@ html[data-reduce-motion='true']::view-transition-group(*),
 html[data-reduce-motion='true']::view-transition-old(*),
 html[data-reduce-motion='true']::view-transition-new(*) {
   animation: none !important;
+  filter: none !important;
+  clip-path: none !important;
 }

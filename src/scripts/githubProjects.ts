@@ -34,7 +34,7 @@ const CACHE_TIME_KEY = 'github_repos_cache_time';
 const CACHE_DURATION_MS = 3_600_000;
 const INITIAL_VISIBLE_COUNT = 6;
 const STAT_ANIMATION_MS = 560;
-const STAGGER_STEP_MS = 55;
+const STAGGER_STEP_MS = 50;
 
 const GITHUB_ICON_SVG =
   '<svg class="github-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.24c0 4.52 2.87 8.36 6.84 9.71.5.1.68-.22.68-.49v-1.7c-2.78.62-3.37-1.22-3.37-1.22-.45-1.19-1.11-1.5-1.11-1.5-.91-.64.07-.63.07-.63 1 .08 1.53 1.06 1.53 1.06.9 1.59 2.35 1.13 2.92.86.09-.67.35-1.13.64-1.39-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.2 9.2 0 0 1 12 7.14c.85 0 1.71.12 2.51.36 1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.8-4.57 5.05.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.49A10.25 10.25 0 0 0 22 12.24C22 6.58 17.52 2 12 2Z"/></svg>';
@@ -89,7 +89,7 @@ function readProjectLabels(section: HTMLElement): ProjectLabels {
   };
 }
 
-/** Load public GitHub repositories with a 1-hour `localStorage` cache and offline fallback. */
+/** 載入公開的 GitHub 儲存庫，搭配 1 小時 localStorage 快取與離線降級方案 */
 async function loadGitHubRepos(githubUser: string): Promise<GitHubRepo[] | null> {
   const cachedData = safeGetStorage(CACHE_KEY);
   const cachedTime = safeGetStorage(CACHE_TIME_KEY);
@@ -101,7 +101,7 @@ async function loadGitHubRepos(githubUser: string): Promise<GitHubRepo[] | null>
     try {
       return JSON.parse(cachedData) as GitHubRepo[];
     } catch {
-      // Ignore malformed cache and re-fetch
+      /* 忽略格式錯誤的快取並重新請求 */
     }
   }
 
@@ -196,9 +196,10 @@ function createProjectCardHtml(
   const color = LANGUAGE_COLORS[language] || '#64748b';
   const description = repo.description || labels.defaultDesc;
   const isAlreadyShown = index < keepSettledCount;
-  const delayMs = isAlreadyShown ? 0 : ((index - keepSettledCount) % INITIAL_VISIBLE_COUNT) * STAGGER_STEP_MS;
+  const staggerIndex = isAlreadyShown ? 0 : (index - keepSettledCount) % INITIAL_VISIBLE_COUNT;
+  const delayMs = staggerIndex * STAGGER_STEP_MS;
   const cardClasses = isAlreadyShown ? 'card repo-card reveal is-visible is-settled' : 'card repo-card reveal';
-  const delayAttr = isAlreadyShown ? '' : ` style="--reveal-delay: ${delayMs}ms"`;
+  const delayAttr = isAlreadyShown ? '' : ` style="--stagger-index: ${staggerIndex}; --reveal-delay: ${delayMs}ms"`;
 
   return `
     <div class="col-lg-4 col-md-6 mb-4">
@@ -224,7 +225,7 @@ function createProjectCardHtml(
   `;
 }
 
-/** Fetch, cache, filter, and render public GitHub repositories on the home page. */
+/** 取得、快取、篩選並於首頁渲染公開的 GitHub 專案儲存庫 */
 export async function initializeProjects(onProjectsRendered?: () => void): Promise<void> {
   const section = document.getElementById('projects');
   const grid = document.getElementById('projects-grid');

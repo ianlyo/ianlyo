@@ -15,6 +15,7 @@ interface Props {
 
 const { item, all, lang = 'zh-Hant' } = Astro.props;
 const { post, slug, isFallback, originalLang } = item;
+const safeSlug = slug.replace(/[^a-zA-Z0-9_-]/g, '-');
 const ui = t(lang).blog;
 const { Content, headings } = await render(post);
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
@@ -54,16 +55,17 @@ const jsonLd = {
           data-pagefind-body={!isFallback ? '' : undefined}
           data-pagefind-ignore={isFallback ? '' : undefined}
         >
-          <header class="mb-4">
+          <header class="mb-4" transition:name={`post-card-${safeSlug}`} style="view-transition-class: vt-card;">
             <a
               class="chip mb-2 d-inline-flex align-items-center gap-1 hero-enter hero-enter-fade"
               href={localePath(lang, `/blog/category/${slugify(d.category)}/`)}
               lang={lang}
+              transition:name={`post-cat-${safeSlug}`}
             >
               <Icon name="material-symbols:folder-open" class="material-symbols-rounded icon-xs" aria-hidden="true" />
               <span>{blogCategoryLabel(d.category, lang)}</span>
             </a>
-            <h1 class="hero-enter enter-delay-1" style="font-weight:800;letter-spacing:-.02em">{d.title}</h1>
+            <h1 class="hero-enter enter-delay-1" style="font-weight:800;letter-spacing:-.02em" transition:name={`post-title-${safeSlug}`}>{d.title}</h1>
             <div class="meta hero-enter enter-delay-2" lang={lang}>
               <time datetime={d.pubDate.toISOString()} class="d-inline-flex align-items-center gap-1">
                 <Icon name="material-symbols:calendar-today" class="material-symbols-rounded icon-xs" aria-hidden="true" />

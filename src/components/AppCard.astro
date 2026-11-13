@@ -9,14 +9,14 @@ const ui = t(lang).beta;
 const d = app.data;
 const href = localePath(lang, `/apps-dev/${app.id}/`);
 ---
-<a class="surface-card reveal" href={href}>
+<a class="surface-card reveal" href={href} transition:name={`app-card-${app.id}`} style="view-transition-class: vt-card;">
   <div class="d-flex gap-3 align-items-center mb-3">
     {d.icon
-      ? <img class="app-icon app-icon-sm" src={d.icon.replace(/\.webp$/, '-sm.webp')} alt={`${d.name} icon`} width="56" height="56" loading="lazy" decoding="async" />
-      : <div class="app-icon app-icon-sm app-icon-fallback" aria-hidden="true">{d.name.charAt(0)}</div>}
+      ? <img class="app-icon app-icon-sm" src={d.icon.replace(/\.webp$/, '-sm.webp')} alt={`${d.name} icon`} width="56" height="56" loading="lazy" decoding="async" transition:name={`app-icon-${app.id}`} />
+      : <div class="app-icon app-icon-sm app-icon-fallback" aria-hidden="true" transition:name={`app-icon-${app.id}`}>{d.name.charAt(0)}</div>}
     <div>
-      <h3 class="mb-1">{d.name}</h3>
-      <AppStatusBadge status={d.status} lang={lang} />
+      <h3 class="mb-1" transition:name={`app-title-${app.id}`}>{d.name}</h3>
+      <span class="d-inline-flex" transition:name={`app-status-${app.id}`}><AppStatusBadge status={d.status} lang={lang} /></span>
     </div>
   </div>
   <p>{pick(d.tagline, lang)}</p>

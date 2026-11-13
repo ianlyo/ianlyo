@@ -544,12 +544,21 @@ function initDraggablePhysics(
   physicsRafId = window.requestAnimationFrame(physicsTick);
 }
 
-/** Initialize the interactive 404 playground (localization, starfield, confetti, physics). */
-export function initNotFoundPlayground(): void {
+/** Cancel animation frames and remove listeners when leaving the 404 playground. */
+export function cleanupNotFoundPlayground(): void {
   window.cancelAnimationFrame(starfieldRafId);
   window.cancelAnimationFrame(physicsRafId);
   window.cancelAnimationFrame(confettiRafId);
+  starfieldRafId = 0;
+  physicsRafId = 0;
+  confettiRafId = 0;
   playgroundAbortController?.abort();
+  playgroundAbortController = null;
+}
+
+/** Initialize the interactive 404 playground (localization, starfield, confetti, physics). */
+export function initNotFoundPlayground(): void {
+  cleanupNotFoundPlayground();
 
   const root = document.getElementById('nf');
   if (!root) return;
@@ -617,4 +626,7 @@ export function initNotFoundPlayground(): void {
   initDraggablePhysics(addScore, celebrate, signal);
 }
 
-registerPageLifecycle(initNotFoundPlayground);
+registerPageLifecycle({
+  onLoad: initNotFoundPlayground,
+  onBeforeSwap: cleanupNotFoundPlayground,
+});

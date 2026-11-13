@@ -1,7 +1,6 @@
-/* site.css - styles for the blog, beta hub and app landing pages.
-   Uses the CSS variables defined in style.css (so light/dark themes just work). */
+/* 全站元件樣式表，搭配 style.css 與 themes.css 的設計變數使用 */
 
-/* Global Icon defaults (supporting Lucide & SVG icons) */
+/* 全域圖示預設樣式（支援 Lucide 與 SVG 圖示） */
 .nav-icon,
 .ui-icon,
 .material-symbols-outlined,
@@ -19,7 +18,7 @@
   font-style: normal;
 }
 
-/* Sizing utilities */
+/* 圖示尺寸輔助類別 */
 .icon-xs { font-size: 0.95em; width: 0.95em; height: 0.95em; }
 .icon-sm { font-size: 1.1em; width: 1.1em; height: 1.1em; }
 .icon-md { font-size: 1.35em; width: 1.35em; height: 1.35em; }
@@ -36,7 +35,18 @@
   font-weight: 700;
 }
 .nav-links { display: flex; align-items: center; gap: 0.6rem; }
-.nav-links a { display: inline-flex; align-items: center; gap: .5rem; line-height: 1; }
+.nav-links a { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: .5rem; line-height: 1; }
+/* 導覽列活躍分頁共享指標膠囊 */
+.nav-active-pill {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-sm, 8px);
+  background: var(--accent-subtle);
+  border: 1px solid var(--border-hover);
+  box-shadow: 0 2px 10px var(--accent-glow);
+  z-index: -1;
+  pointer-events: none;
+}
 .nav-links a .nav-icon {
   width: 1.15rem;
   height: 1.15rem;
@@ -57,7 +67,7 @@
   width: 38px;
   height: 38px;
   justify-content: center;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-full, 9999px);
 }
 .nav-links a.nav-action-icon .nav-icon {
   width: 1.25rem;
@@ -67,7 +77,7 @@
   font-size: .85rem;
   font-weight: 600;
   border: 1px solid var(--border-strong);
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-full, 9999px);
   padding: .38rem .9rem;
   display: inline-flex;
   align-items: center;
@@ -89,7 +99,7 @@
   text-decoration: none;
 }
 
-/* Layout & Sticky Footer */
+/* 版面配置與置底頁尾 */
 html, body {
   min-height: 100%;
 }
@@ -118,7 +128,7 @@ body {
 .page-head p.lead { color: var(--text-secondary); max-width: 60ch; }
 .section-block { padding: 3.5rem 0 0; }
 
-/* Section more links (e.g. 查看全部 App ->, 所有文章 ->) */
+/* 區塊延伸閱讀連結 */
 .section-link {
   color: var(--accent-primary);
   text-decoration: none;
@@ -144,10 +154,10 @@ body {
   transform: translateX(2px);
 }
 
-/* Cards */
+/* 卡片樣式 */
 .card-grid { display: grid; gap: 1.1rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
 .surface-card {
-  background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+  background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md, 14px);
   padding: 1.25rem; box-shadow: var(--shadow-sm); transition: border-color .2s, box-shadow .2s, transform .2s;
   color: var(--text-primary); display: block; text-decoration: none;
 }
@@ -196,20 +206,20 @@ a.surface-card:hover h3, a.surface-card:hover h2 { color: var(--accent-primary);
   transform: translateX(-3px);
 }
 
-/* Chips */
-.chip { display: inline-flex; align-items: center; gap: .25rem; font-size: .78rem; padding: .18rem .6rem; border-radius: var(--radius-full); background: var(--accent-subtle); color: var(--accent-primary); border: 1px solid transparent; text-decoration: none; transition: border-color .2s ease, background-color .2s ease, transform .18s ease; }
+/* 標籤膠囊 */
+.chip { display: inline-flex; align-items: center; gap: .25rem; font-size: .78rem; padding: .18rem .6rem; border-radius: var(--radius-full, 9999px); background: var(--accent-subtle); color: var(--accent-primary); border: 1px solid transparent; text-decoration: none; transition: border-color .2s ease, background-color .2s ease, transform .18s ease; }
 a.chip:hover { border-color: var(--border-hover); transform: translateY(-1px); }
 a.chip:active { transform: translateY(0) scale(0.96); }
 .chip-muted { background: var(--bg-surface-subtle); color: var(--text-secondary); border-color: var(--border-subtle); }
 .chip-row { display: flex; flex-wrap: wrap; gap: .4rem; }
-.status-badge { display: inline-flex; align-items: center; gap: .3rem; font-size: .78rem; font-weight: 600; padding: .2rem .65rem; border-radius: var(--radius-full); background: var(--accent-subtle); color: var(--accent-primary); }
+.status-badge { display: inline-flex; align-items: center; gap: .3rem; font-size: .78rem; font-weight: 600; padding: .2rem .65rem; border-radius: var(--radius-full, 9999px); background: var(--accent-subtle); color: var(--accent-primary); }
 .status-badge.s-released { background: rgba(34,197,94,.12); color: #16a34a; }
 .status-badge.s-coming-soon, .status-badge.s-paused { background: var(--bg-surface-subtle); color: var(--text-muted); }
 
-/* Buttons */
+/* 按鈕樣式 */
 .btn-install {
   display: inline-flex; align-items: center; justify-content: center; gap: .55rem; min-height: 52px;
-  padding: .8rem 1.6rem; font-weight: 700; font-size: 1.05rem; border-radius: var(--radius-md);
+  padding: .8rem 1.6rem; font-weight: 700; font-size: 1.05rem; border-radius: var(--radius-md, 14px);
   background: var(--accent-primary); color: var(--accent-text); border: 0; text-decoration: none;
   box-shadow: 0 4px 14px var(--accent-glow);
   transition: background-color .22s ease, transform .2s var(--ease-out-expo), box-shadow .22s ease;
@@ -218,7 +228,7 @@ a.chip:active { transform: translateY(0) scale(0.96); }
 .btn-install:active { transform: translateY(0) scale(0.97); }
 .btn-ghost {
   display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; padding: .55rem 1.1rem; font-weight: 600;
-  border: 1px solid var(--border-strong); border-radius: var(--radius-md); color: var(--text-primary); background: transparent;
+  border: 1px solid var(--border-strong); border-radius: var(--radius-md, 14px); color: var(--text-primary); background: transparent;
   text-decoration: none;
   transition: border-color .2s ease, color .2s ease, background-color .2s ease, transform .2s var(--ease-out-expo);
 }
@@ -229,13 +239,14 @@ a.chip:active { transform: translateY(0) scale(0.96); }
 .cta-row { display: flex; flex-wrap: wrap; gap: .75rem; align-items: flex-start; }
 @media (max-width: 576px) { .cta-row > * { width: 100%; } .btn-install, .btn-ghost { justify-content: center; } }
 
-/* App hero & icon */
+/* 應用程式主視覺與圖示 */
 .app-hero { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
 .app-icon { 
   width: 96px; 
   height: 96px; 
   border-radius: 22px; 
   object-fit: cover; 
+  overflow: clip;
   flex: none; 
   border: none;
   box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.12), 0 3px 8px -2px rgba(0, 0, 0, 0.08);
@@ -273,26 +284,26 @@ img.app-icon { background: transparent; }
   box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.55), 0 3px 8px -1px rgba(0, 0, 0, 0.35);
 }
 
-/* Steps */
+/* 安裝步驟清單 */
 .steps { list-style: none; padding: 0; margin: 0; display: grid; gap: .9rem; counter-reset: step; }
-.steps li { counter-increment: step; display: flex; gap: 1rem; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.1rem 1.25rem; }
+.steps li { counter-increment: step; display: flex; gap: 1rem; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md, 14px); padding: 1.1rem 1.25rem; }
 .steps li::before { content: counter(step); flex: none; width: 2.2rem; height: 2.2rem; display: grid; place-items: center; border-radius: 50%; background: var(--accent-primary); color: var(--accent-text); font-weight: 700; }
 .steps li h3 { font-size: 1.05rem; margin: 0 0 .3rem; font-weight: 700; display: flex; align-items: center; gap: .45rem; flex-wrap: wrap; }
 .steps li h3 .step-icon { color: var(--accent-primary); font-size: 1.25rem; }
 .steps p { margin: 0 0 .5rem; color: var(--text-secondary); font-size: .93rem; }
 
-/* Screenshots */
+/* 應用程式截圖展示 */
 .shots { display: flex; gap: .9rem; overflow-x: auto; padding-bottom: .6rem; scroll-snap-type: x mandatory; }
-.shots img { height: 420px; width: auto; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); scroll-snap-align: start; background: var(--bg-surface-subtle); }
-.shot-empty { border: 1px dashed var(--border-strong); border-radius: var(--radius-md); padding: 2rem; text-align: center; color: var(--text-muted); }
+.shots img { height: 420px; width: auto; border-radius: var(--radius-md, 14px); border: 1px solid var(--border-subtle); scroll-snap-align: start; background: var(--bg-surface-subtle); }
+.shot-empty { border: 1px dashed var(--border-strong); border-radius: var(--radius-md, 14px); padding: 2rem; text-align: center; color: var(--text-muted); }
 
-/* Spec table / FAQ / changelog */
+/* 規格表格、常見問答與更新紀錄 */
 .spec-table { width: 100%; border-collapse: collapse; }
 .spec-table th, .spec-table td { text-align: left; padding: .65rem .25rem; border-bottom: 1px solid var(--border-subtle); font-size: .95rem; }
 .spec-table th { color: var(--text-muted); font-weight: 500; width: 40%; }
 .spec-table th .material-symbols-rounded,
 .spec-table th .ui-icon { vertical-align: -0.15em; margin-right: 0.35rem; color: var(--accent-primary); font-size: 1.1em; }
-details.faq { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--bg-surface); padding: .85rem 1.1rem; margin-bottom: .6rem; transition: border-color .2s ease, box-shadow .2s ease; }
+details.faq { border: 1px solid var(--border-subtle); border-radius: var(--radius-md, 14px); background: var(--bg-surface); padding: .85rem 1.1rem; margin-bottom: .6rem; transition: border-color .2s ease, box-shadow .2s ease; }
 details.faq:hover { border-color: var(--border-hover); }
 details.faq summary { cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: space-between; list-style: none; }
 details.faq summary::-webkit-details-marker { display: none; }
@@ -313,13 +324,13 @@ h2.block-title { font-size: 1.4rem; font-weight: 800; margin: 0 0 1rem; letter-s
 h2.block-title .material-symbols-rounded,
 h2.block-title .ui-icon { font-size: 1.35rem; width: 1.35rem; height: 1.35rem; }
 
-/* Blog search link */
+/* 部落格搜尋按鈕 */
 .blog-search-link {
   display: inline-flex;
   align-items: center;
   gap: .4rem;
   padding: .35rem .85rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-full, 9999px);
   background: var(--bg-surface-subtle);
   border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
@@ -334,7 +345,7 @@ h2.block-title .ui-icon { font-size: 1.35rem; width: 1.35rem; height: 1.35rem; }
   background: var(--accent-subtle);
 }
 
-/* Blog article */
+/* 部落格文章內頁與目錄 */
 .article-layout { display: grid; gap: 2.5rem; grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 992px) { .article-layout.has-toc { grid-template-columns: minmax(0, 1fr) 240px; } }
 .toc { position: sticky; top: 6rem; align-self: start; font-size: .88rem; }
@@ -349,13 +360,13 @@ h2.block-title .ui-icon { font-size: 1.35rem; width: 1.35rem; height: 1.35rem; }
 .prose h3 { font-size: 1.2rem; font-weight: 700; margin: 1.8rem 0 .6rem; scroll-margin-top: 6rem; }
 .prose a { color: var(--accent-primary); text-decoration: none; font-weight: 600; transition: color .2s ease, opacity .2s ease; }
 .prose a:hover { color: var(--accent-primary-hover); text-decoration: none; }
-.prose img { max-width: 100%; height: auto; border-radius: var(--radius-md); }
-.prose blockquote { border-left: 3px solid var(--accent-primary); margin: 1.2rem 0; padding: .2rem 1rem; color: var(--text-secondary); background: var(--accent-subtle); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.prose img { max-width: 100%; height: auto; border-radius: var(--radius-md, 14px); }
+.prose blockquote { border-left: 3px solid var(--accent-primary); margin: 1.2rem 0; padding: .2rem 1rem; color: var(--text-secondary); background: var(--accent-subtle); border-radius: 0 var(--radius-sm, 8px) var(--radius-sm, 8px) 0; }
 .prose :not(pre) > code { background: var(--bg-surface-subtle); border: 1px solid var(--border-subtle); padding: .1rem .4rem; border-radius: 6px; font-size: .88em; }
-.prose pre { padding: 1rem 1.1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); overflow-x: auto; font-size: .88rem; line-height: 1.6; }
+.prose pre { padding: 1rem 1.1rem; border-radius: var(--radius-md, 14px); border: 1px solid var(--border-subtle); overflow-x: auto; font-size: .88rem; line-height: 1.6; }
 .prose table { width: 100%; border-collapse: collapse; margin: 1rem 0; display: block; overflow-x: auto; }
 .prose th, .prose td { border: 1px solid var(--border-subtle); padding: .5rem .75rem; }
-/* Shiki dual-theme switching with the site's theme attribute */
+/* Shiki 程式碼區塊雙主題切換 */
 [data-bs-theme='light'] .astro-code, [data-bs-theme='light'] .astro-code span { color: var(--shiki-light) !important; background-color: var(--shiki-light-bg) !important; }
 [data-bs-theme='dark'] .astro-code, [data-bs-theme='dark'] .astro-code span { color: var(--shiki-dark) !important; background-color: var(--shiki-dark-bg) !important; }
 
@@ -363,7 +374,7 @@ h2.block-title .ui-icon { font-size: 1.35rem; width: 1.35rem; height: 1.35rem; }
 .pagination-nav a { text-decoration: none; }
 .search-box { width: 100%; }
 
-/* Pagefind search UI overrides */
+/* Pagefind 搜尋介面覆寫 */
 .pagefind-ui a,
 .pagefind-ui a:hover,
 .pagefind-ui .pagefind-ui__result-link,
@@ -376,9 +387,7 @@ h2.block-title .ui-icon { font-size: 1.35rem; width: 1.35rem; height: 1.35rem; }
 
 svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: currentColor; }
 
-/* ==========================================================================
-   Navigation Bar & Google Photos Style Mobile Navigation Drawer
-   ========================================================================== */
+/* 導覽列與行動版側邊抽屜選單 */
 .nav-left, .nav-right {
   display: flex;
   align-items: center;
@@ -426,7 +435,7 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
   color: var(--text-primary);
   width: 40px;
   height: 40px;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-full, 9999px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -455,7 +464,7 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
   font-size: 1.5rem;
 }
 
-/* Apple Liquid Glass Drawer Backdrop (Ultra-Light & Airy) */
+/* 液態毛玻璃抽屜背景遮罩 */
 .nav-drawer-backdrop {
   position: fixed;
   inset: 0;
@@ -476,7 +485,7 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
   pointer-events: auto;
 }
 
-/* Apple Liquid Glass Navigation Drawer (Sidebar with Background Extension Effect) */
+/* 液態毛玻璃側邊導覽抽屜 */
 .nav-drawer {
   position: fixed;
   top: 0;
@@ -505,7 +514,7 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
   padding-left: max(0.5rem, env(safe-area-inset-left, 0px));
 }
 
-/* 抽屜右緣與頂部鏡面高光刃線 (Liquid Glass Specular Highlight) */
+/* 抽屜右緣與頂部鏡面高光刃線 */
 .nav-drawer::before {
   content: '';
   position: absolute;
@@ -627,14 +636,14 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
   gap: 0.4rem;
 }
 
-/* Apple Liquid Glass Item & Pill Button */
+/* 抽屜導覽項目與膠囊按鈕 */
 .nav-drawer-item {
   display: flex;
   align-items: center;
   gap: 1.1rem;
   height: 48px;
   padding: 0 1.25rem;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-full, 9999px);
   color: #1e293b;
   text-decoration: none;
   font-size: 0.96rem;
@@ -760,7 +769,7 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
 }
 
 
-/* ---- Pagefind search UI (theme-aware, light + dark) ---- */
+/* Pagefind 搜尋介面主題樣式 */
 .search-box {
   --pagefind-ui-scale: 1;
   --pagefind-ui-primary: var(--accent-primary);
@@ -833,42 +842,294 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
   .search-box .pagefind-ui__search-input { height: 52px; }
 }
 
-/* ==========================================================================
-   Cross-Document View Transitions
-   ========================================================================== */
+/* 頂部 2px 線性載入進度光軌 */
+.vt-loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 2px;
+  z-index: 2100;
+  pointer-events: none;
+  opacity: 0;
+  transform: scaleX(var(--vt-progress, 0));
+  transform-origin: left center;
+  background: var(--progress-bar-gradient);
+  box-shadow: var(--progress-bar-shadow);
+  transition:
+    transform 0.22s var(--ease-linear),
+    opacity 0.2s var(--ease-out-expo);
+  will-change: transform, opacity;
+}
+
+.vt-loading-bar[data-loading="active"],
+.vt-loading-bar[data-loading="finishing"] {
+  opacity: 1;
+}
+
+/* 全域跨頁轉場架構 (View Transitions API 搭配 Astro ClientRouter) */
+/* 第一層：視圖容器空間縱深複合轉場 (縮放、線性位移、動態模糊與淡出入) */
+/* 第二層：共享元素幾何插值變形 (微彈性物理曲線與防比例破綻裁切) */
+/* 第三層：頁面進場瀑布流線性交錯展開 (--stagger-index 驅動) */
 @view-transition {
   navigation: auto;
 }
 
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 0.28s;
-  animation-timing-function: var(--ease-fade);
+:root {
+  --enter-x: 0px;
+  --enter-y: 20px;
+  --enter-scale: 0.975;
+  --vt-root-duration: 0.38s;
+  --vt-root-out-duration: 0.32s;
+  --vt-root-in-duration: 0.46s;
+  --vt-morph-duration: 0.46s;
+  --vt-exit-x: 0px;
+  --vt-exit-y: -20px;
+  --vt-exit-scale: 0.96;
+  --vt-exit-blur: 6px;
+  --vt-enter-x: 0px;
+  --vt-enter-y: 20px;
+  --vt-enter-scale: 0.98;
+  --vt-enter-blur: 6px;
 }
 
-/* ==========================================================================
-   Above-the-Fold Hero & Page Header Entrance (.hero-enter)
-   Starts on frame 1 with zero JS lag; `backwards` never blocks hover states.
-   ========================================================================== */
-@keyframes heroEnterUp {
+/* 方向性感知：前進深層頁面 (Forward) */
+html[data-transition-direction="forward"] {
+  --vt-exit-x: 0px;
+  --vt-exit-y: -20px;
+  --vt-exit-scale: 0.96;
+  --vt-exit-blur: 6px;
+  --vt-enter-x: 0px;
+  --vt-enter-y: 20px;
+  --vt-enter-scale: 0.98;
+  --vt-enter-blur: 6px;
+}
+
+/* 方向性感知：返回上層頁面 (Back) */
+html[data-transition-direction="back"] {
+  --vt-exit-x: 0px;
+  --vt-exit-y: 20px;
+  --vt-exit-scale: 0.96;
+  --vt-exit-blur: 6px;
+  --vt-enter-x: 0px;
+  --vt-enter-y: -20px;
+  --vt-enter-scale: 0.975;
+  --vt-enter-blur: 6px;
+  --enter-y: -18px;
+  --reveal-distance: -18px;
+}
+
+/* 路由細分語意覆寫 */
+html[data-vt="drill"] {
+  --enter-y: 24px;
+  --enter-scale: 0.965;
+  --reveal-distance: 24px;
+}
+
+html[data-vt="rise"] {
+  --enter-y: -20px;
+  --enter-scale: 0.985;
+  --reveal-distance: -20px;
+}
+
+html[data-vt="slide-forward"] {
+  --vt-exit-x: -24px;
+  --vt-exit-y: -12px;
+  --vt-enter-x: 24px;
+  --vt-enter-y: 16px;
+  --enter-x: 32px;
+  --enter-y: 0px;
+  --enter-scale: 0.985;
+  --reveal-distance: 0px;
+}
+
+html[data-vt="slide-back"] {
+  --vt-exit-x: 24px;
+  --vt-exit-y: 12px;
+  --vt-enter-x: -24px;
+  --vt-enter-y: -16px;
+  --enter-x: -32px;
+  --enter-y: 0px;
+  --enter-scale: 0.985;
+  --reveal-distance: 0px;
+}
+
+html[data-vt="overlay"] {
+  --enter-y: 12px;
+  --enter-scale: 0.95;
+  --reveal-distance: 12px;
+  --vt-root-in-duration: 0.38s;
+}
+
+html[data-vt="lang"] {
+  --vt-exit-x: 0px;
+  --vt-exit-y: -12px;
+  --vt-enter-x: 0px;
+  --vt-enter-y: 12px;
+  --vt-exit-blur: 4px;
+  --vt-enter-blur: 4px;
+  --enter-y: 0px;
+  --enter-scale: 0.99;
+  --reveal-distance: 0px;
+  --vt-root-in-duration: 0.42s;
+}
+
+::view-transition {
+  background-color: var(--bg-base);
+}
+
+/* 共享元素幾何變形：使用微彈性物理曲線與防變形裁切處理 */
+::view-transition-group(*) {
+  animation-duration: var(--vt-morph-duration);
+  animation-timing-function: var(--ease-spring);
+  z-index: 3;
+}
+
+::view-transition-group(root) {
+  animation-duration: var(--vt-root-in-duration);
+  animation-timing-function: var(--ease-out-expo);
+  z-index: 1;
+}
+
+/* 卡片容器跨頁共享變形：維持圓角裁切與填滿插值，避免卡片切換時比例失真或露出直角 */
+::view-transition-group(.vt-card) {
+  animation-duration: var(--vt-morph-duration);
+  animation-timing-function: var(--ease-spring);
+  border-radius: var(--radius-md, 14px);
+  overflow: clip;
+  z-index: 2;
+}
+
+::view-transition-image-pair(.vt-card) {
+  border-radius: var(--radius-md, 14px);
+  overflow: clip;
+}
+
+::view-transition-old(.vt-card),
+::view-transition-new(.vt-card) {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  border-radius: var(--radius-md, 14px);
+  overflow: clip;
+  mix-blend-mode: normal;
+}
+
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+
+::view-transition-old(site-header),
+::view-transition-new(site-header) {
+  animation: none;
+  mix-blend-mode: normal;
+  object-fit: fill;
+}
+
+::view-transition-group(nav-active-pill) {
+  animation-duration: 0.38s;
+  animation-timing-function: var(--ease-spring);
+  z-index: 101;
+}
+
+::view-transition-old(nav-active-pill),
+::view-transition-new(nav-active-pill) {
+  height: 100%;
+  object-fit: fill;
+  mix-blend-mode: normal;
+}
+
+::view-transition-image-pair(*) {
+  isolation: isolate;
+  overflow: clip;
+}
+
+/* 修正共享文字與圖片於插值變形過程中的長寬比破綻 */
+::view-transition-old(*):not(:only-child),
+::view-transition-new(*):not(:only-child) {
+  overflow: clip;
+  object-fit: contain;
+  object-position: left center;
+  mix-blend-mode: normal;
+}
+
+/* 舊頁面退場：微幅縮小、線性位移、動態模糊與淡出 */
+@keyframes vtRootOut {
   from {
-    opacity: 0;
-    transform: translate3d(0, 18px, 0);
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0px);
   }
   to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
+    opacity: 0;
+    transform: translate3d(var(--vt-exit-x), var(--vt-exit-y), 0) scale(var(--vt-exit-scale));
+    filter: blur(var(--vt-exit-blur));
   }
 }
 
-@keyframes heroEnterScale {
+/* 新頁面進場：由遠景或下方平滑浮現並解除模糊 */
+@keyframes vtRootIn {
   from {
     opacity: 0;
-    transform: translate3d(0, 14px, 0) scale(0.975);
+    transform: translate3d(var(--vt-enter-x), var(--vt-enter-y), 0) scale(var(--vt-enter-scale));
+    filter: blur(var(--vt-enter-blur));
   }
   to {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+::view-transition-old(root) {
+  animation: vtRootOut var(--vt-root-out-duration) var(--ease-out-expo) both;
+  object-fit: fill;
+  overflow: clip;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  animation: vtRootIn var(--vt-root-in-duration) var(--ease-out-expo) both;
+  object-fit: fill;
+  overflow: clip;
+  mix-blend-mode: normal;
+}
+
+/* 不支援原生 View Transition API 瀏覽器之降級動畫 */
+html[data-astro-transition-fallback="old"] #main {
+  animation: vtRootOut 0.24s var(--ease-out-expo) both;
+}
+
+html[data-astro-transition-fallback="new"] #main {
+  animation: vtRootIn var(--vt-root-in-duration) var(--ease-out-expo) both;
+}
+
+/* 首屏主視覺與頁面標題進場系統 (.hero-enter) 與線性遮罩展開 */
+@keyframes heroEnterUp {
+  0% {
+    opacity: 0;
+    transform: translate3d(var(--enter-x), var(--enter-y), 0);
+    clip-path: inset(0% 0% 100% 0% round var(--radius-md, 14px));
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    clip-path: inset(-15% -15% -15% -15% round var(--radius-md, 14px));
+  }
+}
+
+@keyframes heroEnterScale {
+  0% {
+    opacity: 0;
+    transform: translate3d(var(--enter-x), calc(var(--enter-y) * 0.78), 0) scale(var(--enter-scale));
+    clip-path: inset(0% 0% 24% 0% round var(--radius-md, 14px));
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    clip-path: inset(-15% -15% -15% -15% round var(--radius-md, 14px));
   }
 }
 
@@ -882,30 +1143,37 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
 }
 
 .hero-enter {
-  animation: heroEnterUp 0.68s var(--ease-graceful) var(--enter-delay, 0ms) backwards;
+  --stagger-delay: calc(var(--stagger-index, 0) * var(--stagger-step, 50ms));
+  animation: heroEnterUp 0.64s var(--ease-out-expo) var(--enter-delay, var(--stagger-delay)) backwards;
 }
 
 .hero-enter-scale {
-  animation: heroEnterScale 0.72s var(--ease-graceful) var(--enter-delay, 0ms) backwards;
+  --stagger-delay: calc(var(--stagger-index, 0) * var(--stagger-step, 50ms));
+  animation: heroEnterScale 0.68s var(--ease-spring) var(--enter-delay, var(--stagger-delay)) backwards;
 }
 
 .hero-enter-fade {
-  animation: heroEnterFade 0.62s var(--ease-fade) var(--enter-delay, 0ms) backwards;
+  --stagger-delay: calc(var(--stagger-index, 0) * var(--stagger-step, 50ms));
+  animation: heroEnterFade 0.56s var(--ease-fade) var(--enter-delay, var(--stagger-delay)) backwards;
 }
 
-.enter-delay-1 { --enter-delay: 80ms; }
-.enter-delay-2 { --enter-delay: 160ms; }
-.enter-delay-3 { --enter-delay: 240ms; }
-.enter-delay-4 { --enter-delay: 320ms; }
-.enter-delay-5 { --enter-delay: 400ms; }
+[data-stagger-item] {
+  --stagger-delay: calc(var(--stagger-index, 0) * var(--stagger-step, 50ms));
+  animation: heroEnterUp 0.58s var(--ease-out-expo) var(--stagger-delay) backwards;
+}
 
-/* ==========================================================================
-   Apple-Style Scroll-Triggered Fade-In & Slide-Up (.reveal)
-   Scoped to `:not(.is-settled)` so interactive card hover transitions restore cleanly.
-   ========================================================================== */
+/* 瀑布流交錯索引類別 */
+.enter-delay-1 { --stagger-index: 1; --enter-delay: calc(1 * var(--stagger-step, 50ms)); }
+.enter-delay-2 { --stagger-index: 2; --enter-delay: calc(2 * var(--stagger-step, 50ms)); }
+.enter-delay-3 { --stagger-index: 3; --enter-delay: calc(3 * var(--stagger-step, 50ms)); }
+.enter-delay-4 { --stagger-index: 4; --enter-delay: calc(4 * var(--stagger-step, 50ms)); }
+.enter-delay-5 { --stagger-index: 5; --enter-delay: calc(5 * var(--stagger-step, 50ms)); }
+
+/* 滾動觸發揭露與瀑布流線性交錯 (.reveal) */
+/* 僅套用於尚未定型 (:not(.is-settled)) 的元素，確保懸停互動流暢 */
 .reveal:not(.is-visible):not(.is-settled) {
   opacity: 0;
-  transform: translate3d(0, var(--reveal-distance), 0);
+  transform: translate3d(var(--enter-x), var(--reveal-distance), 0);
 }
 
 .reveal.reveal-fade:not(.is-visible):not(.is-settled) {
@@ -925,9 +1193,10 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
 }
 
 .reveal:not(.is-settled) {
+  --stagger-delay: calc(var(--stagger-index, 0) * var(--stagger-step, 50ms));
   transition:
-    opacity var(--reveal-duration) var(--ease-fade) var(--reveal-delay, 0ms),
-    transform var(--reveal-duration) var(--ease-graceful) var(--reveal-delay, 0ms);
+    opacity var(--reveal-duration) var(--ease-fade) var(--reveal-delay, var(--stagger-delay)),
+    transform var(--reveal-duration) var(--ease-out-expo) var(--reveal-delay, var(--stagger-delay));
 }
 
 .reveal.is-visible:not(.is-settled) {
@@ -936,94 +1205,105 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
   will-change: opacity, transform;
 }
 
-/* Staggered Delay Classes */
+/* 交錯延遲類別 */
 .reveal-delay-100,
 .reveal.delay-1,
 .delay-1 {
-  --reveal-delay: 80ms;
+  --stagger-index: 1;
+  --reveal-delay: calc(1 * var(--stagger-step, 50ms));
 }
 
 .reveal-delay-200,
 .reveal.delay-2,
 .delay-2 {
-  --reveal-delay: 160ms;
+  --stagger-index: 2;
+  --reveal-delay: calc(2 * var(--stagger-step, 50ms));
 }
 
 .reveal-delay-300,
 .reveal.delay-3,
 .delay-3 {
-  --reveal-delay: 240ms;
+  --stagger-index: 3;
+  --reveal-delay: calc(3 * var(--stagger-step, 50ms));
 }
 
 .reveal-delay-400,
 .reveal.delay-4,
 .delay-4 {
-  --reveal-delay: 320ms;
+  --stagger-index: 4;
+  --reveal-delay: calc(4 * var(--stagger-step, 50ms));
 }
 
 .reveal-delay-500,
 .reveal.delay-5,
 .delay-5 {
-  --reveal-delay: 400ms;
+  --stagger-index: 5;
+  --reveal-delay: calc(5 * var(--stagger-step, 50ms));
 }
 
-/* Auto-stagger for grid/list items without explicit delay class */
+/* 網格與清單子元素預設瀑布流交錯節奏（每項間隔 50ms） */
 .card-grid > .reveal:not([class*="delay"]):nth-child(1),
 .capabilities-grid > .reveal:not([class*="delay"]):nth-child(1),
 .stagger-group > .reveal:not([class*="delay"]):nth-child(1),
 .project-grid > div:nth-child(1) .reveal {
-  --reveal-delay: 0ms;
+  --stagger-index: 0;
 }
 .card-grid > .reveal:not([class*="delay"]):nth-child(2),
 .capabilities-grid > .reveal:not([class*="delay"]):nth-child(2),
 .stagger-group > .reveal:not([class*="delay"]):nth-child(2),
 .project-grid > div:nth-child(2) .reveal {
-  --reveal-delay: 65ms;
+  --stagger-index: 1;
 }
 .card-grid > .reveal:not([class*="delay"]):nth-child(3),
 .capabilities-grid > .reveal:not([class*="delay"]):nth-child(3),
 .stagger-group > .reveal:not([class*="delay"]):nth-child(3),
 .project-grid > div:nth-child(3) .reveal {
-  --reveal-delay: 130ms;
+  --stagger-index: 2;
 }
 .card-grid > .reveal:not([class*="delay"]):nth-child(4),
 .capabilities-grid > .reveal:not([class*="delay"]):nth-child(4),
 .stagger-group > .reveal:not([class*="delay"]):nth-child(4),
 .project-grid > div:nth-child(4) .reveal {
-  --reveal-delay: 195ms;
+  --stagger-index: 3;
 }
 .card-grid > .reveal:not([class*="delay"]):nth-child(5),
 .stagger-group > .reveal:not([class*="delay"]):nth-child(5),
 .project-grid > div:nth-child(5) .reveal {
-  --reveal-delay: 260ms;
+  --stagger-index: 4;
 }
 .card-grid > .reveal:not([class*="delay"]):nth-child(6),
 .stagger-group > .reveal:not([class*="delay"]):nth-child(6),
 .project-grid > div:nth-child(6) .reveal {
-  --reveal-delay: 325ms;
+  --stagger-index: 5;
 }
 .card-grid > .reveal:not([class*="delay"]):nth-child(7),
 .stagger-group > .reveal:not([class*="delay"]):nth-child(7),
 .project-grid > div:nth-child(7) .reveal {
-  --reveal-delay: 390ms;
+  --stagger-index: 6;
 }
 .card-grid > .reveal:not([class*="delay"]):nth-child(n+8),
 .stagger-group > .reveal:not([class*="delay"]):nth-child(n+8),
 .project-grid > div:nth-child(n+8) .reveal {
-  --reveal-delay: 440ms;
+  --stagger-index: 7;
 }
 
-/* Reduced Motion Override */
+/* 系統動態減少無障礙降級機制 */
 @media (prefers-reduced-motion: reduce) {
+  .vt-loading-bar {
+    display: none !important;
+  }
   .reveal,
   .hero-enter,
   .hero-enter-scale,
   .hero-enter-fade,
+  [data-stagger-item],
   .search-box .pagefind-ui__result,
   .nav-drawer.is-open .nav-drawer-item,
   details.faq[open] p {
     opacity: 1 !important;
     transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
     transition: none !important;
     animation: none !important;
     will-change: auto !important;
@@ -1032,15 +1312,14 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
   ::view-transition-old(*),
   ::view-transition-new(*) {
     animation: none !important;
+    filter: none !important;
+    clip-path: none !important;
   }
 }
 
-/* ==========================================================================
-   Chromatic Aberration Glow Utilities (.text-glow-aberration)
-   Abstracted cross-theme design tokens & utilities for Astro & modern CSS
-   ========================================================================== */
+/* 色散光暈文字特效工具類別 (.text-glow-aberration) */
 
-/* Theme selectors fallback: supports html.dark & [data-theme="dark"] */
+/* 深色模式屬性備援選擇器 */
 html.dark,
 [data-theme="dark"] {
   --glow-text-color: #ffffff;
@@ -1057,7 +1336,7 @@ html.dark,
     0 0 90px var(--glow-ambient);
 }
 
-/* System dark preference fallback (when no explicit theme class or data attribute is present) */
+/* 系統深色偏好備援 */
 @media (prefers-color-scheme: dark) {
   :root:not([data-bs-theme="light"]):not(.light) {
     --glow-text-color: #ffffff;
@@ -1075,7 +1354,7 @@ html.dark,
   }
 }
 
-/* Shared utility base for all chromatic glow variants */
+/* 共用色散光暈基礎樣式 */
 .text-glow-aberration,
 .text-glow-aberration-subtle,
 .text-glow-aberration-intense {
@@ -1087,7 +1366,7 @@ html.dark,
   text-shadow: var(--text-glow-aberration-shadow);
 }
 
-/* Subtle variant for smaller headlines or body callouts */
+/* 柔和光暈變體：適用於次標題或內文標示 */
 .text-glow-aberration-subtle {
   text-shadow:
     0 -2px 3px var(--glow-chroma-top),
@@ -1096,7 +1375,7 @@ html.dark,
     0 0 22px var(--glow-mid);
 }
 
-/* Intense variant for hero titles & cyberpunk accents */
+/* 強烈光暈變體：適用於主視覺標題與賽博風格強調 */
 .text-glow-aberration-intense {
   text-shadow:
     0 -6px 6px var(--glow-chroma-top),
@@ -1106,7 +1385,7 @@ html.dark,
     0 0 130px var(--glow-ambient);
 }
 
-/* Blog bilingual fallback notice banner */
+/* 雙語文章語系備援提示橫幅 */
 .blog-fallback-banner {
   display: flex;
   align-items: center;

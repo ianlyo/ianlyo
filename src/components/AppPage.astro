@@ -21,7 +21,7 @@ const steps = [
   { s: ui.step4, url: d.feedbackUrl, label: ui.feedbackBtn, optional: false, icon: 'message-square-plus' },
 ];
 
-// Scroll sequence data: derived from the app's features (+ screenshots when available)
+// 滾動互動展演步驟資料：由應用程式特色與截圖清單組合產生
 const sequenceSteps: ScrollStep[] = d.features.map((f, i) => ({
   id: i + 1,
   images: f.images,
@@ -53,41 +53,41 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
         <span>{ui.back}</span>
       </a>
 
-      <!-- 1. Hero -->
-      <header class="app-hero mb-3 hero-enter enter-delay-1">
+      <!-- 1. 主視覺區段 -->
+      <header class="app-hero mb-3" transition:name={`app-card-${app.id}`} style="view-transition-class: vt-card;">
         {d.icon
-          ? <img class="app-icon" src={d.icon} alt={`${d.name} icon`} width="96" height="96" data-pagefind-meta="image[src]" />
-          : <div class="app-icon app-icon-fallback" aria-hidden="true">{d.name.charAt(0)}</div>}
+          ? <img class="app-icon" src={d.icon} alt={`${d.name} icon`} width="96" height="96" data-pagefind-meta="image[src]" transition:name={`app-icon-${app.id}`} />
+          : <div class="app-icon app-icon-fallback" aria-hidden="true" transition:name={`app-icon-${app.id}`}>{d.name.charAt(0)}</div>}
         <div>
-          <h1 class="mb-1 scroll-gradient-text" style="font-weight:800" data-pagefind-meta="title">{d.name}</h1>
+          <h1 class="mb-1 scroll-gradient-text" style="font-weight:800" data-pagefind-meta="title" transition:name={`app-title-${app.id}`}>{d.name}</h1>
           <p class="mb-2" style="color:var(--text-secondary)">{tagline}</p>
           <div class="meta">
-            <AppStatusBadge status={d.status} lang={lang} />
+            <span class="d-inline-flex" transition:name={`app-status-${app.id}`}><AppStatusBadge status={d.status} lang={lang} /></span>
             <span><Icon name="lucide:tag" class="ui-icon icon-xs" aria-hidden="true" /><span>{ui.version} {d.version}</span></span>
             <span><Icon name="lucide:smartphone" class="ui-icon icon-xs" aria-hidden="true" /><span>Android {d.minAndroid}+</span></span>
           </div>
         </div>
       </header>
 
-      <!-- Prominent install buttons -->
+      <!-- 主要安裝與原始碼行動按鈕 -->
       <div class="cta-row mb-2 hero-enter enter-delay-2" data-pagefind-ignore>
         <a class="btn-install" href="#install"><Icon name="simple-icons:googleplay" class="ui-icon me-1" aria-hidden="true" /> {ui.join}</a>
         {d.githubUrl && <a class="btn-ghost" href={d.githubUrl} target="_blank" rel="noopener"><Icon name="simple-icons:github" class="ui-icon me-1" aria-hidden="true" /> {ui.githubBtn}</a>}
       </div>
       
 
-      <!-- 2. Introduction -->
+      <!-- 2. 應用程式簡介 -->
       <section class="section-block reveal reveal-fade">
         <div class="prose"><p set:html={desc.replace(/\n/g, '<br />')} /></div>
       </section>
     </div>
 
-    <!-- 2.5 Scroll sequence: features paired with screenshots -->
+    <!-- 2.5 滾動序列展示：功能特色搭配介面截圖 -->
     {d.features.length > 0 && (
       <ScrollSequence steps={sequenceSteps} label={d.name} />
     )}
 
-    <!-- 3. Screenshots (Apple-style interactive gallery) -->
+    <!-- 3. 截圖輪播展示 -->
     <ScreenshotGallery
       screenshots={d.screenshots}
       title={ui.screenshots}
@@ -96,7 +96,7 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
     />
 
     <div class="container page-narrow">
-      <!-- 4. Features -->
+      <!-- 4. 功能特色列表 -->
       {d.features.length > 0 && (
         <section class="section-block">
           <h2 class="block-title reveal">
@@ -111,7 +111,7 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
         </section>
       )}
 
-      <!-- 5. Specs -->
+      <!-- 5. 技術規格 -->
       <section class="section-block">
         <h2 class="block-title reveal">
           <Icon name="lucide:clipboard-check" class="ui-icon text-accent" aria-hidden="true" />
@@ -130,7 +130,7 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
         {(d.permissions ?? []).length > 0 && <div class="chip-row mt-3 reveal reveal-fade delay-2">{(d.permissions ?? []).map((x) => <span class="chip chip-muted"><code>{x}</code></span>)}</div>}
       </section>
 
-      <!-- 6 & 7. Installation + beta instructions -->
+      <!-- 6 & 7. 安裝與測試加入步驟 -->
       <section class="section-block" id="install">
         <h2 class="block-title reveal">
           <Icon name="lucide:list-checks" class="ui-icon text-accent" aria-hidden="true" />
@@ -157,7 +157,7 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
         </ol>
       </section>
 
-      <!-- 8. FAQ -->
+      <!-- 8. 常見問題 -->
       {d.faq.length > 0 && (
         <section class="section-block">
           <h2 class="block-title reveal">
@@ -178,7 +178,7 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
         </section>
       )}
 
-      <!-- 9. Changelog -->
+      <!-- 9. 版本更新紀錄 -->
       <section class="section-block">
         <h2 class="block-title reveal">
           <Icon name="lucide:rotate-ccw" class="ui-icon text-accent" aria-hidden="true" />
@@ -198,7 +198,7 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
         </div>
       </section>
 
-      <!-- 10. Feedback and links -->
+      <!-- 10. 問題回報與相關連結 -->
       <section class="section-block reveal">
         <h2 class="block-title">
           <Icon name="lucide:link" class="ui-icon text-accent" aria-hidden="true" />

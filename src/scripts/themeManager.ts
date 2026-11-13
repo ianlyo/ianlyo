@@ -43,7 +43,7 @@ const THEME_ICONS: Record<ThemeMode, string> = {
 let systemListenersBound = false;
 let transitionTimer: number | undefined;
 
-/** Map resolved preferences to the corresponding `<html>` data-* attribute pairs (SSOT for apply & stale checks). */
+/** 將已解析的偏好狀態對應至 html 根節點的 data-* 屬性組 */
 function getDomAttributeEntries(state: PreferencesState): ReadonlyArray<readonly [string, string]> {
   return [
     ['data-bs-theme', state.resolvedTheme],
@@ -55,7 +55,7 @@ function getDomAttributeEntries(state: PreferencesState): ReadonlyArray<readonly
   ];
 }
 
-/** Resolve `'auto'` theme mode against the OS dark/light preference. */
+/** 依據作業系統深淺色偏好解析 auto 主題模式 */
 export function resolveThemeMode(mode: ThemeMode): ResolvedThemeMode {
   if (mode === 'light' || mode === 'dark') return mode;
   const prefersDark =
@@ -140,17 +140,21 @@ function syncContributionChart(colorTheme: ColorThemeId, resolvedTheme: Resolved
   }
 }
 
-function syncMetaThemeColor(colorTheme: ColorThemeId, resolvedTheme: ResolvedThemeMode): void {
-  const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
-  if (!meta) return;
-  meta.content = COLOR_THEME_MAP[colorTheme][resolvedTheme].themeColor;
+function syncDocumentAttributes(doc: Document, state: PreferencesState): void {
+  const root = doc.documentElement;
+  for (const [attr, val] of getDomAttributeEntries(state)) {
+    root.setAttribute(attr, val);
+  }
+  const meta = doc.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  if (meta) {
+    meta.content = COLOR_THEME_MAP[state.colorTheme][state.resolvedTheme].themeColor;
+  }
 }
 
-/** Apply current `localStorage` preferences to the DOM, chart, meta color, and toggle buttons. */
+/** 將目前 localStorage 的偏好設定套用至 DOM、貢獻圖表、主題標記色與切換按鈕 */
 export function applyPreferences(options: { withTransition?: boolean; dispatch?: boolean } = {}): PreferencesState {
   const { withTransition = false, dispatch = true } = options;
   const state = getPreferencesState();
-  const root = document.documentElement;
 
   if (withTransition && document.body && !state.resolvedReduceMotion) {
     document.body.classList.add('theme-transition');
@@ -160,11 +164,7 @@ export function applyPreferences(options: { withTransition?: boolean; dispatch?:
     }, 350);
   }
 
-  for (const [attr, val] of getDomAttributeEntries(state)) {
-    root.setAttribute(attr, val);
-  }
-
-  syncMetaThemeColor(state.colorTheme, state.resolvedTheme);
+  syncDocumentAttributes(document, state);
   syncThemeToggleButtons(state.themeMode, withTransition);
   syncContributionChart(state.colorTheme, state.resolvedTheme);
 
@@ -259,7 +259,7 @@ export function initThemeManager(): void {
     }
   });
 
-  // Sync immediately when returning via browser Back/Forward cache (bfcache) or switching tabs
+  /* 當透過瀏覽器上一頁/下一頁快取 (bfcache) 返回或切換分頁時立即同步狀態 */
   window.addEventListener('pageshow', (event) => {
     if (event.persisted) {
       applyPreferences({ withTransition: false, dispatch: true });
@@ -275,6 +275,13 @@ export function initThemeManager(): void {
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
       syncPreferencesIfStale(true);
+    }
+  });
+
+  document.addEventListener('astro:before-swap', (event) => {
+    const nextDoc = (event as Event & { newDocument?: Document }).newDocument;
+    if (nextDoc) {
+      syncDocumentAttributes(nextDoc, getPreferencesState());
     }
   });
 

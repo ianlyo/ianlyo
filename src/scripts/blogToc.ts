@@ -2,10 +2,14 @@ import { registerPageLifecycle } from './domUtils';
 
 let activeTocObserver: IntersectionObserver | null = null;
 
-/** Highlight the currently visible article section in the blog table of contents. */
-export function initBlogTocHighlight(): void {
+export function cleanupBlogToc(): void {
   activeTocObserver?.disconnect();
   activeTocObserver = null;
+}
+
+/** 高亮顯示目前可視區域對應的文章目錄章節 */
+export function initBlogTocHighlight(): void {
+  cleanupBlogToc();
 
   const tocLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('.toc a[href^="#"]'));
   if (tocLinks.length === 0) return;
@@ -42,4 +46,7 @@ export function initBlogTocHighlight(): void {
   headings.forEach((heading) => activeTocObserver?.observe(heading));
 }
 
-registerPageLifecycle(initBlogTocHighlight);
+registerPageLifecycle({
+  onLoad: initBlogTocHighlight,
+  onBeforeSwap: cleanupBlogToc,
+});

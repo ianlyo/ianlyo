@@ -27,7 +27,7 @@ const ui = t(lang).blog;
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2 hero-enter enter-delay-2">
           <div class="chip-row">
             {BLOG_CATEGORIES.map((c) => (
-              <a class="chip d-inline-flex align-items-center gap-1" href={localePath(lang, `/blog/category/${slugify(c)}/`)}>
+              <a class="chip d-inline-flex align-items-center gap-1" href={localePath(lang, `/blog/category/${slugify(c)}/`)} transition:name={`blog-category-${slugify(c)}`}>
                 <Icon name="material-symbols:folder-open" class="material-symbols-rounded icon-xs" aria-hidden="true" />
                 <span>{blogCategoryLabel(c, lang)}</span>
               </a>

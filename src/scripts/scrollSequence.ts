@@ -252,8 +252,8 @@ function setupSequenceRoot(root: HTMLElement, signal: AbortSignal): void {
   });
 }
 
-/** Initialize all Apple-style scroll-pinned feature sequences. */
-export function initScrollSequence(): void {
+/** Revert GSAP ScrollTrigger timelines and detach video tickers before page swap. */
+export function cleanupScrollSequence(): void {
   if (seqCtx) {
     seqCtx.revert();
     seqCtx = null;
@@ -261,6 +261,12 @@ export function initScrollSequence(): void {
   videoTickerFns.forEach((fn) => gsap.ticker.remove(fn));
   videoTickerFns = [];
   sequenceAbortController?.abort();
+  sequenceAbortController = null;
+}
+
+/** Initialize all Apple-style scroll-pinned feature sequences. */
+export function initScrollSequence(): void {
+  cleanupScrollSequence();
   sequenceAbortController = new AbortController();
 
   const roots = document.querySelectorAll<HTMLElement>('.scroll-sequence');
@@ -283,4 +289,7 @@ export function initScrollSequence(): void {
   ScrollTrigger.refresh();
 }
 
-registerPageLifecycle(initScrollSequence);
+registerPageLifecycle({
+  onLoad: initScrollSequence,
+  onBeforeSwap: cleanupScrollSequence,
+});

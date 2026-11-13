@@ -414,8 +414,8 @@ function initGallerySection(section: HTMLElement, reduceMotion: boolean, signal:
   updateActiveSlide(0);
 }
 
-/** Initialize all Apple-style screenshot galleries and ScrollTrigger timelines. */
-export function setupGalleries(): void {
+/** Revert gallery ScrollTriggers, observers, lightbox locks, and event listeners before swap. */
+export function cleanupGalleries(): void {
   if (galleryCtx) {
     galleryCtx.revert();
     galleryCtx = null;
@@ -425,6 +425,15 @@ export function setupGalleries(): void {
     galleryRevealObserver = null;
   }
   galleryAbortController?.abort();
+  galleryAbortController = null;
+  if (typeof document !== 'undefined' && document.body) {
+    document.body.style.overflow = '';
+  }
+}
+
+/** Initialize all Apple-style screenshot galleries and ScrollTrigger timelines. */
+export function setupGalleries(): void {
+  cleanupGalleries();
   galleryAbortController = new AbortController();
 
   const sections = document.querySelectorAll<HTMLElement>('[data-porsche-section]');
@@ -440,7 +449,10 @@ export function setupGalleries(): void {
   ScrollTrigger.refresh();
 }
 
-registerPageLifecycle(setupGalleries);
+registerPageLifecycle({
+  onLoad: setupGalleries,
+  onBeforeSwap: cleanupGalleries,
+});
 
 if (typeof window !== 'undefined' && !resizeListenersBound) {
   resizeListenersBound = true;

@@ -1,3 +1,4 @@
+import { navigate } from 'astro:transitions/client';
 import { createToastNotifier, registerPageLifecycle, safeSetStorage } from './domUtils';
 import {
   getPreferencesState,
@@ -50,22 +51,37 @@ function syncSettingsUI(page: HTMLElement, state: PreferencesState): void {
   pbBtn?.setAttribute('aria-checked', state.progressBar ? 'true' : 'false');
 }
 
-/** Initialize the Settings page controls and sync with browser preferences. */
+let settingsAbortController: AbortController | null = null;
+
+function cleanupSettingsPage(): void {
+  settingsAbortController?.abort();
+  settingsAbortController = null;
+}
+
+/** 初始化設定頁面控制項並同步瀏覽器偏好設定 */
 export function initSettingsPage(): void {
+  cleanupSettingsPage();
   const page = document.querySelector<HTMLElement>('.settings-page');
   if (!page || page.dataset.bound === '1') return;
   page.dataset.bound = '1';
+
+  settingsAbortController = new AbortController();
+  const { signal } = settingsAbortController;
 
   const toast = document.getElementById('settings-toast');
   const showToast = createToastNotifier(toast, 1800);
 
   syncSettingsUI(page, getPreferencesState());
 
-  window.addEventListener('site:preferences-change', (e) => {
-    if (!document.body.contains(page)) return;
-    const detail = (e as CustomEvent<PreferencesState>).detail;
-    if (detail) syncSettingsUI(page, detail);
-  });
+  window.addEventListener(
+    'site:preferences-change',
+    (e) => {
+      if (!document.body.contains(page)) return;
+      const detail = (e as CustomEvent<PreferencesState>).detail;
+      if (detail) syncSettingsUI(page, detail);
+    },
+    { signal }
+  );
 
   page.querySelectorAll<HTMLElement>('[data-setting-group]').forEach((group) => {
     const groupName = group.dataset.settingGroup || '';
@@ -78,7 +94,7 @@ export function initSettingsPage(): void {
         safeSetStorage('preferred-locale', val);
         const target = val === 'en' ? group.dataset.enUrl : group.dataset.zhUrl;
         if (target && window.location.pathname !== target) {
-          window.location.replace(target);
+          void navigate(target, { history: 'replace' });
         }
         return;
       }
@@ -114,7 +130,7 @@ export function initSettingsPage(): void {
     if (window.history.length > 1) {
       window.history.back();
     } else {
-      window.location.href = backBtn.dataset.fallbackUrl || '/';
+      void navigate(backBtn.dataset.fallbackUrl || '/');
     }
   });
 
@@ -124,4 +140,7 @@ export function initSettingsPage(): void {
   });
 }
 
-registerPageLifecycle(initSettingsPage);
+registerPageLifecycle({
+  onLoad: initSettingsPage,
+  onBeforeSwap: cleanupSettingsPage,
+});

@@ -18,16 +18,17 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
-  if (request.url.includes('api.github.com')) return; // cached by the page (localStorage)
+  if (request.url.includes('api.github.com')) return; // 由頁面端透過 localStorage 快取
   if (new URL(request.url).pathname.endsWith('.css')) return;
 
-  // HTML pages: network first so new blog posts / app updates appear immediately.
-  if (request.mode === 'navigate') {
+  // HTML 頁面（完整載入或 View Transition 預取）：採用網路優先以確保內容即時更新
+  const acceptsHtml = request.headers.get('accept')?.includes('text/html');
+  if (request.mode === 'navigate' || acceptsHtml) {
     event.respondWith(fetch(request).catch(() => caches.match(request)));
     return;
   }
 
-  // Other same-origin assets: stale-while-revalidate.
+  // 其他同源靜態資源：採用 Stale-While-Revalidate 策略
   event.respondWith(
     caches.match(request).then((cached) => {
       const network = fetch(request)
