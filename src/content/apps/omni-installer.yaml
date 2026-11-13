@@ -14,35 +14,39 @@ tagline:
   en: A modern, full-format Android package installer and batch manager.
 description:
   zh: |
-    OmniInstaller 是一款基於 Kotlin 與 Jetpack Compose 開發的 Android 應用程式安裝與批次管理工具。
-    支援單一 APK 與各類分割包格式（.apk、.apks、.apkm、.xapk），自動將 .obb 擴充資料解壓至 /Android/obb/，並提供一般（免 Root）、Shizuku 及 Root（libsu）三種安裝引擎。
-    內建秒級 ZIP 標頭規格檢視、CPU 架構過濾、批次掃描與安裝後自動清理功能，打造流暢高效的 Android 套件管理體驗。
+    OmniInstaller 是一款基於 Kotlin、Jetpack Compose 與 Material 3 Expressive 設計語言開發的 Android 應用程式安裝與批次管理工具。
+    完整支援單一 APK 與各類拆分包格式（.apk、.apks、.apkm、.xapk、.zip），透過串流讀取 ZIP 標頭自動依 CPU 架構與螢幕密度過濾相容 Split APK，並自動將 .obb 擴充資料部署至 /Android/obb/（Android 11+ 支援 Root 回退寫入）。
+    提供一般（免 Root）、Shizuku 及 Root（libsu）三大安裝引擎與即時權限檢測面板，搭配雙向系統 ShareSheet、不中斷原 App 返回堆疊的半透明浮動接收底欄、7 種多邊形變形動態元件與高併發儲存空間掃描器，打造流暢且完全離線隱私的 Android 套件管理體驗。
   en: |
-    OmniInstaller is a lightweight, modern Android package installer and batch manager built with Kotlin and Jetpack Compose.
-    It supports standalone APKs and split bundle formats (.apk, .apks, .apkm, .xapk) with automatic .obb extraction to /Android/obb/, offering seamless installation workflows across Standard (rootless), Shizuku, and Root (libsu) engines.
-    Featuring fast ZIP header inspection, ABI filtering, batch storage scanning, and post-install cleanup, it delivers a reliable package management experience.
+    OmniInstaller is a modern Android package installer and batch manager crafted with Kotlin, Jetpack Compose, and Material 3 Expressive design.
+    It supports standalone APKs and split bundle formats (.apk, .apks, .apkm, .xapk, .zip), inspects ZIP headers via streaming without full pre-extraction to filter compatible split APKs by ABI and density, and extracts .obb expansion assets to /Android/obb/ (with Root fallback on Android 11+).
+    Featuring Standard (rootless), Shizuku, and Root (libsu) installation engines with a live permission inspector, two-way ShareSheet integration with a translucent floating bottom-sheet receiver, 7-polygon expressive shape morphing, and concurrent storage scanning, it delivers a fast, 100% offline package management experience.
 
 features:
-  - title: { zh: 全格式與 OBB 自動處理, en: Full Format & OBB Support }
+  - title: { zh: 全格式與 Split APK 智慧合併, en: Multi-Format & Smart Split Merging }
     description:
-      zh: 支援 .apk、.apks、.apkm 與 .xapk。安裝 XAPK 時自動將 .obb 擴充資料解壓至 /Android/obb/<package_name>/，並依裝置 CPU 架構自動過濾相容的 Split APK。
-      en: Installs .apk, .apks, .apkm, and .xapk bundles. Automatically extracts .obb expansion assets to /Android/obb/<package_name>/ and filters compatible split APKs by device ABI.
-  - title: { zh: 三大安裝引擎, en: Three Installation Engines }
+      zh: 支援 .apk、.apks、.apkm、.xapk 與 .zip。免完整解壓即可串流讀取 manifest.json / info.json，依裝置 CPU 架構與像素密度過濾相容分包，並標記 Base、ABI、Density、Language 與 Feature 標籤。
+      en: Installs .apk, .apks, .apkm, .xapk, and .zip bundles. Streams ZIP manifests (manifest.json / info.json) without full extraction, filters splits by device ABI and density, and labels entries with Base, ABI, Density, Language, and Feature badges.
+  - title: { zh: 智慧 OBB 自動掛載與部署, en: Smart OBB Auto-Mounting & Extraction }
     description:
-      zh: 提供一般模式（原生 PackageInstaller.Session 並優化返回堆疊）、Shizuku 模式（ADB Shell 靜默安裝），以及 Root 模式（libsu 支援 Magisk、KernelSU、APatch）。
-      en: Supports Standard (native PackageInstaller.Session with preserved task backstack), Shizuku (silent background install via ADB Shell), and Root (libsu for Magisk, KernelSU, and APatch).
-  - title: { zh: 進階 Root 安裝參數, en: Advanced Root Options }
+      zh: 安裝 XAPK / 複合包時自動識別內含的 .obb 遊戲擴充資源並部署至 /Android/obb/<package_name>/；針對 Android 11+ 分區儲存限制，可搭配 Root（libsu）權限自動完成寫入。
+      en: Automatically detects embedded .obb expansion files inside XAPK/archive bundles and extracts them to /Android/obb/<package_name>/, seamlessly falling back to Root (libsu) shell writes on Android 11+ scoped storage.
+  - title: { zh: 三大安裝引擎與即時權限檢測, en: Three Install Engines & Live Permission Inspector }
     description:
-      zh: Root 模式下支援降級安裝（-d）、測試套件（-t）、安裝來源偽裝（-i com.android.vending），以及繞過 Android 14+ 低 Target SDK 安裝限制。
-      en: In Root mode, supports downgrade installs (-d), test packages (-t), installer spoofing (-i com.android.vending), and bypassing Android 14+ low target SDK blocks.
-  - title: { zh: 安裝包規格檢視與批次管理, en: Package Inspector & Batch Manager }
+      zh: 提供一般模式（原生 PackageInstaller.Session）、Shizuku 模式（免 Root ADB Shell 靜默安裝）與 Root 模式（libsu 支援 -d 降級、-t 測試包、-i 來源偽裝與繞過 Android 14+ 低 Target SDK 限制），並內建下拉即時刷新權限檢測頁面。
+      en: Switch between Standard (native PackageInstaller.Session), Shizuku (silent rootless ADB Shell installs), and Root (libsu supporting -d downgrade, -t test packages, -i installer spoofing, and Android 14+ low target SDK bypass), backed by a pull-to-refresh live Permission Inspector.
+  - title: { zh: 雙向 ShareSheet 與半透明浮動接收器, en: Two-Way ShareSheet & Floating Receiver }
     description:
-      zh: 快速讀取 ZIP 標頭顯示版本差異（未安裝、相同、升級、降級）與 Split 分類標記；支援本機儲存掃描、搜尋排序、略過相同版本與安裝後自動刪除。
-      en: Fast ZIP header inspection showing version diffs (new, same, upgrade, downgrade) and split category tags, alongside storage scanning, search, sorting, and post-install cleanup.
-  - title: { zh: 系統整合與分享傳入, en: System & ShareSheet Integration }
+      zh: 接收外部分享（ACTION_VIEW / ACTION_SEND / ACTION_SEND_MULTIPLE）時以半透明浮動底欄覆蓋於來源 App 上而不破壞返回堆疊，並智慧區分單包、複合包與「多應用循序批次佇列」；同時支援透過 FileProvider 與 Rich Preview 卡片對外分享 APK。
+      en: Overlays any sending app with a translucent floating bottom sheet without disrupting task backstacks, smartly routing incoming shares into SingleApk, ArchiveBundle, or sequential BatchQueue flows—and exports packages outward via FileProvider with Android 10+ ClipData rich previews.
+  - title: { zh: Material 3 Expressive 動態介面與配色, en: Material 3 Expressive UI, Motion & Theming }
     description:
-      zh: 支援 Android 系統「開啟方式」與 ShareSheet 分享傳入（ACTION_VIEW、ACTION_SEND、ACTION_SEND_MULTIPLE），隨時從檔案管理器或通訊軟體直接安裝。
-      en: Integrates with Android ShareSheet and "Open with..." file associations (ACTION_VIEW, ACTION_SEND, ACTION_SEND_MULTIPLE) for direct installs from any file manager.
+      zh: 基於 graphics-shapes 打造 7 種多邊形平滑變形載入動畫（SoftBurst 至 Oval），整合官方 M3 MotionTokens 彈簧時間曲線與觸覺震動回饋，支援 Material You 動態取色及松柏綠、海洋藍、赤陶棕、黃銅芥末、暮色水蜜桃 5 款配色。
+      en: Features a custom 7-polygon morphing indicator powered by graphics-shapes, official M3 MotionTokens spring curves and haptics, Android 12+ Material You Dynamic Color, and 5 curated palettes (Pine Green, Ocean Blue, Terracotta Brown, Brass Mustard, and Twilight Peach).
+  - title: { zh: 高併發掃描、排序篩選與批次佇列, en: Concurrent Scanner, Filtering & Batch Queue }
+    description:
+      zh: 透過 Coroutine + Flow 非同步掃描本機檔案，支援依全部／未安裝／已安裝篩選與名稱／大小／狀態排序；規格詳情頁支援一鍵複製包名與路徑、降級警示開關、自動略過相同版本及安裝後自動清理來源檔。
+      en: Asynchronous storage scanner with instant filtering (All / Uninstalled / Installed) and sorting (Name / Size / Status). Includes Package Detail clipboard copy for Package ID and paths, downgrade warnings, skip-identical-versions batch toggle, and post-install auto-cleanup.
 
 screenshots: []
 
@@ -50,27 +54,59 @@ specs:
   - label: { zh: 安裝引擎, en: Install Engines }
     value: Standard / Shizuku / Root (libsu)
   - label: { zh: 支援格式, en: Supported Formats }
-    value: .apk, .apks, .apkm, .xapk (+ .obb)
+    value: .apk, .apks, .apkm, .xapk, .zip (+ .obb)
+  - label: { zh: 色彩主題, en: Color Themes }
+    value: Dynamic Color + 5 M3 Palettes (Light / Dark / System)
   - label: { zh: 開源授權, en: License }
     value: GPL-3.0
-tech: [Kotlin, Jetpack Compose, Material 3, Coroutines, Room, DataStore, Shizuku API, libsu]
+
+tech:
+  - Kotlin 2.1
+  - Jetpack Compose
+  - Material 3 Expressive
+  - Graphics Shapes
+  - Coroutines & Flow
+  - Room
+  - DataStore
+  - Shizuku API
+  - libsu (Root)
+  - Kotlinx Serialization
+  - Coil 3
+  - AboutLibraries
+
+permissions:
+  - MANAGE_EXTERNAL_STORAGE
+  - REQUEST_INSTALL_PACKAGES
+  - QUERY_ALL_PACKAGES
+  - FOREGROUND_SERVICE_DATA_SYNC
+  - POST_NOTIFICATIONS
+  - moe.shizuku.manager.permission.API_V23
 
 faq:
-  - q: { zh: 沒有 Root 權限也可以使用嗎？, en: Can I use OmniInstaller without Root? }
+  - q: { zh: 沒有 Root 權限也可以使用嗎？一般模式與 Shizuku 差在哪？, en: Can I use OmniInstaller without Root? How do Standard and Shizuku differ? }
     a:
-      zh: 可以。一般模式使用 Android 原生 PackageInstaller.Session API，無需 Root；若搭配 Shizuku 還可免 Root 實現背景靜默安裝。
-      en: Yes. Standard mode uses Android's native PackageInstaller.Session API without Root, and pairing with Shizuku enables silent background installation without Root.
+      zh: 可以。一般模式使用 Android 原生 PackageInstaller.Session API，完全免 Root 即可安裝 APK 與 Split 複合包；若透過無線除錯啟用免 Root 的 Shizuku，則可進一步實現不跳出系統確認視窗的背景靜默批次安裝。
+      en: Yes. Standard mode uses Android's native PackageInstaller.Session API without Root to install APKs and split bundles. Pairing with rootless Shizuku via Wireless Debugging unlocks silent background batch installs without tapping confirmation prompts.
   - q: { zh: 支援 Android 14+ 安裝舊版 Target SDK 的 APK 嗎？, en: Does it support bypassing Android 14+ low target SDK blocks? }
     a:
-      zh: 在 Root（libsu）模式下支援透過 --bypass-low-target-sdk-block 參數繞過 Android 14+ 的低 Target SDK 安裝限制。
-      en: Yes, in Root (libsu) mode, OmniInstaller supports bypassing Android 14+ target SDK restrictions via --bypass-low-target-sdk-block.
+      zh: 在 Root（libsu）模式下支援透過 --bypass-low-target-sdk-block 參數繞過 Android 14+ 的低 Target SDK 安裝限制，並支援 -d 降級與 -i com.android.vending 偽裝安裝來源。
+      en: Yes, in Root (libsu) mode, OmniInstaller supports bypassing Android 14+ low target SDK restrictions via --bypass-low-target-sdk-block, along with -d downgrade installs and -i com.android.vending installer spoofing.
+  - q: { zh: 從通訊軟體或檔案管理器同時分享多個 APK 會怎麼處理？, en: What happens when sharing multiple APK files via Android ShareSheet? }
+    a:
+      zh: OmniInstaller 的半透明浮動接收器（ShareReceiverActivity）會透過 ShareIntentResolver 自動判斷內容類型：複合包會合併剖析分包，而多個獨立 .apk 檔案則會智慧排入「循序多應用批次佇列」逐一安裝，不會誤認成單一應用的 Split 分包。
+      en: "The translucent ShareReceiverActivity uses ShareIntentResolver to classify shares: archives are parsed as split bundles, while multiple standalone .apk files are queued sequentially as independent app installs rather than erroneously merged into one split session."
+  - q: { zh: 如何在 Android 11+ 自動安裝含有 OBB 資料的 XAPK？, en: How are OBB expansion files in XAPK bundles handled on Android 11+? }
+    a:
+      zh: ObbInstaller 會自動解析壓縮檔內的 .obb 並部署至 /Android/obb/<package_name>/；若系統受分區儲存限制，在取得 MANAGE_EXTERNAL_STORAGE 或 Root（libsu）權限時將自動完成寫入。
+      en: ObbInstaller extracts embedded .obb files to /Android/obb/<package_name>/. On Android 11+ scoped storage devices, it handles placement cleanly using MANAGE_EXTERNAL_STORAGE or automatic Root (libsu) shell fallback.
 
 changelog:
   - version: "1.2.0"
     date: "2026-10-18"
     notes:
-      - { zh: 新增 Twilight Peach 主題配色選項與全格式套件安裝支援。, en: Added Twilight Peach theme option and full-format package installation support. }
-      - { zh: 支援 Standard、Shizuku 與 Root (libsu) 三種安裝引擎與批次管理。, en: Supports Standard, Shizuku, and Root (libsu) install engines with batch management. }
+      - { zh: 實作 Material 3 Expressive 7 種多邊形變形載入動畫（graphics-shapes）、官方 MotionTokens 曲線與 Twilight Peach 等 5 款配色主題。, en: Implemented Material 3 Expressive 7-polygon morphing indicator (graphics-shapes), official MotionTokens curves, and 5 color themes including Twilight Peach. }
+      - { zh: 新增半透明浮動 ShareReceiver 底欄（支援多應用批次佇列自動分流）、FileProvider 雙向分享與即時權限檢測面板。, en: Added translucent floating ShareReceiver bottom sheet (with multi-app BatchQueue routing), FileProvider outgoing share previews, and live Permission Inspector. }
+      - { zh: 支援 .apk / .apks / .apkm / .xapk + OBB 自動掛載，並整合 Standard、Shizuku 與 Root (libsu) 三大安裝引擎與批次略過相同版本開關。, en: Supports .apk / .apks / .apkm / .xapk + OBB auto-mounting across Standard, Shizuku, and Root (libsu) engines with skip-identical-versions batch toggle. }
 
 googleGroupUrl: "https://groups.google.com/g/testers-community"   # testers-community@googlegroups.com
 extraGroups:
