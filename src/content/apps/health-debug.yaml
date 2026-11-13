@@ -4,7 +4,7 @@
 # ──────────────────────────────────────────────────────────────
 name: Health Debug
 packageName: com.lnu.healthdebug
-icon: /apps/health-debug/app-icon.png
+icon: /apps/health-debug/app-icon.webp
 status: closed-beta                          # closed-beta | open-beta | released | coming-soon | paused
 version: "2.2.2"                             # versionCode 14
 minAndroid: "7.1"                            # API 25 (per Play Console); Health Connect is built in from Android 14

@@ -11,7 +11,7 @@ const href = localePath(lang, `/apps-dev/${app.id}/`);
 <a class="surface-card" href={href}>
   <div class="d-flex gap-3 align-items-center mb-3">
     {d.icon
-      ? <img class="app-icon app-icon-sm" src={d.icon} alt={`${d.name} icon`} width="56" height="56" loading="lazy" />
+      ? <img class="app-icon app-icon-sm" src={d.icon.replace(/\.webp$/, '-sm.webp')} alt={`${d.name} icon`} width="56" height="56" loading="lazy" decoding="async" />
       : <div class="app-icon app-icon-sm app-icon-fallback" aria-hidden="true">{d.name.charAt(0)}</div>}
     <div>
       <h3 class="mb-1">{d.name}</h3>

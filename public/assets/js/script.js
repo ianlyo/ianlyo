@@ -82,8 +82,9 @@ document.addEventListener('DOMContentLoaded', function() {
             toggle.innerHTML = iconSvg;
             if (withTransition) {
                 toggle.classList.remove('is-switching');
-                void toggle.offsetWidth;
-                toggle.classList.add('is-switching');
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => toggle.classList.add('is-switching'));
+                });
             }
             toggle.setAttribute('aria-label', titleText);
             toggle.setAttribute('title', titleText);
@@ -91,7 +92,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Dynamically update contribution graph base color
             if (graphImg) {
                 const accentColor = isDark ? '818cf8' : '4f46e5';
-                graphImg.src = `https://ghchart.rshah.org/${accentColor}/ianlyo`;
+                const targetUrl = `https://ghchart.rshah.org/${accentColor}/ianlyo`;
+                if (graphImg.getAttribute('src') !== targetUrl) {
+                    graphImg.src = targetUrl;
+                }
             }
         }
 
@@ -128,9 +132,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!nav) return;
 
         const mobileQuery = window.matchMedia('(max-width: 768px)');
-        let lastScrollY = window.scrollY;
+        let lastScrollY = 0;
         let accumulatedDownScroll = 0;
         let isTicking = false;
+        requestAnimationFrame(() => {
+            lastScrollY = window.scrollY;
+        });
 
         const TOP_SAFE_ZONE = 200;       // Stay visible within top 200px
         const HIDE_SCROLL_DISTANCE = 60; // Require 60px continuous downward scroll to hide
@@ -438,9 +445,9 @@ function createProjectCard(repo) {
         <div class="col-lg-4 col-md-6 mb-4">
             <article class="card repo-card reveal">
                 <div class="card-body">
-                    <h5 class="card-title">
+                    <h3 class="card-title">
                         <a href="${repo.html_url}" target="_blank" rel="noopener">${escapeHtml(repo.name)}</a>
-                    </h5>
+                    </h3>
                     <p class="card-text">${escapeHtml(description)}</p>
                     <div class="project-card-footer">
                         <small class="text-muted d-inline-flex align-items-center">

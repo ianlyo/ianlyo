@@ -3,7 +3,7 @@
 # ──────────────────────────────────────────────────────────────
 name: OmniInstaller
 packageName: com.lnu.omniinstallerapk
-icon: /apps/omni-installer/app-icon.png
+icon: /apps/omni-installer/app-icon.webp
 status: closed-beta
 version: "1.2.0"
 minAndroid: "8.0"                            # minSdk 26

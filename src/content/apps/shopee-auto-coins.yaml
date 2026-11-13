@@ -3,7 +3,7 @@
 # ──────────────────────────────────────────────────────────────
 name: ShopeeAutoCoins
 packageName: com.lnu.shopeeautocoins
-icon: /apps/shopee-auto-coins/app-icon.png
+icon: /apps/shopee-auto-coins/app-icon.webp
 status: closed-beta
 version: "2.0.2"                            # versionCode 30
 minAndroid: "8.0"                            # minSdk 26
