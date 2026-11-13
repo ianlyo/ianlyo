@@ -367,13 +367,6 @@ const zoomData = (z: ScrollStep['zoom']) => (z ? JSON.stringify(typeof z === 'ob
       overflow-wrap: break-word;
     }
   }
-
-  /* Reduced motion: no pinning, show every step in order */
-  .scroll-sequence.is-static { height: auto; overflow: visible; }
-  .scroll-sequence.is-static .stage { position: static; display: block; padding: 3rem 1.5rem; }
-  .scroll-sequence.is-static .text-layer { display: block; }
-  .scroll-sequence.is-static .media-layer { display: none; }
-  .scroll-sequence.is-static .text-step { opacity: 1; transform: none; margin: 0 auto 3rem; max-width: 42rem; }
 </style>
 
 <script>
@@ -497,12 +490,6 @@ const zoomData = (z: ScrollStep['zoom']) => (z ? JSON.stringify(typeof z === 'ob
 
     const roots = document.querySelectorAll<HTMLElement>('.scroll-sequence');
     if (!roots.length) return;
-
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) {
-      roots.forEach((r) => r.classList.add('is-static'));
-      return;
-    }
 
     seqCtx = gsap.context(() => {
       roots.forEach((root) => {
