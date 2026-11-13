@@ -14,63 +14,102 @@ tagline:
   en: Smart daily Shopee auto check-in assistant & independent scheduled alarm for Android.
 description:
   zh: |
-    ShopeeAutoCoins（蝦皮自動簽）是一款專為 Android 開發的自動化工具，結合了「蝦皮每日定時自動簽到」與「獨立排程鬧鐘」功能。
-    首創整合 Shizuku / Root / Device Owner 底層特權螢幕控制，搭配環境光與距離感測器防誤觸保護，徹底擺脫傳統無障礙服務（AccessibilityService）容易被系統清理、耗電與操作延遲的問題。
-    本專案完全運行於裝置本地，無任何第三方追蹤分析工具，所有 Cookie 與登入 Session 均妥善隔離於 Android 原生 WebView 沙箱中。
+    ShopeeAutoCoins（蝦皮自動簽）是一款專為 Android 開發的自動化工具，結合了「蝦皮每日定時自動簽到」與「雙模式獨立排程鬧鐘」功能。
+    整合 Shizuku（免 Root）與 Root（libsu）底層特權睡眠鍵控制（KEYCODE_SLEEP / KEYCODE_POWER），搭配 300ms 環境光與距離感測器防誤關保護，徹底擺脫傳統無障礙服務（AccessibilityService）與裝置管理員（DevicePolicyManager）容易觸發銀行類 App 警告、耗電與被系統清理的問題。
+    內建兩步驟排程與防風控精靈（0–30 分鐘隨機浮動延遲、雙軌排程與防 AOD 靜音推播）及四模式動態 User-Agent 偽裝瀏覽器；全程運行於裝置本地，零第三方統計 SDK，所有 Cookie 與登入 Session 均隔離儲存於 Android 原生 WebView 沙箱中。
   en: |
-    ShopeeAutoCoins is an Android automation tool combining scheduled daily Shopee coin check-ins with an independent advanced alarm system.
-    It integrates Shizuku, Root (libsu), and Device Owner privileged screen control alongside ambient light and proximity sensor protection, eliminating the battery drain, lag, and reliability issues of traditional AccessibilityService approaches.
-    Everything runs strictly on-device with zero third-party analytics, keeping all cookies and login sessions isolated within Android's native WebView sandbox.
+    ShopeeAutoCoins is an Android automation tool combining scheduled daily Shopee coin check-ins with an independent dual-mode alarm system.
+    By leveraging Shizuku (rootless, UID 2000) and Root (libsu) sleep-key events (KEYCODE_SLEEP / KEYCODE_POWER) paired with 300ms ambient light and proximity sensor protection, it completely avoids AccessibilityService and DevicePolicyManager—preventing battery drain, system kills, and banking app security warnings.
+    Equipped with a 2-step anti-risk-control scheduling wizard (0–30m random jitter, hybrid dual scheduling, and anti-AOD silent notifications) plus a 4-mode dynamic User-Agent browser, it runs 100% locally with zero third-party analytics and keeps all cookies isolated inside Android's native WebView sandbox.
 
 features:
-  - title: { zh: 每日自動簽到與雙重排程, en: Daily Auto Check-in & Dual Scheduling }
+  - title: { zh: 5 階段混合式每日自動簽到引擎, en: 5-Stage Hybrid Auto Check-In Engine }
     description:
-      zh: 結合精確 AlarmManager 與 WorkManager 背景備援確保準時觸發；時間一到自動亮屏、載入簽到頁並執行簽到，支援網路瞬斷重試與完整本地簽到日誌。
-      en: Combines exact AlarmManager alarms with WorkManager fallback for reliable daily triggers, automatic screen wake, JS check-in execution, smart retries, and local check-in logs.
-  - title: { zh: 高權限無痛熄屏控制, en: Privileged Screen Control }
+      zh: 整合原生 WebView 沙箱與多路徑蝦皮 API 直連，透過 5 階段狀態機（載入、JS 注入、API 執行、異常重試、結果記錄）搭配 Mutex 併發鎖與 60 秒超時保護確保單次任務可靠執行，並保存完整本地簽到日誌。
+      en: Combines a native WebView sandbox with multi-endpoint Shopee API execution via a 5-stage state machine (loading, JS injection, API execution, retry, completion), protected by a Mutex concurrency lock, 60s timeout guard, and local check-in logs.
+  - title: { zh: 雙軌排程、防風控浮動與靜音防 AOD 推播, en: Dual Scheduling, Random Jitter & Anti-AOD Notifications }
     description:
-      zh: 無需依賴無障礙服務，支援 Shizuku API（推薦，免 Root）、Root（libsu）與 Device Owner（DevicePolicyManager）多層級特權自動降級策略，安全完成簽到後休眠。
-      en: Replaces AccessibilityService with a multi-tier privilege fallback across Shizuku API (rootless), Root (libsu), and Device Owner (DevicePolicyManager) for reliable screen-off control.
-  - title: { zh: 智慧環境與口袋防誤關保護, en: Smart Pocket & Sensor Protection }
+      zh: 提供兩步驟設定精靈：支援 0–30 分鐘「防風控隨機浮動延遲」、三種觸發引擎（HYBRID 雙軌／ALARM 精確鬧鐘／WORK_MANAGER）與三種推播策略（SILENT_AOD 防喚醒 AOD 靜音推播、成功零通知、一般橫幅），且支援開機自動恢復。
+      en: Guided 2-step scheduler with 0–30 min anti-risk-control random jitter, 3 trigger modes (HYBRID dual-track, ALARM, WORK_MANAGER), 3 result notification modes (SILENT_AOD to keep Always-On Display asleep, silent-on-success, or normal banner), and boot recovery.
+  - title: { zh: Shizuku / Root 免無障礙特權熄屏, en: Shizuku & Root Privilege Sleep Control }
     description:
-      zh: 融合環境光感測器與距離感測器即時判定：放於口袋或包包時簽到完成立即熄屏；若偵測使用者正在操作手機，則自動跳過強制熄屏，絕不干擾正常使用。
-      en: Fuses light and proximity sensors to turn the screen off immediately when in a pocket or bag, while safely skipping screen-off if you are actively using the phone.
-  - title: { zh: 獨立多功能與惱人鬧鐘系統, en: Independent Smart & Annoying Alarm }
+      zh: 零 AccessibilityService、零 DevicePolicyManager！自動採用 Shizuku API（推薦，透過無線除錯免 Root）或 Root（libsu）僅於螢幕點亮時發送底層 KEYCODE_SLEEP (223)／KEYCODE_POWER (26)，簽到完成後無痕休眠鎖屏。
+      en: Zero AccessibilityService and zero DevicePolicyManager. Automatically dispatches KEYCODE_SLEEP (223) or KEYCODE_POWER (26) via Shizuku (rootless via Wireless Debugging) or Root (libsu) only when interactive, turning the screen off cleanly without triggering banking app alerts.
+  - title: { zh: 300ms 雙感測器口袋與操作防誤關, en: 300ms Dual-Sensor Pocket & Usage Protection }
     description:
-      zh: 採用 Material 3 滾輪時間選擇器與自訂重複週期，提供防賴床「惱人鬧鐘」滑動手勢、響鈴超時自動靜音保護，以及桌面動態快捷捷徑。
-      en: Features a Material 3 wheel time picker, custom repeat schedules, an anti-oversleep "Annoying Alarm" swipe-to-dismiss mode, auto-silence timeout, and dynamic app shortcuts.
-  - title: { zh: 開發者診斷面板, en: Developer Debug Dashboard }
+      zh: 熄屏前進行 300ms 快速非阻塞取樣，綜合距離感測器遮蔽、環境光感測器（< 15 Lux，無距離感測器之平板自動改採 < 2 Lux）與鎖定畫面狀態精準判斷：放於口袋或桌面時自動熄屏，若偵測正在使用手機則安全跳過。
+      en: Runs a fast 300ms non-blocking sensor check combining proximity occlusion, ambient light (< 15 Lux, or < 2 Lux on tablets without proximity), and keyguard lock state—sleeping immediately in pockets/darkness while skipping if you are actively using the phone.
+  - title: { zh: 獨立雙模式鬧鐘與桌面快捷捷徑, en: Independent Dual-Mode Alarm & App Shortcuts }
     description:
-      zh: 內建 Cookie / Session 憑證檢測、感測器即時採樣儀表板（Lux 光照與距離狀態）、動態 User-Agent 擷取與一鍵排程／特權熄屏測試。
-      en: Includes a WebView Cookie/Session inspector, live light & proximity sensor sampling, dynamic User-Agent fetching, and one-tap privilege lock & schedule testing.
+      zh: 採 Material 3 撥盤／鍵盤時間選擇與自訂重複週期，提供「靜音模式（5 秒自動關閉）」與「提示與震動模式（系統鈴聲分類挑選、震動與可調式 Snooze）」；另有簽到專屬全螢幕提醒與桌面動態快捷捷徑。
+      en: Offers M3 dial/keyboard time picking and custom repeat schedules with Silent Mode (5s auto-dismiss) and Annoying Mode (system ringtone categories, vibration, and adjustable Snooze), plus a dedicated check-in reminder alarm and launcher app shortcuts.
+  - title: { zh: 四模式動態 User-Agent 瀏覽器與三頁籤診斷, en: 4-Mode Dynamic UA Browser & 3-Tab Debug Suite }
+    description:
+      zh: 內建彈窗瀏覽器支援四種 UA（系統預設、CDN 即時更新 Chrome Mobile、自動爬蟲更新 Instagram Android、自訂字串）與 24 小時快取；三頁籤除錯儀表板提供鬧鐘測試、簽到模擬、即時感測器數據與一鍵複製完整診斷報告。
+      en: Popup-enabled browser supports 4 UA modes (System Default, live-fetched Chrome Mobile, live-scraped Instagram Android, and Custom) with 24h caching. A 3-tab debug dashboard tests alarms, check-in runs, live sensors, and exports a one-tap diagnostic report.
 
 screenshots: []
 
 specs:
-  - label: { zh: 特權控制, en: Privilege Control }
-    value: Shizuku / Root (libsu) / Device Owner
-  - label: { zh: 排程機制, en: Scheduling }
-    value: AlarmManager + WorkManager
+  - label: { zh: 特權熄屏, en: Privilege Sleep Control }
+    value: Shizuku (UID 2000) / Root (libsu)
+  - label: { zh: 排程與防風控, en: Scheduling & Anti-Bot }
+    value: HYBRID / ALARM / WorkManager + 0-30m Jitter
+  - label: { zh: 感測器防誤觸, en: Sensor Protection }
+    value: Proximity + Ambient Light (300ms Sampling)
   - label: { zh: 開源授權, en: License }
     value: Apache-2.0
-tech: [Kotlin, Jetpack Compose, Material 3, WorkManager, Shizuku API, libsu, Jsoup, Gson]
+
+tech:
+  - Kotlin 2.0
+  - Jetpack Compose
+  - Material 3
+  - WorkManager
+  - AlarmManager
+  - Shizuku API
+  - libsu (Root)
+  - Jsoup
+  - Gson
+  - App Shortcuts
+
+permissions:
+  - INTERNET
+  - SCHEDULE_EXACT_ALARM
+  - USE_EXACT_ALARM
+  - USE_FULL_SCREEN_INTENT
+  - FOREGROUND_SERVICE_DATA_SYNC
+  - FOREGROUND_SERVICE_MEDIA_PLAYBACK
+  - POST_NOTIFICATIONS
+  - WAKE_LOCK
+  - REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+  - RECEIVE_BOOT_COMPLETED
+  - moe.shizuku.manager.permission.API_V23
 
 faq:
-  - q: { zh: 需要 Root 權限嗎？, en: Does ShopeeAutoCoins require Root? }
+  - q: { zh: 需要 Root 權限或開啟無障礙服務嗎？, en: Does ShopeeAutoCoins require Root or AccessibilityService? }
     a:
-      zh: 不需要。推薦搭配免 Root 的 Shizuku 透過無線除錯授權即可實現自動熄屏控制；若裝置已 Root 亦支援 Magisk / KernelSU / APatch。
-      en: No. Pairing with rootless Shizuku via Wireless Debugging enables automatic screen-off control, while rooted devices (Magisk / KernelSU / APatch) are also supported.
+      zh: 兩者皆不需要。本專案完全不使用 AccessibilityService 亦不使用 DevicePolicyManager，推薦搭配免 Root 的 Shizuku 透過無線除錯授權即可實現簽到後自動熄屏；若裝置已 Root 亦支援 Magisk / KernelSU / APatch。
+      en: Neither is required. ShopeeAutoCoins completely avoids AccessibilityService and DevicePolicyManager. Pairing with rootless Shizuku via Wireless Debugging enables automatic screen-off, while rooted devices (Magisk / KernelSU / APatch) are also supported via libsu.
   - q: { zh: 帳號與 Cookie 資料安全嗎？, en: Are my account and cookies safe? }
     a:
       zh: 本專案不含任何第三方統計或遠端上報程式碼，所有登入憑證皆透過 Android 原生 WebKit CookieManager 隔離儲存於本機應用程式私有目錄中。
       en: Yes. There are zero third-party analytics or remote telemetry. All login sessions and cookies remain isolated locally inside Android's native WebKit CookieManager.
+  - q: { zh: 什麼是「防風控浮動時間」與「防 AOD 靜音推播」？, en: What are Anti-Risk-Control Random Jitter and Anti-AOD Silent Notifications? }
+    a:
+      zh: 「防風控浮動時間」可在排程時間後隨機延遲 0～30 分鐘執行，避免每天精確於同一秒簽到觸發平台異常偵測；「防 AOD 靜音推播（SILENT_AOD）」則讓簽到成功通知靜默收納於通知欄，不響鈴、不亮屏也不喚醒 Always-On Display，僅在異常或登入失效時警示。
+      en: Random Jitter adds a random 0–30 minute delay after your scheduled time so check-ins never fire at the exact same second daily. SILENT_AOD silently stores success notifications in your shade without sound, screen wake, or triggering Always-On Display—only alerting you if an error or session expiry occurs.
+  - q: { zh: 如何確認蝦皮或環境感測器運作是否正常？, en: How can I verify sensors, Shizuku, and check-in status? }
+    a:
+      zh: 您可在主頁「除錯與診斷中心」的三個分頁中，分別預覽靜音／惱人鬧鐘介面、觸發即時或 5 秒延遲測試簽到、即時採樣距離與光照 Lux 數值，並一鍵產生完整系統診斷報告複製分享。
+      en: Open the 3-tab Developer Debug Dashboard to preview silent/annoying alarm UIs, trigger immediate or 5s delayed test check-ins, inspect live 300ms proximity/ambient light Lux snapshots, and copy a full diagnostic report in one tap.
 
 changelog:
   - version: "2.0.2"
     date: "2026-10-21"
     notes:
-      - { zh: 新增動態 User-Agent 擷取與彈出式瀏覽器支援。, en: Added dynamic User-Agent scraping and popup browser support. }
-      - { zh: 完善獨立鬧鐘系統、環境光／距離感測器防誤觸與開發者診斷面板。, en: Enhanced independent alarm system, sensor pocket protection, and debug dashboard. }
+      - { zh: 新增四模式動態 User-Agent 爬蟲引擎（Chrome Mobile / Instagram Android / 自訂，含 24 小時快取）與多視窗彈出式瀏覽器支援。, en: Added 4-mode dynamic User-Agent scraper (Chrome Mobile / Instagram Android / Custom with 24h cache) and multi-window popup browser support. }
+      - { zh: 升級兩步驟排程精靈：整合 0–30 分鐘防風控浮動延遲、HYBRID 雙軌觸發與 SILENT_AOD 防 AOD 靜音推播模式。, en: Upgraded 2-step schedule wizard with 0–30m anti-risk-control random jitter, HYBRID dual scheduling, and SILENT_AOD notification mode. }
+      - { zh: 完善雙模式獨立鬧鐘（靜音 5 秒自動關閉／提示與震動）、300ms 光距感測器防誤關、Shizuku/Root 特權熄屏與三頁籤除錯診斷報告工具。, en: Enhanced dual-mode independent alarm, 300ms proximity/light sensor guard, Shizuku/Root privilege screen sleep, and 3-tab diagnostic report suite. }
 
 googleGroupUrl: "https://groups.google.com/g/testers-community"   # testers-community@googlegroups.com
 extraGroups:
