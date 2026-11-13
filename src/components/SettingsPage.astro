@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import BackButton from './BackButton.astro';
 import ConfirmDialog from './ConfirmDialog.astro';
+import Switch from './Switch.astro';
 import { Icon } from 'astro-icon/components';
 import { t, localePath, type Lang } from '../i18n/ui';
 import { COLOR_THEMES, DEFAULT_COLOR_THEME } from '../config/themes';
@@ -150,16 +151,11 @@ const fontScaleOptions = [
             <label class="settings-label" for="toggle-high-contrast">{s.contrastLabel}</label>
             <span class="settings-desc">{s.contrastDesc}</span>
           </div>
-          <button
-            type="button"
+          <Switch
             id="toggle-high-contrast"
-            class="switch-btn"
-            role="switch"
-            aria-checked="false"
+            checked={false}
             data-setting-switch="highContrast"
-          >
-            <span class="switch-thumb"></span>
-          </button>
+          />
         </div>
 
         <div class="settings-row">
@@ -167,16 +163,11 @@ const fontScaleOptions = [
             <label class="settings-label" for="toggle-progress-bar">{s.progressBarLabel}</label>
             <span class="settings-desc">{s.progressBarDesc}</span>
           </div>
-          <button
-            type="button"
+          <Switch
             id="toggle-progress-bar"
-            class="switch-btn"
-            role="switch"
-            aria-checked="true"
+            checked={true}
             data-setting-switch="progressBar"
-          >
-            <span class="switch-thumb"></span>
-          </button>
+          />
         </div>
       </section>
 

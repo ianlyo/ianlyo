@@ -30,7 +30,11 @@ When maintaining or updating this project, follow these instructions strictly:
 - Triggered by a 3-line hamburger menu button (`☰`) in the header.
 - Desktop navigation links (`.nav-links`) are cleanly hidden on mobile to avoid header overflow.
 
-## 5. Verification
+## 5. Shared UI Components & Material 3 Switch
+- **NEVER** hand-roll raw `<button role="switch">` elements; always use `src/components/Switch.astro`.
+- `Switch.astro` implements Material Design 3 Switch specs (`52px × 32px` track, `24px × 24px` thumb with `lucide:x` and `lucide:check` `16px` icons) and integrates Astro View Transitions (`transition:name` defaulting to `id` and `view-transition-class: vt-switch` in `src/styles/site.css`).
+
+## 6. Verification
 Always verify changes with:
 ```bash
 npm run build

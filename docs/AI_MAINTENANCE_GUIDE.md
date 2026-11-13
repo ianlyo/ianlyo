@@ -59,6 +59,20 @@
 
 ---
 
+## 3.5 共用開關元件 (Material Design 3 Switch) 與 View Transitions
+
+全站所有切換開關（`role="switch"`）**務必使用共用元件 [`src/components/Switch.astro`](../src/components/Switch.astro)**，不要在各頁面重複手寫 `<button class="switch-btn">` 結構：
+
+- **設計規格**：依循 Material Design 3 Switch 規範（`52px × 32px` 軌道、`2px` 外框、`24px × 24px` 圓形滑塊），內建 `lucide:x`（關閉）與 `lucide:check`（開啟）`16px` 狀態圖示與旋轉縮放過渡動畫，樣式定義於 [`src/styles/site.css`](../src/styles/site.css) 的 `.switch-btn` / `.switch-thumb` / `.switch-icon`。
+- **跨頁轉場動畫 (Astro View Transitions)**：元件預設帶入 `transition:name={transitionName || undefined}`（預設為 `id`）與 `view-transition-class: vt-switch`，並於 `src/styles/site.css` 設定 `::view-transition-group(.vt-switch)` 等規則，確保語系或頁面切換時維持膠囊圓角與彈性插值動畫。
+- **使用方式**：
+  ```astro
+  <Switch id="my-switch" checked={false} data-setting-switch="mySetting" />
+  ```
+  支援傳入 `checked`、`transitionName`（設為 `false` 可停用跨頁轉場）以及任意原生 `<button>` / `data-*` / `aria-*` 屬性。
+
+---
+
 ## 4. 如何新增與更新介面文字 (i18n)
 
 所有 UI 文字集中於 [`src/i18n/ui.ts`](../src/i18n/ui.ts)。

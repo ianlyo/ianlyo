@@ -4,7 +4,6 @@ import { cleanupScrollReveal, initScrollReveal } from './scrollReveal';
 import { initializeProjects } from './githubProjects';
 import { applyStaggerChoreography, initViewTransitions } from './viewTransitions';
 import {
-  createToastNotifier,
   fadeImageOnLoad,
   registerPageLifecycle,
   safeSetStorage,
@@ -145,36 +144,6 @@ function setupLangSwitch(): void {
       if (sel.value) safeSetStorage(LOCALE_STORAGE_KEY, sel.value);
       if (href) replaceRouteWithTransition(href);
     });
-  });
-}
-
-function setupShareButton(): void {
-  const btn = document.getElementById('share-btn') as HTMLButtonElement | null;
-  if (!btn || btn.dataset.bound === 'true') return;
-  btn.dataset.bound = 'true';
-
-  const showToast = createToastNotifier(document.getElementById('share-toast'), 2000);
-
-  btn.addEventListener('click', async () => {
-    const data = {
-      title: btn.dataset.shareTitle || document.title,
-      text: btn.dataset.shareText || '',
-      url: btn.dataset.shareUrl || window.location.href,
-    };
-    if (navigator.share) {
-      try {
-        await navigator.share(data);
-        return;
-      } catch (err) {
-        if ((err as Error)?.name === 'AbortError') return;
-      }
-    }
-    try {
-      await navigator.clipboard.writeText(data.url);
-      showToast(btn.dataset.copied);
-    } catch {
-      window.prompt('', data.url);
-    }
   });
 }
 
@@ -366,7 +335,6 @@ function initSiteCore(): void {
   setupSmoothAnchors();
   setupNavDrawer();
   setupLangSwitch();
-  setupShareButton();
   setupUnifiedScrollLoop();
   applyStaggerChoreography();
   initScrollReveal();

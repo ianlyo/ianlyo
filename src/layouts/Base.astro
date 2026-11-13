@@ -217,9 +217,6 @@ const drawerPrimaryLinks = [
       <a href={localePath(lang, '/search/')} class="nav-action-icon" aria-label={ui.nav.search} title={ui.nav.search}>
         <Icon name="lucide:search" class="nav-icon" aria-hidden="true" />
       </a>
-      <a href={SITE.github.reposUrl} target="_blank" rel="noopener" class="nav-action-icon" aria-label="GitHub" title="GitHub">
-        <Icon name="simple-icons:github" class="nav-icon" aria-hidden="true" />
-      </a>
     </div>
 
     <!-- 右側功能按鈕列（行動版搜尋與全站主題切換） -->
@@ -227,9 +224,6 @@ const drawerPrimaryLinks = [
       <a href={localePath(lang, '/search/')} class="nav-icon-btn d-inline-flex d-md-none" aria-label={ui.nav.search} title={ui.nav.search}>
         <Icon name="lucide:search" class="nav-icon" aria-hidden="true" />
       </a>
-      <button class="nav-icon-btn" id="share-btn" type="button" aria-label={ui.nav.share} title={ui.nav.share} data-share-title={pageTitle} data-share-text={pageDesc} data-share-url={canonical} data-copied={ui.nav.shareCopied}>
-        <Icon name="lucide:share-2" class="nav-icon" aria-hidden="true" />
-      </button>
       <a href={localePath(lang, '/settings/')} class:list={['nav-icon-btn', { active: isActive('/settings') }]} aria-label={ui.nav.settings} title={ui.nav.settings}>
         <Icon name="lucide:settings" class="nav-icon" aria-hidden="true" />
       </a>
@@ -330,7 +324,6 @@ const drawerPrimaryLinks = [
     </div>
   </footer>
 
-  <div class="share-toast" id="share-toast" role="status" aria-live="polite"></div>
   <script src="../scripts/siteCore.ts"></script>
 </body>
 </html>
