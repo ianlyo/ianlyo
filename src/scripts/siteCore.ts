@@ -103,9 +103,17 @@ function setupLangSwitch(): void {
   document.querySelectorAll<HTMLElement>('[data-lang-switch]').forEach((btn) => {
     if (btn.dataset.bound === 'true') return;
     btn.dataset.bound = 'true';
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
       const target = btn.getAttribute('data-lang-switch');
       if (target) safeSetStorage(LOCALE_STORAGE_KEY, target);
+      const href = btn.getAttribute('href');
+      const isPlainClick =
+        !(e instanceof MouseEvent) ||
+        (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0);
+      if (href && isPlainClick) {
+        e.preventDefault();
+        window.location.replace(href);
+      }
     });
   });
 
@@ -116,7 +124,7 @@ function setupLangSwitch(): void {
       const opt = sel.options[sel.selectedIndex];
       const href = opt?.getAttribute('data-href') || '';
       if (sel.value) safeSetStorage(LOCALE_STORAGE_KEY, sel.value);
-      if (href) window.location.href = href;
+      if (href) window.location.replace(href);
     });
   });
 }

@@ -141,29 +141,35 @@ const drawerPrimaryLinks = [
         document.documentElement.setAttribute('data-progress-bar', progressBarPref === 'false' ? 'false' : 'true');
 
         // 2. Language auto-detection & preference routing
-        var savedLang = localStorage.getItem('preferred-locale');
-        if (!savedLang) {
-          var langs = navigator.languages || [navigator.language || ''];
-          var prefersEn = false;
-          for (var i = 0; i < langs.length; i++) {
-            var l = (langs[i] || '').toLowerCase();
-            if (l.startsWith('zh')) {
-              prefersEn = false;
-              break;
+        function syncLocaleRedirect() {
+          var savedLang = localStorage.getItem('preferred-locale');
+          if (!savedLang) {
+            var langs = navigator.languages || [navigator.language || ''];
+            var prefersEn = false;
+            for (var i = 0; i < langs.length; i++) {
+              var l = (langs[i] || '').toLowerCase();
+              if (l.startsWith('zh')) {
+                prefersEn = false;
+                break;
+              }
+              if (l.startsWith('en')) {
+                prefersEn = true;
+                break;
+              }
             }
-            if (l.startsWith('en')) {
-              prefersEn = true;
-              break;
+            if (prefersEn && currentLang !== 'en' && enTarget) {
+              window.location.replace(enTarget + window.location.search + window.location.hash);
             }
-          }
-          if (prefersEn && currentLang !== 'en' && enTarget) {
+          } else if (savedLang === 'en' && currentLang !== 'en' && enTarget) {
             window.location.replace(enTarget + window.location.search + window.location.hash);
+          } else if (savedLang === 'zh-Hant' && currentLang === 'en' && zhTarget) {
+            window.location.replace(zhTarget + window.location.search + window.location.hash);
           }
-        } else if (savedLang === 'en' && currentLang !== 'en' && enTarget) {
-          window.location.replace(enTarget + window.location.search + window.location.hash);
-        } else if (savedLang === 'zh-Hant' && currentLang === 'en' && zhTarget) {
-          window.location.replace(zhTarget + window.location.search + window.location.hash);
         }
+        syncLocaleRedirect();
+        window.addEventListener('pageshow', function (e) {
+          if (e.persisted) syncLocaleRedirect();
+        });
       } catch (e) {}
     })();
   </script>

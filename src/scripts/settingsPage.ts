@@ -78,7 +78,7 @@ export function initSettingsPage(): void {
         safeSetStorage('preferred-locale', val);
         const target = val === 'en' ? group.dataset.enUrl : group.dataset.zhUrl;
         if (target && window.location.pathname !== target) {
-          window.location.href = target;
+          window.location.replace(target);
         }
         return;
       }
