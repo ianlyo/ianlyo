@@ -16,6 +16,16 @@ const enUrl = '/en/settings/';
 
 <Base lang={lang} title={s.title} description={s.lead} altPath={lang === 'en' ? zhUrl : enUrl}>
   <main class="settings-page container py-5">
+    <button
+      type="button"
+      id="settings-back-btn"
+      class="settings-back-btn"
+      data-fallback-url={localePath(lang, '/')}
+    >
+      <Icon name="lucide:arrow-left" class="settings-back-icon" aria-hidden="true" />
+      <span>{ui.notFound.back}</span>
+    </button>
+
     <header class="settings-header">
       <h1>{s.title}</h1>
       <p class="settings-lead">{s.lead}</p>
@@ -163,6 +173,31 @@ const enUrl = '/en/settings/';
     border-radius: var(--radius-lg, 20px);
     padding: 1.5rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  }
+  .settings-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-bottom: 1.25rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.22));
+    background: var(--bg-surface-subtle, rgba(128, 128, 128, 0.08));
+    color: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.15s ease;
+  }
+  .settings-back-btn:hover {
+    background: rgba(128, 128, 128, 0.16);
+    border-color: var(--border, rgba(128, 128, 128, 0.38));
+    transform: translateX(-2px);
+  }
+  .settings-back-icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
   }
   .settings-card-header {
     display: flex;
@@ -422,6 +457,16 @@ const enUrl = '/en/settings/';
         applySwitch(name, next);
         showToast(toast?.dataset.saved);
       });
+    });
+
+    // Back button
+    const backBtn = document.getElementById('settings-back-btn');
+    backBtn?.addEventListener('click', () => {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = backBtn.dataset.fallbackUrl || '/';
+      }
     });
 
     // Reset button
