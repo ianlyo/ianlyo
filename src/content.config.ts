@@ -35,6 +35,7 @@ const blog = defineCollection({
     cover: z.string().optional(),
     coverAlt: z.string().optional(),
     lang: z.enum(['zh-Hant', 'en']).default('zh-Hant'),
+    translationKey: z.string().optional(),
   }),
 });
 

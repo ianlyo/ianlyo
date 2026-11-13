@@ -1,6 +1,28 @@
 import { initThemeManager, cycleThemeMode } from './themeManager';
 import { initScrollReveal } from './scrollReveal';
 import { initializeProjects } from './githubProjects';
+import {
+  createToastNotifier,
+  fadeImageOnLoad,
+  registerPageLifecycle,
+  safeSetStorage,
+  setScrollGradientPhase,
+} from './domUtils';
+
+interface GradientItem {
+  el: HTMLElement;
+  absTop: number;
+  height: number;
+  isHero: boolean;
+  phaseOffset: number;
+  lastGradKey: string;
+}
+
+const LOCALE_STORAGE_KEY = 'preferred-locale';
+const MOBILE_BREAKPOINT_QUERY = '(max-width: 768px)';
+const TOP_SAFE_ZONE_PX = 200;
+const NAV_HIDE_SCROLL_PX = 60;
+const NAV_SHOW_SCROLL_PX = 8;
 
 let globalListenersBound = false;
 let unifiedScrollController: { remeasure: () => void } | null = null;
@@ -42,6 +64,24 @@ function setupSmoothAnchors(): void {
   });
 }
 
+function setNavDrawerOpen(open: boolean): void {
+  const openBtn = document.getElementById('nav-drawer-open');
+  const backdrop = document.getElementById('nav-drawer-backdrop');
+  const drawer = document.getElementById('nav-drawer');
+  if (!drawer || !openBtn || !backdrop) return;
+
+  drawer.classList.toggle('is-open', open);
+  backdrop.classList.toggle('is-open', open);
+  if (open) {
+    drawer.removeAttribute('inert');
+  } else {
+    drawer.setAttribute('inert', '');
+  }
+  drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
+  openBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+
 function setupNavDrawer(): void {
   const openBtn = document.getElementById('nav-drawer-open');
   const closeBtn = document.getElementById('nav-drawer-close');
@@ -50,37 +90,13 @@ function setupNavDrawer(): void {
   if (!drawer || !openBtn || !backdrop || drawer.dataset.bound === 'true') return;
   drawer.dataset.bound = 'true';
 
-  const openDrawer = () => {
-    drawer.classList.add('is-open');
-    backdrop.classList.add('is-open');
-    drawer.removeAttribute('inert');
-    drawer.setAttribute('aria-hidden', 'false');
-    openBtn.setAttribute('aria-expanded', 'true');
-    document.body.style.overflow = 'hidden';
-  };
-
-  const closeDrawer = () => {
-    drawer.classList.remove('is-open');
-    backdrop.classList.remove('is-open');
-    drawer.setAttribute('inert', '');
-    drawer.setAttribute('aria-hidden', 'true');
-    openBtn.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
-  };
+  const openDrawer = () => setNavDrawerOpen(true);
+  const closeDrawer = () => setNavDrawerOpen(false);
 
   openBtn.addEventListener('click', openDrawer);
   closeBtn?.addEventListener('click', closeDrawer);
   backdrop.addEventListener('click', closeDrawer);
-
-  drawer.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', closeDrawer);
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
-      closeDrawer();
-    }
-  });
+  drawer.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeDrawer));
 }
 
 function setupLangSwitch(): void {
@@ -89,11 +105,7 @@ function setupLangSwitch(): void {
     btn.dataset.bound = 'true';
     btn.addEventListener('click', () => {
       const target = btn.getAttribute('data-lang-switch');
-      if (target) {
-        try {
-          localStorage.setItem('preferred-locale', target);
-        } catch {}
-      }
+      if (target) safeSetStorage(LOCALE_STORAGE_KEY, target);
     });
   });
 
@@ -102,34 +114,19 @@ function setupLangSwitch(): void {
     sel.dataset.bound = 'true';
     sel.addEventListener('change', () => {
       const opt = sel.options[sel.selectedIndex];
-      const target = sel.value;
       const href = opt?.getAttribute('data-href') || '';
-      if (target) {
-        try {
-          localStorage.setItem('preferred-locale', target);
-        } catch {}
-      }
-      if (href) {
-        window.location.href = href;
-      }
+      if (sel.value) safeSetStorage(LOCALE_STORAGE_KEY, sel.value);
+      if (href) window.location.href = href;
     });
   });
 }
 
 function setupShareButton(): void {
   const btn = document.getElementById('share-btn') as HTMLButtonElement | null;
-  if (!btn || btn.dataset.bound === '1') return;
-  btn.dataset.bound = '1';
-  const toast = document.getElementById('share-toast');
-  let toastTimer: number | undefined;
+  if (!btn || btn.dataset.bound === 'true') return;
+  btn.dataset.bound = 'true';
 
-  const showToast = (msg?: string) => {
-    if (!toast || !msg) return;
-    toast.textContent = msg;
-    toast.classList.add('is-visible');
-    window.clearTimeout(toastTimer);
-    toastTimer = window.setTimeout(() => toast.classList.remove('is-visible'), 2000);
-  };
+  const showToast = createToastNotifier(document.getElementById('share-toast'), 2000);
 
   btn.addEventListener('click', async () => {
     const data = {
@@ -154,118 +151,121 @@ function setupShareButton(): void {
   });
 }
 
-interface GradientItem {
-  el: HTMLElement;
-  absTop: number;
-  height: number;
-  isHero: boolean;
-  phaseOffset: number;
-  lastGradX: string;
+function getViewportScrollY(): number {
+  return Math.max(window.scrollY || document.documentElement.scrollTop || 0, 0);
 }
 
+function collectGradientMetrics(scrollY: number, vh: number): GradientItem[] {
+  const els = Array.from(
+    document.querySelectorAll<HTMLElement>('.hero-title em, .scroll-gradient-text, [data-scroll-gradient]')
+  ).filter((el) => el.getAttribute('data-gsap-gradient') !== 'true');
+
+  return els.map((el, idx) => {
+    const rect = el.getBoundingClientRect();
+    const absTop = rect.top + scrollY;
+    return {
+      el,
+      absTop,
+      height: rect.height,
+      isHero: absTop < vh * 0.85,
+      phaseOffset: (idx % 4) * 0.15,
+      lastGradKey: '',
+    };
+  });
+}
+
+function updateScrollProgressBar(bar: HTMLElement | null, scrollY: number, maxScrollY: number): void {
+  if (!bar) return;
+  const progress = maxScrollY > 0 ? Math.min(1, Math.max(0, scrollY / maxScrollY)) : 0;
+  bar.style.transform = `scaleX(${progress.toFixed(4)})`;
+  bar.classList.toggle('is-visible', scrollY > 8);
+}
+
+function updateGradientMetrics(items: GradientItem[], scrollY: number, vh: number): void {
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    const rectTop = item.absTop - scrollY;
+    if (rectTop > vh + 100 || rectTop + item.height < -100) continue;
+
+    const rawRatio = item.isHero
+      ? scrollY / Math.max(vh * 0.65, 320)
+      : vh + item.height > 0
+        ? (vh - rectTop) / (vh + item.height)
+        : 0;
+    const clamped = Math.min(1, Math.max(0, rawRatio));
+    const phase = (clamped + item.phaseOffset) % 1;
+    const key = phase.toFixed(3);
+    if (item.lastGradKey === key) continue;
+    item.lastGradKey = key;
+    setScrollGradientPhase(item.el, phase);
+  }
+}
+
+function createMobileNavVisibilityUpdater(mobileQuery: MediaQueryList) {
+  let accumulatedDown = 0;
+
+  return {
+    reset() {
+      accumulatedDown = 0;
+    },
+    update(nav: HTMLElement | null, scrollY: number, lastScrollY: number) {
+      if (!nav) return;
+      if (!mobileQuery.matches || scrollY <= TOP_SAFE_ZONE_PX) {
+        nav.classList.remove('is-hidden');
+        accumulatedDown = 0;
+        return;
+      }
+
+      const delta = scrollY - lastScrollY;
+      if (delta > 0) {
+        accumulatedDown += delta;
+        if (accumulatedDown >= NAV_HIDE_SCROLL_PX) {
+          nav.classList.add('is-hidden');
+        }
+      } else if (delta < -NAV_SHOW_SCROLL_PX) {
+        nav.classList.remove('is-hidden');
+        accumulatedDown = 0;
+      }
+    },
+  };
+}
+
+/**
+ * Single rAF-throttled scroll loop coordinating reading progress bar,
+ * hero/heading gradient parallax, and mobile navigation auto-hide.
+ */
 function setupUnifiedScrollLoop(): void {
   if (unifiedScrollController) {
     unifiedScrollController.remeasure();
     return;
   }
 
-  const mobileQuery = window.matchMedia('(max-width: 768px)');
-  const TOP_SAFE_ZONE = 200;
-  const HIDE_SCROLL_DISTANCE = 60;
-  const SHOW_SCROLL_DISTANCE = 8;
+  const mobileQuery = window.matchMedia(MOBILE_BREAKPOINT_QUERY);
+  const mobileNavUpdater = createMobileNavVisibilityUpdater(mobileQuery);
 
   let progressBar: HTMLElement | null = null;
   let nav: HTMLElement | null = null;
   let cachedMetrics: GradientItem[] = [];
-  let docHeight = 0;
+  let maxScrollY = 0;
   let vh = 800;
-  let lastScrollY = Math.max(window.scrollY || 0, 0);
-  let accumulatedDownScroll = 0;
+  let lastScrollY = getViewportScrollY();
   let ticking = false;
 
   const collectElements = () => {
     progressBar = document.getElementById('scroll-progress');
     nav = document.querySelector('.site-nav');
-    const gradientEls = Array.from(
-      document.querySelectorAll<HTMLElement>('.hero-title em, .scroll-gradient-text, [data-scroll-gradient]')
-    ).filter((el) => el.getAttribute('data-gsap-gradient') !== 'true');
-
     vh = window.innerHeight || document.documentElement.clientHeight || 800;
-    docHeight = Math.max(0, document.documentElement.scrollHeight - vh);
-    const scroll = Math.max(window.scrollY || document.documentElement.scrollTop || 0, 0);
-    lastScrollY = scroll;
-
-    cachedMetrics = gradientEls.map((el, idx) => {
-      const rect = el.getBoundingClientRect();
-      const absTop = rect.top + scroll;
-      return {
-        el,
-        absTop,
-        height: rect.height,
-        isHero: absTop < vh * 0.85,
-        phaseOffset: (idx % 4) * 0.15,
-        lastGradX: '',
-      };
-    });
-  };
-
-  const applyGradientProgress = (item: GradientItem, ratio: number) => {
-    const r = Math.min(1, Math.max(0, ratio));
-    const phase = (r + item.phaseOffset) % 1;
-    const gradX = `${(phase * 100).toFixed(1)}%`;
-    if (item.lastGradX === gradX) return;
-    item.lastGradX = gradX;
-    const gradY = `${(50 + Math.sin(phase * Math.PI * 2) * 50).toFixed(1)}%`;
-    item.el.style.setProperty('--hero-grad-x', gradX);
-    item.el.style.setProperty('--hero-grad-y', gradY);
+    maxScrollY = Math.max(0, document.documentElement.scrollHeight - vh);
+    lastScrollY = getViewportScrollY();
+    cachedMetrics = collectGradientMetrics(lastScrollY, vh);
   };
 
   const update = () => {
-    const scroll = Math.max(window.scrollY || document.documentElement.scrollTop || 0, 0);
-
-    // 1. Scroll progress bar
-    if (progressBar) {
-      const progress = docHeight > 0 ? Math.min(1, Math.max(0, scroll / docHeight)) : 0;
-      progressBar.style.transform = `scaleX(${progress.toFixed(4)})`;
-      progressBar.classList.toggle('is-visible', scroll > 8);
-    }
-
-    // 2. Hero & scroll gradient text
-    for (let i = 0; i < cachedMetrics.length; i++) {
-      const item = cachedMetrics[i];
-      const rectTop = item.absTop - scroll;
-      if (rectTop > vh + 100 || rectTop + item.height < -100) continue;
-      const ratio = item.isHero
-        ? scroll / Math.max(vh * 0.65, 320)
-        : vh + item.height > 0
-          ? (vh - rectTop) / (vh + item.height)
-          : 0;
-      applyGradientProgress(item, ratio);
-    }
-
-    // 3. Mobile navbar auto-hide
-    if (nav) {
-      if (!mobileQuery.matches) {
-        nav.classList.remove('is-hidden');
-        accumulatedDownScroll = 0;
-      } else {
-        const delta = scroll - lastScrollY;
-        if (scroll <= TOP_SAFE_ZONE) {
-          nav.classList.remove('is-hidden');
-          accumulatedDownScroll = 0;
-        } else if (delta > 0) {
-          accumulatedDownScroll += delta;
-          if (accumulatedDownScroll >= HIDE_SCROLL_DISTANCE) {
-            nav.classList.add('is-hidden');
-          }
-        } else if (delta < -SHOW_SCROLL_DISTANCE) {
-          nav.classList.remove('is-hidden');
-          accumulatedDownScroll = 0;
-        }
-      }
-    }
-
-    lastScrollY = scroll;
+    const scrollY = getViewportScrollY();
+    updateScrollProgressBar(progressBar, scrollY, maxScrollY);
+    updateGradientMetrics(cachedMetrics, scrollY, vh);
+    mobileNavUpdater.update(nav, scrollY, lastScrollY);
+    lastScrollY = scrollY;
     ticking = false;
   };
 
@@ -301,9 +301,23 @@ function setupUnifiedScrollLoop(): void {
     mobileQuery.addEventListener?.('change', (e) => {
       if (!e.matches && nav) {
         nav.classList.remove('is-hidden');
-        accumulatedDownScroll = 0;
+        mobileNavUpdater.reset();
       }
     });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.getElementById('nav-drawer')?.classList.contains('is-open')) {
+        setNavDrawerOpen(false);
+      }
+    });
+  }
+}
+
+function setupContributionChartFade(): void {
+  const graphImg = document.getElementById('contribution-graph-img') as HTMLImageElement | null;
+  if (!graphImg || graphImg.dataset.fadeBound === 'true') return;
+  graphImg.dataset.fadeBound = 'true';
+  if (!graphImg.complete) {
+    fadeImageOnLoad(graphImg);
   }
 }
 
@@ -314,6 +328,7 @@ function initSiteCore(): void {
   }
 
   initThemeManager();
+  setupContributionChartFade();
   setupThemeToggle();
   setupSmoothAnchors();
   setupNavDrawer();
@@ -325,12 +340,4 @@ function initSiteCore(): void {
 }
 
 registerServiceWorker();
-
-if (typeof document !== 'undefined') {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSiteCore);
-  } else {
-    initSiteCore();
-  }
-  document.addEventListener('astro:page-load', initSiteCore);
-}
+registerPageLifecycle(initSiteCore);

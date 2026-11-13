@@ -14,14 +14,14 @@ const others = apps.filter((a) => !active.includes(a));
 <Base lang={lang} title={ui.title} description={ui.lead}>
   <main class="page">
     <div class="container">
-      <header class="page-head mb-4 reveal">
-        <h1 class="d-flex align-items-center gap-2">
+      <header class="page-head mb-4">
+        <h1 class="d-flex align-items-center gap-2 hero-enter">
           <Icon name="lucide:layout-grid" class="ui-icon text-accent" aria-hidden="true" />
           <span>{ui.title}</span>
         </h1>
-        <p class="lead reveal reveal-delay-100">{ui.lead}</p>
+        <p class="lead hero-enter enter-delay-1">{ui.lead}</p>
       </header>
-      {active.length ? <div class="card-grid">{active.map((a) => <AppCard app={a} lang={lang} />)}</div> : <p class="d-inline-flex align-items-center gap-2 text-muted"><Icon name="lucide:inbox" class="ui-icon" aria-hidden="true" /><span>{ui.empty}</span></p>}
+      {active.length ? <div class="card-grid">{active.map((a) => <AppCard app={a} lang={lang} />)}</div> : <p class="d-inline-flex align-items-center gap-2 text-muted hero-enter enter-delay-2"><Icon name="lucide:inbox" class="ui-icon" aria-hidden="true" /><span>{ui.empty}</span></p>}
       {others.length > 0 && (
         <div class="section-block">
           <div class="card-grid">{others.map((a) => <AppCard app={a} lang={lang} />)}</div>

@@ -1,60 +1,14 @@
 ---
-import { Icon } from 'astro-icon/components';
 import { getCollection } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
-import Base from '../../layouts/Base.astro';
-import PostCard from '../../components/PostCard.astro';
-import { BLOG_CATEGORIES } from '../../content.config';
-import { sortPosts, slugify } from '../../utils/blog';
-import { t } from '../../i18n/ui';
+import BlogIndexPage from '../../components/BlogIndexPage.astro';
+import { resolvePostsForLang } from '../../utils/blog';
 
 export const getStaticPaths = (async ({ paginate }) => {
-  const posts = sortPosts(await getCollection('blog'));
+  const posts = resolvePostsForLang(await getCollection('blog'), 'zh-Hant');
   return paginate(posts, { pageSize: 10 });
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
-const ui = t('zh-Hant').blog;
 ---
-<Base title={ui.title} description={ui.lead} altPath="/en/">
-  <main class="page">
-    <div class="container page-narrow">
-      <header class="page-head mb-4">
-        <h1 class="d-flex align-items-center gap-2">
-          <Icon name="material-symbols:article" class="material-symbols-rounded text-accent" aria-hidden="true" />
-          <span>{ui.title}</span>
-        </h1>
-        <p class="lead">{ui.lead}</p>
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
-          <div class="chip-row">
-            {BLOG_CATEGORIES.map((c) => (
-              <a class="chip d-inline-flex align-items-center gap-1" href={`/blog/category/${slugify(c)}/`}>
-                <Icon name="material-symbols:folder-open" class="material-symbols-rounded icon-xs" aria-hidden="true" />
-                <span>{c}</span>
-              </a>
-            ))}
-          </div>
-          <a href="/search/" class="blog-search-link">
-            <Icon name="material-symbols:search" class="material-symbols-rounded icon-sm" aria-hidden="true" />
-            <span>{ui.searchPlaceholder}</span>
-          </a>
-        </div>
-      </header>
-      {page.data.length ? <div class="d-grid gap-3">{page.data.map((p) => <PostCard post={p} />)}</div> : <p>{ui.noPosts}</p>}
-      <nav class="pagination-nav" aria-label="Pagination">
-        {page.url.prev ? (
-          <a class="btn-ghost d-inline-flex align-items-center gap-1" href={page.url.prev}>
-            <Icon name="material-symbols:arrow-back" class="material-symbols-rounded icon-sm" aria-hidden="true" />
-            <span>{ui.newer}</span>
-          </a>
-        ) : <span />}
-        {page.url.next ? (
-          <a class="btn-ghost d-inline-flex align-items-center gap-1" href={page.url.next}>
-            <span>{ui.older}</span>
-            <Icon name="material-symbols:arrow-forward" class="material-symbols-rounded icon-sm" aria-hidden="true" />
-          </a>
-        ) : <span />}
-      </nav>
-    </div>
-  </main>
-</Base>
+<BlogIndexPage page={page} lang="zh-Hant" />

@@ -13,6 +13,24 @@ const ui = t(lang);
 const s = ui.settings;
 const zhUrl = '/settings/';
 const enUrl = '/en/settings/';
+
+const themeOptions = [
+  { value: 'auto', label: s.themeAuto, icon: 'lucide:monitor' },
+  { value: 'light', label: s.themeLight, icon: 'lucide:sun' },
+  { value: 'dark', label: s.themeDark, icon: 'lucide:moon' },
+] as const;
+
+const motionOptions = [
+  { value: 'off', label: s.motionOff },
+  { value: 'on', label: s.motionOn },
+  { value: 'system', label: s.motionSystem },
+] as const;
+
+const fontScaleOptions = [
+  { value: 'normal', label: s.fontNormal },
+  { value: 'large', label: s.fontLarge },
+  { value: 'xlarge', label: s.fontXlarge },
+] as const;
 ---
 
 <Base lang={lang} title={s.title} description={s.lead} altPath={lang === 'en' ? zhUrl : enUrl}>
@@ -20,21 +38,21 @@ const enUrl = '/en/settings/';
     <button
       type="button"
       id="settings-back-btn"
-      class="settings-back-btn"
+      class="settings-back-btn hero-enter hero-enter-fade"
       data-fallback-url={localePath(lang, '/')}
     >
       <Icon name="lucide:arrow-left" class="settings-back-icon" aria-hidden="true" />
       <span>{ui.notFound.back}</span>
     </button>
 
-    <header class="settings-header">
+    <header class="settings-header hero-enter enter-delay-1">
       <h1>{s.title}</h1>
       <p class="settings-lead">{s.lead}</p>
     </header>
 
     <div class="settings-sections">
       <!-- Appearance & Language -->
-      <section class="settings-card" aria-labelledby="settings-appearance-heading">
+      <section class="settings-card hero-enter enter-delay-2" aria-labelledby="settings-appearance-heading">
         <div class="settings-card-header">
           <Icon name="lucide:palette" class="settings-section-icon" aria-hidden="true" />
           <h2 id="settings-appearance-heading">{s.appearanceTitle}</h2>
@@ -46,18 +64,12 @@ const enUrl = '/en/settings/';
             <span class="settings-desc">{s.themeDesc}</span>
           </div>
           <div class="settings-segmented" role="group" aria-label={s.themeLabel} data-setting-group="theme">
-            <button type="button" class="seg-btn seg-btn-icon" data-value="auto">
-              <Icon name="lucide:monitor" class="ui-icon icon-xs" aria-hidden="true" />
-              <span>{s.themeAuto}</span>
-            </button>
-            <button type="button" class="seg-btn seg-btn-icon" data-value="light">
-              <Icon name="lucide:sun" class="ui-icon icon-xs" aria-hidden="true" />
-              <span>{s.themeLight}</span>
-            </button>
-            <button type="button" class="seg-btn seg-btn-icon" data-value="dark">
-              <Icon name="lucide:moon" class="ui-icon icon-xs" aria-hidden="true" />
-              <span>{s.themeDark}</span>
-            </button>
+            {themeOptions.map((opt) => (
+              <button type="button" class="seg-btn seg-btn-icon" data-value={opt.value}>
+                <Icon name={opt.icon} class="ui-icon icon-xs" aria-hidden="true" />
+                <span>{opt.label}</span>
+              </button>
+            ))}
           </div>
         </div>
 
@@ -104,7 +116,7 @@ const enUrl = '/en/settings/';
       </section>
 
       <!-- Accessibility & Reading -->
-      <section class="settings-card" aria-labelledby="settings-a11y-heading">
+      <section class="settings-card hero-enter enter-delay-3" aria-labelledby="settings-a11y-heading">
         <div class="settings-card-header">
           <Icon name="lucide:person-standing" class="settings-section-icon" aria-hidden="true" />
           <h2 id="settings-a11y-heading">{s.a11yTitle}</h2>
@@ -116,9 +128,9 @@ const enUrl = '/en/settings/';
             <span class="settings-desc">{s.motionDesc}</span>
           </div>
           <div class="settings-segmented" role="group" aria-label={s.motionLabel} data-setting-group="motion">
-            <button type="button" class="seg-btn" data-value="off">{s.motionOff}</button>
-            <button type="button" class="seg-btn" data-value="on">{s.motionOn}</button>
-            <button type="button" class="seg-btn" data-value="system">{s.motionSystem}</button>
+            {motionOptions.map((opt) => (
+              <button type="button" class="seg-btn" data-value={opt.value}>{opt.label}</button>
+            ))}
           </div>
         </div>
 
@@ -128,9 +140,9 @@ const enUrl = '/en/settings/';
             <span class="settings-desc">{s.fontScaleDesc}</span>
           </div>
           <div class="settings-segmented" role="group" aria-label={s.fontScaleLabel} data-setting-group="fontScale">
-            <button type="button" class="seg-btn" data-value="normal">{s.fontNormal}</button>
-            <button type="button" class="seg-btn" data-value="large">{s.fontLarge}</button>
-            <button type="button" class="seg-btn" data-value="xlarge">{s.fontXlarge}</button>
+            {fontScaleOptions.map((opt) => (
+              <button type="button" class="seg-btn" data-value={opt.value}>{opt.label}</button>
+            ))}
           </div>
         </div>
 
@@ -169,7 +181,7 @@ const enUrl = '/en/settings/';
         </div>
       </section>
 
-      <div class="settings-actions">
+      <div class="settings-actions hero-enter enter-delay-4">
         <button type="button" id="settings-reset-btn" class="reset-btn">
           <Icon name="lucide:rotate-ccw" class="ui-icon icon-xs" aria-hidden="true" />
           <span>{s.resetBtn}</span>
@@ -177,7 +189,7 @@ const enUrl = '/en/settings/';
       </div>
     </div>
 
-    <div class="settings-toast" id="settings-toast" role="status" aria-live="polite" data-saved={s.savedToast} data-reset={s.resetToast}></div>
+    <div class="share-toast" id="settings-toast" role="status" aria-live="polite" data-saved={s.savedToast} data-reset={s.resetToast}></div>
   </main>
 </Base>
 
@@ -233,6 +245,9 @@ const enUrl = '/en/settings/';
     background: rgba(128, 128, 128, 0.16);
     border-color: var(--border, rgba(128, 128, 128, 0.38));
     transform: translateX(-2px);
+  }
+  .settings-back-btn:active {
+    transform: translateX(-1px) scale(0.96);
   }
   .settings-back-icon {
     width: 1rem;
@@ -321,6 +336,9 @@ const enUrl = '/en/settings/';
   .seg-btn:hover {
     background: rgba(128, 128, 128, 0.12);
   }
+  .seg-btn:active {
+    transform: scale(0.96);
+  }
   .seg-btn.is-active {
     background: var(--accent-primary);
     color: var(--accent-text, #ffffff);
@@ -370,6 +388,9 @@ const enUrl = '/en/settings/';
   }
   .color-swatch-btn:hover {
     transform: scale(1.08);
+  }
+  .color-swatch-btn:active {
+    transform: scale(0.94);
   }
   .color-swatch-btn:focus-visible {
     outline: 2px solid var(--accent-primary);
@@ -438,24 +459,8 @@ const enUrl = '/en/settings/';
     background: var(--accent-subtle);
     border-color: var(--border-hover);
   }
-  .settings-toast {
-    position: fixed;
-    left: 50%;
-    bottom: 2rem;
-    transform: translate(-50%, 16px);
-    padding: 0.55rem 1.15rem;
-    border-radius: 999px;
-    background: rgba(24, 24, 28, 0.92);
-    color: #fff;
-    font-size: 0.88rem;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    z-index: 3000;
-  }
-  .settings-toast.is-visible {
-    opacity: 1;
-    transform: translate(-50%, 0);
+  .reset-btn:active {
+    transform: scale(0.97);
   }
   @media (max-width: 680px) {
     .settings-row {
@@ -473,140 +478,5 @@ const enUrl = '/en/settings/';
 </style>
 
 <script>
-  import {
-    getPreferencesState,
-    setThemeMode,
-    setColorTheme,
-    setReduceMotion,
-    setFontScale,
-    setHighContrast,
-    setProgressBar,
-    resetAllPreferences,
-    type PreferencesState,
-    type ReduceMotionPref,
-    type FontScalePref,
-  } from '../scripts/themeManager';
-  import type { ColorThemeId, ThemeMode } from '../config/themes';
-
-  function initSettingsPage() {
-    const page = document.querySelector<HTMLElement>('.settings-page');
-    if (!page || page.dataset.bound === '1') return;
-    page.dataset.bound = '1';
-
-    const toast = document.getElementById('settings-toast');
-    let toastTimer: number | undefined;
-    const showToast = (msg?: string) => {
-      if (!toast || !msg) return;
-      toast.textContent = msg;
-      toast.classList.add('is-visible');
-      window.clearTimeout(toastTimer);
-      toastTimer = window.setTimeout(() => toast.classList.remove('is-visible'), 1800);
-    };
-
-    const setGroupActive = (groupName: string, value: string) => {
-      const group = page.querySelector<HTMLElement>(`[data-setting-group="${groupName}"]`);
-      if (!group) return;
-      group.querySelectorAll<HTMLButtonElement>('.seg-btn').forEach((btn) => {
-        btn.classList.toggle('is-active', btn.dataset.value === value);
-      });
-    };
-
-    const syncUI = (state: PreferencesState) => {
-      setGroupActive('theme', state.themeMode);
-      setGroupActive('motion', state.reduceMotion);
-      setGroupActive('fontScale', state.fontScale);
-
-      const colorNameEl = document.getElementById('color-theme-current-name');
-      page.querySelectorAll<HTMLButtonElement>('[data-color-theme-btn]').forEach((btn) => {
-        const isActive = btn.dataset.colorThemeBtn === state.colorTheme;
-        btn.classList.toggle('is-active', isActive);
-        btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
-        if (isActive && colorNameEl && btn.dataset.colorName) {
-          colorNameEl.textContent = btn.dataset.colorName;
-        }
-      });
-
-      const hcBtn = page.querySelector<HTMLButtonElement>('[data-setting-switch="highContrast"]');
-      hcBtn?.setAttribute('aria-checked', state.highContrast ? 'true' : 'false');
-
-      const pbBtn = page.querySelector<HTMLButtonElement>('[data-setting-switch="progressBar"]');
-      pbBtn?.setAttribute('aria-checked', state.progressBar ? 'true' : 'false');
-    };
-
-    syncUI(getPreferencesState());
-
-    window.addEventListener('site:preferences-change', (e) => {
-      const detail = (e as CustomEvent<PreferencesState>).detail;
-      if (detail) syncUI(detail);
-    });
-
-    // Bind segmented groups
-    page.querySelectorAll<HTMLElement>('[data-setting-group]').forEach((group) => {
-      const groupName = group.dataset.settingGroup;
-      group.addEventListener('click', (e) => {
-        const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.seg-btn');
-        if (!btn || !btn.dataset.value) return;
-        const val = btn.dataset.value;
-        if (groupName === 'theme') {
-          setThemeMode(val as ThemeMode);
-          showToast(toast?.dataset.saved);
-        } else if (groupName === 'motion') {
-          setReduceMotion(val as ReduceMotionPref);
-          showToast(toast?.dataset.saved);
-        } else if (groupName === 'fontScale') {
-          setFontScale(val as FontScalePref);
-          showToast(toast?.dataset.saved);
-        } else if (groupName === 'lang') {
-          try {
-            localStorage.setItem('preferred-locale', val);
-          } catch {}
-          const target = val === 'en' ? group.dataset.enUrl : group.dataset.zhUrl;
-          if (target && window.location.pathname !== target) {
-            window.location.href = target;
-          }
-        }
-      });
-    });
-
-    // Bind Color Theme swatch grid
-    const colorGroup = page.querySelector<HTMLElement>('[data-color-theme-group]');
-    colorGroup?.addEventListener('click', (e) => {
-      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-color-theme-btn]');
-      const themeId = btn?.dataset.colorThemeBtn as ColorThemeId | undefined;
-      if (!themeId) return;
-      setColorTheme(themeId);
-      showToast(toast?.dataset.saved);
-    });
-
-    // Bind switches
-    page.querySelectorAll<HTMLButtonElement>('[data-setting-switch]').forEach((btn) => {
-      const name = btn.dataset.settingSwitch as 'highContrast' | 'progressBar';
-      btn.addEventListener('click', () => {
-        const next = btn.getAttribute('aria-checked') !== 'true';
-        if (name === 'highContrast') setHighContrast(next);
-        else setProgressBar(next);
-        showToast(toast?.dataset.saved);
-      });
-    });
-
-    // Back button
-    const backBtn = document.getElementById('settings-back-btn');
-    backBtn?.addEventListener('click', () => {
-      if (window.history.length > 1) {
-        window.history.back();
-      } else {
-        window.location.href = backBtn.dataset.fallbackUrl || '/';
-      }
-    });
-
-    // Reset button
-    const resetBtn = document.getElementById('settings-reset-btn');
-    resetBtn?.addEventListener('click', () => {
-      resetAllPreferences();
-      showToast(toast?.dataset.reset);
-    });
-  }
-
-  initSettingsPage();
-  document.addEventListener('astro:page-load', initSettingsPage);
+  import '../scripts/settingsPage';
 </script>

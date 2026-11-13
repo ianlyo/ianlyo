@@ -1,0 +1,124 @@
+---
+import { Icon } from 'astro-icon/components';
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PostCard from './PostCard.astro';
+import { readingTime, relatedPosts, formatDate, slugify, type ResolvedPost } from '../utils/blog';
+import { t, localePath, blogCategoryLabel, type Lang } from '../i18n/ui';
+import { SITE } from '../config/site';
+
+interface Props {
+  item: ResolvedPost;
+  all: ResolvedPost[];
+  lang?: Lang;
+}
+
+const { item, all, lang = 'zh-Hant' } = Astro.props;
+const { post, slug, isFallback, originalLang } = item;
+const ui = t(lang).blog;
+const { Content, headings } = await render(post);
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const related = relatedPosts(item, all);
+const d = post.data;
+const canonicalPath = isFallback ? localePath(originalLang, `/blog/${slug}/`) : undefined;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: d.title,
+  description: d.description,
+  datePublished: d.pubDate.toISOString(),
+  dateModified: (d.updatedDate ?? d.pubDate).toISOString(),
+  author: { '@type': 'Person', name: SITE.author, url: SITE.github.profileUrl },
+  keywords: d.tags.join(', '),
+  inLanguage: d.lang,
+  mainEntityOfPage: new URL(canonicalPath ?? Astro.url.pathname, Astro.site).href,
+};
+---
+<Base
+  title={d.title}
+  description={d.description}
+  type="article"
+  publishedTime={d.pubDate}
+  image={d.cover ?? SITE.ogImage}
+  imageAlt={d.coverAlt ?? d.title}
+  jsonLd={jsonLd}
+  lang={lang}
+  noindex={isFallback}
+  canonicalPath={canonicalPath}
+>
+  <main class="page">
+    <div class="container">
+      <div class:list={['article-layout', { 'has-toc': toc.length >= 3 }]}>
+        <article
+          lang={d.lang}
+          data-pagefind-body={!isFallback ? '' : undefined}
+          data-pagefind-ignore={isFallback ? '' : undefined}
+        >
+          <header class="mb-4">
+            <a
+              class="chip mb-2 d-inline-flex align-items-center gap-1 hero-enter hero-enter-fade"
+              href={localePath(lang, `/blog/category/${slugify(d.category)}/`)}
+              lang={lang}
+            >
+              <Icon name="material-symbols:folder-open" class="material-symbols-rounded icon-xs" aria-hidden="true" />
+              <span>{blogCategoryLabel(d.category, lang)}</span>
+            </a>
+            <h1 class="hero-enter enter-delay-1" style="font-weight:800;letter-spacing:-.02em">{d.title}</h1>
+            <div class="meta hero-enter enter-delay-2" lang={lang}>
+              <time datetime={d.pubDate.toISOString()} class="d-inline-flex align-items-center gap-1">
+                <Icon name="material-symbols:calendar-today" class="material-symbols-rounded icon-xs" aria-hidden="true" />
+                <span>{formatDate(d.pubDate, lang)}</span>
+              </time>
+              {d.updatedDate && (
+                <span class="d-inline-flex align-items-center gap-1">
+                  <Icon name="material-symbols:update" class="material-symbols-rounded icon-xs" aria-hidden="true" />
+                  <span>{ui.updated} {formatDate(d.updatedDate, lang)}</span>
+                </span>
+              )}
+              <span class="d-inline-flex align-items-center gap-1">
+                <Icon name="material-symbols:schedule" class="material-symbols-rounded icon-xs" aria-hidden="true" />
+                <span>{readingTime(post.body)} {ui.readingTime}</span>
+              </span>
+            </div>
+            <div class="chip-row mt-2 hero-enter enter-delay-3" data-pagefind-ignore>
+              {d.tags.map((tg) => (
+                <a class="chip chip-muted d-inline-flex align-items-center gap-1" href={localePath(lang, `/blog/tag/${slugify(tg)}/`)}>
+                  <Icon name="material-symbols:tag" class="material-symbols-rounded icon-xs" aria-hidden="true" />
+                  <span>{tg}</span>
+                </a>
+              ))}
+            </div>
+          </header>
+          {isFallback && (
+            <aside class="blog-fallback-banner hero-enter enter-delay-3" role="note" lang={lang} data-pagefind-ignore>
+              <Icon name="material-symbols:translate" class="material-symbols-rounded icon-sm" aria-hidden="true" />
+              <span>{ui.fallbackNotice}</span>
+            </aside>
+          )}
+          <div class="prose hero-enter hero-enter-fade enter-delay-3"><Content /></div>
+        </article>
+        {toc.length >= 3 && (
+          <aside class="toc d-none d-lg-block hero-enter enter-delay-2" data-pagefind-ignore>
+            <h2 class="d-flex align-items-center gap-1">
+              <Icon name="material-symbols:format-list-bulleted" class="material-symbols-rounded icon-sm" aria-hidden="true" />
+              <span>{ui.toc}</span>
+            </h2>
+            <ul lang={d.lang}>{toc.map((h) => <li class={`depth-${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul>
+          </aside>
+        )}
+      </div>
+      {related.length > 0 && (
+        <section class="section-block page-narrow" data-pagefind-ignore>
+          <h2 class="block-title reveal">
+            <Icon name="material-symbols:recommend" class="material-symbols-rounded text-accent" aria-hidden="true" />
+            <span>{ui.related}</span>
+          </h2>
+          <div class="d-grid gap-3 stagger-group">{related.map((p) => <PostCard item={p} lang={lang} />)}</div>
+        </section>
+      )}
+    </div>
+  </main>
+  <script>
+    import '../scripts/blogToc';
+  </script>
+</Base>

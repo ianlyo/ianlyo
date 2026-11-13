@@ -1,0 +1,28 @@
+---
+import { Icon } from 'astro-icon/components';
+import type { CollectionEntry } from 'astro:content';
+import { t, type Lang } from '../i18n/ui';
+
+type AppStatus = CollectionEntry<'apps'>['data']['status'];
+
+interface Props {
+  status: AppStatus;
+  lang: Lang;
+}
+
+const { status, lang } = Astro.props;
+const labels = t(lang).beta.statusLabels;
+
+const STATUS_ICON_MAP: Record<AppStatus, string> = {
+  released: 'lucide:circle-check',
+  'closed-beta': 'lucide:flask-conical',
+  'open-beta': 'lucide:flask-conical',
+  'coming-soon': 'lucide:hourglass',
+  paused: 'lucide:circle-pause',
+};
+---
+
+<span class={`status-badge s-${status}`}>
+  <Icon name={STATUS_ICON_MAP[status]} class="ui-icon icon-xs" aria-hidden="true" />
+  <span>{labels[status]}</span>
+</span>

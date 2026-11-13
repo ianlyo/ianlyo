@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import BlogTagPage from '../../../../../components/BlogTagPage.astro';
+import { resolvePostsForLang, slugify } from '../../../../../utils/blog';
+
+export async function getStaticPaths() {
+  const posts = resolvePostsForLang(await getCollection('blog'), 'en');
+  const tags = [...new Set(posts.flatMap((item) => item.post.data.tags))];
+  return tags.map((tag) => ({
+    params: { tag: slugify(tag) },
+    props: { tag, posts: posts.filter((item) => item.post.data.tags.includes(tag)) },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+<BlogTagPage tag={tag} posts={posts} lang="en" />

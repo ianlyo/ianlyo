@@ -21,6 +21,8 @@ interface Props {
   publishedTime?: Date;
   /** Path of the equivalent page in the other language (if it exists). Defaults to the language-swapped path. */
   altPath?: string | null;
+  /** Optional override for canonical URL path (used by fallback blog pages). */
+  canonicalPath?: string;
 }
 
 const {
@@ -34,13 +36,14 @@ const {
   jsonLd,
   publishedTime,
   altPath,
+  canonicalPath,
 } = Astro.props;
 
 const ui = t(lang);
 const site = Astro.site!;
 const pageTitle = title ? `${title} | ${SITE.name}` : ui.siteTitle;
 const pageDesc = description ?? ui.siteDescription;
-const canonical = new URL(Astro.url.pathname, site).href;
+const canonical = new URL(canonicalPath ?? Astro.url.pathname, site).href;
 const ogImage = new URL(image, site).href;
 const otherLang: Lang = lang === 'en' ? 'zh-Hant' : 'en';
 const otherPath = altPath === undefined ? switchLangPath(Astro.url.pathname, otherLang) : altPath;
@@ -51,6 +54,23 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
 const themeMetaMap = Object.fromEntries(
   COLOR_THEMES.map((item) => [item.id, { light: item.light.themeColor, dark: item.dark.themeColor }])
 );
+
+const LOCALE_LABELS: Record<Lang, string> = {
+  'zh-Hant': '繁體中文',
+  en: 'English',
+};
+
+const navSectionLinks = [
+  { href: localePath(lang, '/apps-dev/'), label: ui.nav.beta, icon: 'lucide:layout-grid', active: isActive('/apps-dev') },
+  { href: localePath(lang, '/blog/'), label: ui.nav.blog, icon: 'lucide:newspaper', active: isActive('/blog') },
+  { href: `${localePath(lang, '/')}#projects`, label: ui.nav.projects, icon: 'lucide:code-2', active: false },
+];
+
+const drawerPrimaryLinks = [
+  { href: localePath(lang, '/'), label: ui.nav.home, icon: 'lucide:home', active: path === '/' || path === '/en/' },
+  ...navSectionLinks,
+  { href: localePath(lang, '/search/'), label: ui.nav.search, icon: 'lucide:search', active: path.includes('/search') },
+];
 ---
 <!doctype html>
 <html lang={lang} data-bs-theme="light" data-color-theme={DEFAULT_COLOR_THEME}>
@@ -66,7 +86,7 @@ const themeMetaMap = Object.fromEntries(
   <link rel="apple-touch-icon" href={SITE.github.avatarUrl} />
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content={SITE.themeColor} />
-  <link rel="alternate" type="application/rss+xml" title={`${SITE.name} blog`} href="/rss.xml" />
+  <link rel="alternate" type="application/rss+xml" title={`${SITE.name} blog`} href={localePath(lang, '/rss.xml')} />
   {zhPath && <link rel="alternate" hreflang="zh-Hant" href={new URL(zhPath, site).href} />}
   {enPath && <link rel="alternate" hreflang="en" href={new URL(enPath, site).href} />}
 
@@ -147,6 +167,7 @@ const themeMetaMap = Object.fromEntries(
       } catch (e) {}
     })();
   </script>
+  <noscript><style>.reveal{opacity:1!important;transform:none!important;}</style></noscript>
 
 </head>
 <body>
@@ -172,18 +193,12 @@ const themeMetaMap = Object.fromEntries(
 
     <!-- Desktop nav links (hidden on mobile, visible on desktop) -->
     <div class="nav-links d-none d-md-flex">
-      <a href={localePath(lang, '/apps-dev/')} class:list={[{ active: isActive('/apps-dev') }]}>
-        <Icon name="lucide:layout-grid" class="nav-icon" aria-hidden="true" />
-        <span>{ui.nav.beta}</span>
-      </a>
-      <a href="/blog/" class:list={[{ active: path.startsWith('/blog') }]}>
-        <Icon name="lucide:newspaper" class="nav-icon" aria-hidden="true" />
-        <span>{ui.nav.blog}</span>
-      </a>
-      <a href={localePath(lang, '/') + '#projects'}>
-        <Icon name="lucide:code-2" class="nav-icon" aria-hidden="true" />
-        <span>{ui.nav.projects}</span>
-      </a>
+      {navSectionLinks.map((item) => (
+        <a href={item.href} class:list={[{ active: item.active }]}>
+          <Icon name={item.icon} class="nav-icon" aria-hidden="true" />
+          <span>{item.label}</span>
+        </a>
+      ))}
       <a href={localePath(lang, '/search/')} class="nav-action-icon" aria-label={ui.nav.search} title={ui.nav.search}>
         <Icon name="lucide:search" class="nav-icon" aria-hidden="true" />
       </a>
@@ -233,36 +248,14 @@ const themeMetaMap = Object.fromEntries(
 
     <div class="nav-drawer-body">
       <ul class="nav-drawer-list">
-        <li>
-          <a href={localePath(lang, '/')} class:list={['nav-drawer-item', { active: path === '/' || path === '/en/' }]}>
-            <Icon name="lucide:home" class="nav-icon" aria-hidden="true" />
-            <span>{ui.nav.home}</span>
-          </a>
-        </li>
-        <li>
-          <a href={localePath(lang, '/apps-dev/')} class:list={['nav-drawer-item', { active: isActive('/apps-dev') }]}>
-            <Icon name="lucide:layout-grid" class="nav-icon" aria-hidden="true" />
-            <span>{ui.nav.beta}</span>
-          </a>
-        </li>
-        <li>
-          <a href="/blog/" class:list={['nav-drawer-item', { active: path.startsWith('/blog') }]}>
-            <Icon name="lucide:newspaper" class="nav-icon" aria-hidden="true" />
-            <span>{ui.nav.blog}</span>
-          </a>
-        </li>
-        <li>
-          <a href={localePath(lang, '/') + '#projects'} class="nav-drawer-item">
-            <Icon name="lucide:code-2" class="nav-icon" aria-hidden="true" />
-            <span>{ui.nav.projects}</span>
-          </a>
-        </li>
-        <li>
-          <a href={localePath(lang, '/search/')} class:list={['nav-drawer-item', { active: path.includes('/search') }]}>
-            <Icon name="lucide:search" class="nav-icon" aria-hidden="true" />
-            <span>{ui.nav.search}</span>
-          </a>
-        </li>
+        {drawerPrimaryLinks.map((item) => (
+          <li>
+            <a href={item.href} class:list={['nav-drawer-item', { active: item.active }]}>
+              <Icon name={item.icon} class="nav-icon" aria-hidden="true" />
+              <span>{item.label}</span>
+            </a>
+          </li>
+        ))}
       </ul>
 
       <hr class="nav-drawer-divider" />
@@ -306,10 +299,10 @@ const themeMetaMap = Object.fromEntries(
                 data-lang-select
               >
                 <option value={lang} data-href={path} selected>
-                  {lang === 'zh-Hant' ? '繁體中文' : 'English'}
+                  {LOCALE_LABELS[lang]}
                 </option>
                 <option value={otherLang} data-href={otherPath}>
-                  {otherLang === 'zh-Hant' ? '繁體中文' : 'English'}
+                  {LOCALE_LABELS[otherLang]}
                 </option>
               </select>
             </label>

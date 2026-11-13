@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import BlogCategoryPage from '../../../../../components/BlogCategoryPage.astro';
+import { BLOG_CATEGORIES } from '../../../../../content.config';
+import { resolvePostsForLang, slugify } from '../../../../../utils/blog';
+
+export async function getStaticPaths() {
+  const posts = resolvePostsForLang(await getCollection('blog'), 'en');
+  return BLOG_CATEGORIES.map((c) => ({
+    params: { category: slugify(c) },
+    props: { name: c, posts: posts.filter((item) => item.post.data.category === c) },
+  }));
+}
+
+const { name, posts } = Astro.props;
+---
+<BlogCategoryPage name={name} posts={posts} lang="en" />

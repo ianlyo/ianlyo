@@ -1,0 +1,14 @@
+---
+import { getCollection } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import BlogIndexPage from '../../../components/BlogIndexPage.astro';
+import { resolvePostsForLang } from '../../../utils/blog';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = resolvePostsForLang(await getCollection('blog'), 'en');
+  return paginate(posts, { pageSize: 10 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+<BlogIndexPage page={page} lang="en" />

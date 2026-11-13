@@ -1,0 +1,42 @@
+---
+import { Icon } from 'astro-icon/components';
+import Base from '../layouts/Base.astro';
+import PostCard from './PostCard.astro';
+import type { ResolvedPost } from '../utils/blog';
+import { t, localePath, blogCategoryLabel, type Lang } from '../i18n/ui';
+
+interface Props {
+  name: string;
+  posts: ResolvedPost[];
+  lang?: Lang;
+}
+
+const { name, posts, lang = 'zh-Hant' } = Astro.props;
+const ui = t(lang).blog;
+const label = blogCategoryLabel(name, lang);
+---
+<Base title={`${ui.categories}: ${label}`} description={label} lang={lang}>
+  <main class="page">
+    <div class="container page-narrow">
+      <header class="page-head mb-4">
+        <p class="meta hero-enter hero-enter-fade">
+          <a href={localePath(lang, '/blog/')} class="d-inline-flex align-items-center gap-1 back-link">
+            <Icon name="material-symbols:arrow-back" class="material-symbols-rounded icon-sm" aria-hidden="true" />
+            <span>{ui.title}</span>
+          </a>
+        </p>
+        <h1 class="d-flex align-items-center gap-2 hero-enter enter-delay-1">
+          <Icon name="material-symbols:folder-open" class="material-symbols-rounded text-accent" aria-hidden="true" />
+          <span>{label}</span>
+        </h1>
+      </header>
+      {posts.length ? (
+        <div class="d-grid gap-3 stagger-group">
+          {posts.map((item) => <PostCard item={item} lang={lang} />)}
+        </div>
+      ) : (
+        <p class="hero-enter enter-delay-2">{ui.noPosts}</p>
+      )}
+    </div>
+  </main>
+</Base>

@@ -8,6 +8,7 @@ import {
   type ResolvedThemeMode,
   type ThemeMode,
 } from '../config/themes';
+import { fadeImageOnLoad, safeGetStorage, safeSetStorage } from './domUtils';
 
 export type ReduceMotionPref = 'off' | 'on' | 'system';
 export type FontScalePref = 'normal' | 'large' | 'xlarge';
@@ -42,22 +43,19 @@ const THEME_ICONS: Record<ThemeMode, string> = {
 let systemListenersBound = false;
 let transitionTimer: number | undefined;
 
-function safeGetStorage(key: string): string | null {
-  try {
-    return localStorage.getItem(key);
-  } catch {
-    return null;
-  }
+/** Map resolved preferences to the corresponding `<html>` data-* attribute pairs (SSOT for apply & stale checks). */
+function getDomAttributeEntries(state: PreferencesState): ReadonlyArray<readonly [string, string]> {
+  return [
+    ['data-bs-theme', state.resolvedTheme],
+    ['data-color-theme', state.colorTheme],
+    ['data-reduce-motion', state.resolvedReduceMotion ? 'true' : 'false'],
+    ['data-font-scale', state.fontScale],
+    ['data-high-contrast', state.highContrast ? 'true' : 'false'],
+    ['data-progress-bar', state.progressBar ? 'true' : 'false'],
+  ];
 }
 
-function safeSetStorage(key: string, value: string): void {
-  try {
-    localStorage.setItem(key, value);
-  } catch {
-    // Ignore storage quota or private browsing errors
-  }
-}
-
+/** Resolve `'auto'` theme mode against the OS dark/light preference. */
 export function resolveThemeMode(mode: ThemeMode): ResolvedThemeMode {
   if (mode === 'light' || mode === 'dark') return mode;
   const prefersDark =
@@ -138,7 +136,7 @@ function syncContributionChart(colorTheme: ColorThemeId, resolvedTheme: Resolved
   const palette = COLOR_THEME_MAP[colorTheme][resolvedTheme];
   const targetUrl = `https://ghchart.rshah.org/${palette.ghChart}/${user}`;
   if (graphImg.getAttribute('src') !== targetUrl) {
-    graphImg.src = targetUrl;
+    fadeImageOnLoad(graphImg, { nextSrc: targetUrl });
   }
 }
 
@@ -148,6 +146,7 @@ function syncMetaThemeColor(colorTheme: ColorThemeId, resolvedTheme: ResolvedThe
   meta.content = COLOR_THEME_MAP[colorTheme][resolvedTheme].themeColor;
 }
 
+/** Apply current `localStorage` preferences to the DOM, chart, meta color, and toggle buttons. */
 export function applyPreferences(options: { withTransition?: boolean; dispatch?: boolean } = {}): PreferencesState {
   const { withTransition = false, dispatch = true } = options;
   const state = getPreferencesState();
@@ -161,12 +160,9 @@ export function applyPreferences(options: { withTransition?: boolean; dispatch?:
     }, 350);
   }
 
-  root.setAttribute('data-bs-theme', state.resolvedTheme);
-  root.setAttribute('data-color-theme', state.colorTheme);
-  root.setAttribute('data-reduce-motion', state.resolvedReduceMotion ? 'true' : 'false');
-  root.setAttribute('data-font-scale', state.fontScale);
-  root.setAttribute('data-high-contrast', state.highContrast ? 'true' : 'false');
-  root.setAttribute('data-progress-bar', state.progressBar ? 'true' : 'false');
+  for (const [attr, val] of getDomAttributeEntries(state)) {
+    root.setAttribute(attr, val);
+  }
 
   syncMetaThemeColor(state.colorTheme, state.resolvedTheme);
   syncThemeToggleButtons(state.themeMode, withTransition);
@@ -227,14 +223,7 @@ export function resetAllPreferences(): PreferencesState {
 
 function isDomStateStale(state: PreferencesState): boolean {
   const root = document.documentElement;
-  return (
-    root.getAttribute('data-bs-theme') !== state.resolvedTheme ||
-    root.getAttribute('data-color-theme') !== state.colorTheme ||
-    root.getAttribute('data-reduce-motion') !== (state.resolvedReduceMotion ? 'true' : 'false') ||
-    root.getAttribute('data-font-scale') !== state.fontScale ||
-    root.getAttribute('data-high-contrast') !== (state.highContrast ? 'true' : 'false') ||
-    root.getAttribute('data-progress-bar') !== (state.progressBar ? 'true' : 'false')
-  );
+  return getDomAttributeEntries(state).some(([attr, val]) => root.getAttribute(attr) !== val);
 }
 
 export function syncPreferencesIfStale(dispatch = true): void {

@@ -28,7 +28,7 @@ const serializedScreenshots = screenshots.map((s) => ({
 <section class="screenshot-gallery-section" data-porsche-section id={`gallery-section-${appId}`} aria-label={sectionTitle}>
   <div class="gallery-viewport-stage">
     <div class="gallery-header-wrap">
-      <h2 class="block-title">
+      <h2 class="block-title reveal">
         <Icon name="lucide:images" class="ui-icon text-accent" aria-hidden="true" />
         <span>{sectionTitle}</span>
       </h2>
@@ -58,6 +58,7 @@ const serializedScreenshots = screenshots.map((s) => ({
               <div
                 class="gallery-slide"
                 data-slide-index={index}
+                style={`--slide-idx: ${Math.min(index, 5)}`}
               >
                 <button
                   type="button"
@@ -82,7 +83,7 @@ const serializedScreenshots = screenshots.map((s) => ({
         </div>
 
         <!-- Apple.com style bottom controls bar -->
-        <div class="gallery-controls">
+        <div class="gallery-controls reveal reveal-fade delay-1">
           <div class="gallery-indicators" role="tablist" aria-label={sectionTitle}>
             {screenshots.map((_, index) => (
               <button
@@ -280,7 +281,7 @@ const serializedScreenshots = screenshots.map((s) => ({
     box-sizing: border-box;
     opacity: 0.72;
     transform: scale(0.94);
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+    transition: transform 0.4s var(--ease-out-expo), opacity 0.4s ease;
   }
   .gallery-slide.is-focused {
     opacity: 1;
@@ -288,31 +289,40 @@ const serializedScreenshots = screenshots.map((s) => ({
   }
 
   /* Staggered entrance animation when scrolled into view */
-  .apple-gallery.is-revealed .gallery-slide {
-    animation: galleryCardRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+  .apple-gallery:not(.is-revealed) .screenshot-card {
+    opacity: 0;
+    transform: translate3d(0, 26px, 0) scale(0.94);
+  }
+  .apple-gallery.is-revealed .screenshot-card {
+    animation: galleryCardRise 0.65s var(--ease-out-expo) calc(var(--slide-idx, 0) * 65ms) backwards;
   }
   @keyframes galleryCardRise {
     from {
       opacity: 0;
-      transform: translateY(32px) scale(0.92);
+      transform: translate3d(0, 26px, 0) scale(0.94);
     }
     to {
-      opacity: var(--card-target-opacity, 0.85);
-      transform: translateY(0) scale(var(--card-target-scale, 0.965));
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
     }
-  }
-  .apple-gallery.is-revealed .gallery-slide.is-focused {
-    --card-target-opacity: 1;
-    --card-target-scale: 1;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .gallery-slide {
+    .gallery-slide,
+    .apple-gallery .screenshot-card {
       opacity: 1 !important;
       transform: none !important;
       transition: none !important;
       animation: none !important;
     }
+  }
+
+  :global(html[data-reduce-motion='true']) .gallery-slide,
+  :global(html[data-reduce-motion='true']) .apple-gallery .screenshot-card {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
   }
 
   /* Interactive Apple-grade screenshot cards */
@@ -327,7 +337,7 @@ const serializedScreenshots = screenshots.map((s) => ({
     background: var(--bg-surface-subtle);
     border: 1px solid var(--border-subtle);
     box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
-    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+    transition: transform 0.25s var(--ease-out-expo), box-shadow 0.25s ease, border-color 0.25s ease;
     cursor: zoom-in;
     padding: 0;
     display: block;
@@ -424,7 +434,7 @@ const serializedScreenshots = screenshots.map((s) => ({
     border: none;
     padding: 0;
     cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.25s var(--ease-out-expo);
   }
 
   .gallery-dot:hover {
@@ -458,7 +468,7 @@ const serializedScreenshots = screenshots.map((s) => ({
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     color: var(--text-primary);
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.2s var(--ease-out-expo);
     padding: 0;
   }
 
@@ -506,7 +516,7 @@ const serializedScreenshots = screenshots.map((s) => ({
     flex-direction: column;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.25s var(--ease-out-expo);
   }
   .screenshot-lightbox.is-open {
     opacity: 1;
@@ -516,9 +526,9 @@ const serializedScreenshots = screenshots.map((s) => ({
   .lightbox-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.72);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+    background: rgba(0, 0, 0, 0.78);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     z-index: 1;
   }
 
@@ -529,6 +539,11 @@ const serializedScreenshots = screenshots.map((s) => ({
     flex-direction: column;
     width: 100%;
     height: 100%;
+    transform: scale(0.96);
+    transition: transform 0.28s var(--ease-out-expo);
+  }
+  .screenshot-lightbox.is-open .lightbox-content {
+    transform: scale(1);
   }
 
   .lightbox-header {
@@ -659,7 +674,7 @@ const serializedScreenshots = screenshots.map((s) => ({
     object-fit: contain;
     border-radius: 12px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85);
-    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.28s var(--ease-out-expo);
     transform-origin: center center;
     cursor: zoom-in;
     user-select: none;
@@ -669,6 +684,21 @@ const serializedScreenshots = screenshots.map((s) => ({
   .lightbox-img.is-zoomed {
     transform: scale(2.2);
     cursor: zoom-out;
+  }
+
+  .lightbox-img.is-fading {
+    animation: lightboxImgSwap 0.24s var(--ease-out-expo) backwards;
+  }
+
+  @keyframes lightboxImgSwap {
+    from {
+      opacity: 0;
+      transform: scale(0.975);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
   @media (min-width: 769px) {
@@ -766,393 +796,9 @@ const serializedScreenshots = screenshots.map((s) => ({
       max-height: calc(100vh - 110px);
       max-height: calc(100dvh - 110px);
     }
-    .lightbox-img.is-zoomed {
-      transform: scale(1.85);
-    }
   }
 </style>
 
 <script>
-  import gsap from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-  gsap.registerPlugin(ScrollTrigger);
-
-  let galleryCtx: gsap.Context | null = null;
-  let activeKeydownHandler: ((e: KeyboardEvent) => void) | null = null;
-  let lastWindowWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
-
-  function setupGalleries() {
-    if (galleryCtx) {
-      galleryCtx.revert();
-      galleryCtx = null;
-    }
-    if (activeKeydownHandler) {
-      document.removeEventListener('keydown', activeKeydownHandler);
-      activeKeydownHandler = null;
-    }
-
-    const sections = document.querySelectorAll<HTMLElement>('[data-porsche-section]');
-    if (!sections.length) return;
-
-    galleryCtx = gsap.context(() => {
-      sections.forEach((section) => {
-        const gallery = section.querySelector<HTMLElement>('[data-gallery]');
-        const track = section.querySelector<HTMLElement>('.gallery-track');
-        if (!gallery || !track) return;
-
-        const appId = gallery.dataset.appId || 'app';
-        const screenshotsData = JSON.parse(gallery.dataset.screenshots || '[]') as Array<{
-          src: string;
-          alt: string;
-          filename: string;
-        }>;
-        if (screenshotsData.length === 0) return;
-
-        const slides = Array.from(gallery.querySelectorAll<HTMLElement>('.gallery-slide'));
-        const prevButton = gallery.querySelector<HTMLButtonElement>('.apple-nav-btn[data-action="prev"]');
-        const nextButton = gallery.querySelector<HTMLButtonElement>('.apple-nav-btn[data-action="next"]');
-        const dots = Array.from(gallery.querySelectorAll<HTMLButtonElement>('.gallery-dot'));
-
-        // Lightbox elements
-        const lightbox = document.getElementById(`lightbox-${appId}`);
-        const lightboxImg = document.getElementById(`lightbox-img-${appId}`) as HTMLImageElement | null;
-        const lightboxTitle = document.getElementById(`lightbox-title-${appId}`);
-        const lightboxCounter = document.getElementById(`lightbox-counter-${appId}`);
-        const lightboxPrev = lightbox?.querySelector<HTMLButtonElement>('[data-lightbox-prev]');
-        const lightboxNext = lightbox?.querySelector<HTMLButtonElement>('[data-lightbox-next]');
-        const lightboxCloseButtons = lightbox?.querySelectorAll('[data-lightbox-close]');
-
-        let currentLightboxIndex = 0;
-        let isZoomed = false;
-
-        const resetZoom = () => {
-          if (!lightboxImg) return;
-          isZoomed = false;
-          lightboxImg.classList.remove('is-zoomed');
-          lightboxImg.style.transformOrigin = 'center center';
-        };
-
-        const toggleZoom = (e: MouseEvent) => {
-          if (!lightboxImg) return;
-          if (isZoomed) {
-            resetZoom();
-          } else {
-            const rect = lightboxImg.getBoundingClientRect();
-            const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
-            const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
-            lightboxImg.style.transformOrigin = `${x}% ${y}%`;
-            lightboxImg.classList.add('is-zoomed');
-            isZoomed = true;
-          }
-        };
-
-        const updateLightbox = (index: number) => {
-          resetZoom();
-          currentLightboxIndex = index;
-          const item = screenshotsData[index];
-          if (!item || !lightboxImg) return;
-
-          lightboxImg.src = item.src;
-          lightboxImg.alt = item.alt;
-
-          if (lightboxTitle) {
-            lightboxTitle.textContent = item.filename;
-          }
-          if (lightboxCounter) {
-            lightboxCounter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(screenshotsData.length).padStart(2, '0')}`;
-          }
-          if (lightboxPrev) {
-            lightboxPrev.disabled = index === 0;
-          }
-          if (lightboxNext) {
-            lightboxNext.disabled = index === screenshotsData.length - 1;
-          }
-        };
-
-        const openLightbox = (index: number) => {
-          if (!lightbox) return;
-          updateLightbox(index);
-          lightbox.classList.add('is-open');
-          lightbox.setAttribute('aria-hidden', 'false');
-          document.body.style.overflow = 'hidden';
-        };
-
-        const closeLightbox = () => {
-          if (!lightbox) return;
-          resetZoom();
-          lightbox.classList.remove('is-open');
-          lightbox.setAttribute('aria-hidden', 'true');
-          document.body.style.overflow = '';
-        };
-
-        // Image click toggles zoom in / zoom out
-        lightboxImg?.addEventListener('click', (e) => {
-          e.stopPropagation();
-          toggleZoom(e);
-        });
-
-        // Blank space click closes lightbox
-        lightbox?.addEventListener('click', (e) => {
-          const target = e.target as HTMLElement | null;
-          if (!target) return;
-          if (lightboxImg && (target === lightboxImg || lightboxImg.contains(target))) return;
-          if (
-            (lightboxPrev && (target === lightboxPrev || lightboxPrev.contains(target))) ||
-            (lightboxNext && (target === lightboxNext || lightboxNext.contains(target)))
-          ) {
-            return;
-          }
-          closeLightbox();
-        });
-
-        // Card click triggers lightbox
-        const triggers = gallery.querySelectorAll<HTMLElement>('[data-lightbox-trigger]');
-        triggers.forEach((trigger) => {
-          trigger.addEventListener('click', () => {
-            const index = parseInt(trigger.dataset.lightboxTrigger || '0', 10);
-            openLightbox(index);
-          });
-        });
-
-        // Touch swipe navigation inside Lightbox
-        let touchStartX = 0;
-        let touchStartY = 0;
-        lightbox?.addEventListener('touchstart', (e) => {
-          if (!e.touches[0]) return;
-          touchStartX = e.touches[0].clientX;
-          touchStartY = e.touches[0].clientY;
-        }, { passive: true });
-
-        lightbox?.addEventListener('touchend', (e) => {
-          if (!touchStartX || isZoomed || !e.changedTouches[0]) return;
-          const deltaX = e.changedTouches[0].clientX - touchStartX;
-          const deltaY = e.changedTouches[0].clientY - touchStartY;
-          if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY) * 1.4) {
-            if (deltaX < 0 && currentLightboxIndex < screenshotsData.length - 1) {
-              updateLightbox(currentLightboxIndex + 1);
-            } else if (deltaX > 0 && currentLightboxIndex > 0) {
-              updateLightbox(currentLightboxIndex - 1);
-            }
-          }
-          touchStartX = 0;
-          touchStartY = 0;
-        }, { passive: true });
-
-        // Lightbox Close
-        lightboxCloseButtons?.forEach((btn) => {
-          btn.addEventListener('click', (e) => {
-            if (e.target === btn || btn.contains(e.target as Node)) {
-              closeLightbox();
-            }
-          });
-        });
-
-        // Lightbox prev/next buttons
-        lightboxPrev?.addEventListener('click', (e) => {
-          e.stopPropagation();
-          if (currentLightboxIndex > 0) {
-            updateLightbox(currentLightboxIndex - 1);
-          }
-        });
-        lightboxNext?.addEventListener('click', (e) => {
-          e.stopPropagation();
-          if (currentLightboxIndex < screenshotsData.length - 1) {
-            updateLightbox(currentLightboxIndex + 1);
-          }
-        });
-
-        // Keyboard navigation for lightbox
-        const onKeyDown = (e: KeyboardEvent) => {
-          if (!lightbox || !lightbox.classList.contains('is-open')) return;
-          if (e.key === 'Escape') {
-            if (isZoomed) resetZoom();
-            else closeLightbox();
-          } else if (e.key === 'ArrowLeft') {
-            if (currentLightboxIndex > 0) updateLightbox(currentLightboxIndex - 1);
-          } else if (e.key === 'ArrowRight') {
-            if (currentLightboxIndex < screenshotsData.length - 1) updateLightbox(currentLightboxIndex + 1);
-          }
-        };
-        activeKeydownHandler = onKeyDown;
-        document.addEventListener('keydown', onKeyDown);
-
-        let lastActiveIndex = -1;
-        const updateActiveSlide = (activeIndex: number) => {
-          if (activeIndex === lastActiveIndex) return;
-          lastActiveIndex = activeIndex;
-          dots.forEach((dot, index) => {
-            const isActive = index === activeIndex;
-            dot.classList.toggle('is-active', isActive);
-            dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
-          });
-          slides.forEach((slide, idx) => {
-            slide.classList.toggle('is-focused', idx === activeIndex);
-          });
-        };
-
-        const getDistance = () => {
-          const trackWidth = track.scrollWidth;
-          const windowWidth = window.innerWidth;
-          const gutter = parseFloat(window.getComputedStyle(section).getPropertyValue('--gallery-gutter')) || 40;
-          return Math.max(0, trackWidth - windowWidth + gutter * 1.5);
-        };
-
-        const distance = getDistance();
-
-        // 若卡片總寬度小於視窗寬度（例如超寬螢幕或截圖只有少數幾張），無需橫向滾動，直接置中優雅陳列，垂直滾動暢通無阻
-        if (distance <= 40) {
-          gallery.classList.add('is-centered');
-          gsap.set(track, { clearProps: 'all' });
-          slides.forEach((slide) => {
-            slide.classList.add('is-focused');
-          });
-          return;
-        }
-
-        gallery.classList.remove('is-centered');
-
-        const isMobile = window.innerWidth <= 768;
-        // 極速輕快滾動行程：大幅縮短滾動距離至 0.22~0.28，使用者只需滑動 1~2 下滾輪或大拇指輕滑即可快速掠過整段截圖輪播
-        const scrollDistance = () => Math.round(getDistance() * (isMobile ? 0.22 : 0.28) + 10);
-
-        const tween = gsap.to(track, {
-          x: () => -getDistance(),
-          ease: 'none',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top top',
-            end: () => `+=${scrollDistance()}`,
-            pin: true,
-            pinSpacing: true,
-            scrub: isMobile ? 0.2 : 0.35,
-            invalidateOnRefresh: true,
-            onUpdate: (self) => {
-              const p = self.progress;
-              const activeIndex = Math.min(
-                slides.length - 1,
-                Math.max(0, Math.round(p * (slides.length - 1)))
-              );
-              updateActiveSlide(activeIndex);
-              if (prevButton) {
-                const disablePrev = p <= 0.01;
-                if (prevButton.disabled !== disablePrev) prevButton.disabled = disablePrev;
-              }
-              if (nextButton) {
-                const disableNext = p >= 0.99;
-                if (nextButton.disabled !== disableNext) nextButton.disabled = disableNext;
-              }
-            },
-          },
-        });
-
-        // 手機與觸控螢幕手勢：支援大拇指水平左右撥動卡片
-        let swipeStartX = 0;
-        let swipeStartY = 0;
-        let swipeStartScrollY = 0;
-        let isHorizontalSwipe = false;
-
-        let touchRafId = 0;
-        let pendingTargetScrollY = 0;
-
-        track.addEventListener('touchstart', (e: TouchEvent) => {
-          if (!e.touches[0]) return;
-          swipeStartX = e.touches[0].clientX;
-          swipeStartY = e.touches[0].clientY;
-          swipeStartScrollY = window.scrollY;
-          isHorizontalSwipe = false;
-        }, { passive: true });
-
-        track.addEventListener('touchmove', (e: TouchEvent) => {
-          if (!e.touches[0] || !swipeStartX) return;
-          const deltaX = e.touches[0].clientX - swipeStartX;
-          const deltaY = e.touches[0].clientY - swipeStartY;
-
-          // 判斷是否為明確的水平撥動手勢
-          if (!isHorizontalSwipe && Math.abs(deltaX) > 10 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
-            isHorizontalSwipe = true;
-          }
-
-          if (isHorizontalSwipe) {
-            pendingTargetScrollY = swipeStartScrollY - deltaX * 1.35;
-            if (!touchRafId) {
-              touchRafId = window.requestAnimationFrame(() => {
-                window.scrollTo({
-                  top: pendingTargetScrollY,
-                  behavior: 'auto',
-                });
-                touchRafId = 0;
-              });
-            }
-          }
-        }, { passive: true });
-
-        track.addEventListener('touchend', () => {
-          if (touchRafId) {
-            window.cancelAnimationFrame(touchRafId);
-            touchRafId = 0;
-          }
-          swipeStartX = 0;
-          swipeStartY = 0;
-          isHorizontalSwipe = false;
-        }, { passive: true });
-
-        // Scroll to target slide when dots or arrows are clicked
-        const scrollToSlideIndex = (index: number) => {
-          const st = tween.scrollTrigger;
-          if (!st) return;
-          const targetP = index / Math.max(1, slides.length - 1);
-          const targetY = st.start + (st.end - st.start) * targetP;
-          window.scrollTo({
-            top: targetY,
-            behavior: 'smooth',
-          });
-        };
-
-        dots.forEach((dot, idx) => {
-          dot.onclick = () => scrollToSlideIndex(idx);
-        });
-
-        if (prevButton) {
-          prevButton.onclick = () => {
-            const st = tween.scrollTrigger;
-            if (!st) return;
-            const currentIdx = Math.round(st.progress * (slides.length - 1));
-            const prevIdx = Math.max(0, currentIdx - 1);
-            scrollToSlideIndex(prevIdx);
-          };
-        }
-
-        if (nextButton) {
-          nextButton.onclick = () => {
-            const st = tween.scrollTrigger;
-            if (!st) return;
-            const currentIdx = Math.round(st.progress * (slides.length - 1));
-            const nextIdx = Math.min(slides.length - 1, currentIdx + 1);
-            scrollToSlideIndex(nextIdx);
-          };
-        }
-
-        // Initial focus state
-        updateActiveSlide(0);
-      });
-    });
-
-    ScrollTrigger.refresh();
-  }
-
-  // Setup on page load and on Astro view transitions
-  setupGalleries();
-  document.addEventListener('astro:page-load', setupGalleries);
-
-  let resizeTimeout: any;
-  window.addEventListener('resize', () => {
-    // Ignore mobile address bar vertical height changes when horizontal width hasn't changed
-    if (Math.abs(window.innerWidth - lastWindowWidth) < 2) return;
-    lastWindowWidth = window.innerWidth;
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      setupGalleries();
-    }, 200);
-  }, { passive: true });
+  import '../scripts/screenshotGallery';
 </script>

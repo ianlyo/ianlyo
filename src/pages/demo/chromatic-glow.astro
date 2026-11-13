@@ -11,6 +11,54 @@ const { lang = 'zh-Hant' } = Astro.props;
 const ui = t(lang);
 const demo = ui.chromaticGlowDemo;
 const altPath = lang === 'en' ? '/demo/chromatic-glow/' : '/en/demo/chromatic-glow/';
+
+const shadowLayers = [
+  {
+    name: demo.layerTopChroma,
+    dark: '0 -4px 4px rgba(0, 220, 255, 0.9)',
+    darkClass: 'text-info',
+    light: '0 -3px 4px rgba(0, 160, 245, 0.9)',
+    lightClass: 'text-primary',
+    effect: '頂部青藍色散',
+    badgeClass: 'bg-info-subtle text-info border',
+  },
+  {
+    name: demo.layerBottomChroma,
+    dark: '0 4px 4px rgba(255, 120, 0, 0.9)',
+    darkClass: 'text-warning',
+    light: '0 3px 4px rgba(249, 115, 22, 0.92)',
+    lightClass: 'text-danger',
+    effect: '底部暖橘色散',
+    badgeClass: 'bg-warning-subtle text-warning border',
+  },
+  {
+    name: demo.layerCoreGlow,
+    dark: '0 0 20px rgba(255, 255, 255, 0.9)',
+    darkClass: '',
+    light: '0 0 14px rgba(15, 23, 42, 0.16)',
+    lightClass: '',
+    effect: '核心輪廓錨定',
+    badgeClass: 'bg-secondary-subtle text-secondary border',
+  },
+  {
+    name: demo.layerMidBloom,
+    dark: '0 0 45px rgba(255, 255, 255, 0.6)',
+    darkClass: '',
+    light: '0 0 35px rgba(79, 70, 229, 0.2)',
+    lightClass: '',
+    effect: '中層光暈光譜',
+    badgeClass: 'bg-primary-subtle text-primary border',
+  },
+  {
+    name: demo.layerAmbientGlow,
+    dark: '0 0 90px rgba(255, 255, 255, 0.3)',
+    darkClass: '',
+    light: '0 0 75px rgba(14, 165, 233, 0.15)',
+    lightClass: '',
+    effect: '外圍環境輝光',
+    badgeClass: 'bg-info-subtle text-info border',
+  },
+] as const;
 ---
 
 <Base
@@ -23,7 +71,7 @@ const altPath = lang === 'en' ? '/demo/chromatic-glow/' : '/en/demo/chromatic-gl
   <main class="page demo-page py-5">
     <div class="container page-wide">
       <!-- Breadcrumb / Back Navigation -->
-      <div class="mb-4">
+      <div class="mb-4 hero-enter hero-enter-fade">
         <a href={lang === 'en' ? '/en/' : '/'} class="btn btn-sm btn-outline-secondary rounded-pill d-inline-flex align-items-center gap-1">
           <Icon name="material-symbols:arrow-back" class="material-symbols-rounded icon-xs" aria-hidden="true" />
           <span>{ui.nav.home}</span>
@@ -32,21 +80,21 @@ const altPath = lang === 'en' ? '/demo/chromatic-glow/' : '/en/demo/chromatic-gl
 
       <!-- Header Section -->
       <header class="text-center mb-5 pb-3">
-        <div class="badge rounded-pill bg-primary-subtle text-primary mb-3 px-3 py-2 fw-semibold">
+        <div class="badge rounded-pill bg-primary-subtle text-primary mb-3 px-3 py-2 fw-semibold hero-enter">
           Design Token & Architecture Showcase
         </div>
-        <h1 class="display-4 fw-black mb-3">
+        <h1 class="display-4 fw-black mb-3 hero-enter enter-delay-1">
           <span class="text-glow-aberration d-inline-block tracking-tight" id="hero-display-text">
             {demo.defaultPreviewText}
           </span>
         </h1>
-        <p class="lead text-secondary mx-auto" style="max-width: 680px;">
+        <p class="lead text-secondary mx-auto hero-enter enter-delay-2" style="max-width: 680px;">
           {demo.lead}
         </p>
       </header>
 
       <!-- Interactive Playground Card -->
-      <section class="card surface-card border shadow-lg mb-5 overflow-hidden rounded-4">
+      <section class="card surface-card border shadow-lg mb-5 overflow-hidden rounded-4 hero-enter-scale enter-delay-2">
         <div class="card-header bg-transparent border-bottom p-4 d-flex flex-wrap align-items-center justify-content-between gap-3">
           <div class="d-flex align-items-center gap-2">
             <Icon name="material-symbols:tune" class="material-symbols-rounded text-accent fs-4" aria-hidden="true" />
@@ -116,13 +164,13 @@ const altPath = lang === 'en' ? '/demo/chromatic-glow/' : '/en/demo/chromatic-gl
 
       <!-- Side-by-side Dark vs Light Mode Comparison -->
       <section class="mb-5">
-        <h2 class="h4 fw-bold mb-4 d-flex align-items-center gap-2">
+        <h2 class="h4 fw-bold mb-4 d-flex align-items-center gap-2 reveal">
           <Icon name="material-symbols:compare" class="material-symbols-rounded text-accent fs-4" aria-hidden="true" />
           <span>深淺色模式設計策略對比</span>
         </h2>
-        <div class="row g-4">
+        <div class="row g-4 stagger-group">
           <!-- Light Mode Preview Card -->
-          <div class="col-12 col-lg-6">
+          <div class="col-12 col-lg-6 reveal">
             <div class="p-4 rounded-4 border h-100 position-relative" style="background-color: #f8fafc; color: #0f172a;" data-bs-theme="light">
               <div class="d-flex align-items-center justify-content-between mb-3">
                 <div class="badge rounded-pill bg-light text-dark border px-3 py-1 fw-semibold d-inline-flex align-items-center gap-1">
@@ -143,7 +191,7 @@ const altPath = lang === 'en' ? '/demo/chromatic-glow/' : '/en/demo/chromatic-gl
           </div>
 
           <!-- Dark Mode Preview Card -->
-          <div class="col-12 col-lg-6">
+          <div class="col-12 col-lg-6 reveal delay-1">
             <div class="p-4 rounded-4 border h-100 position-relative" style="background-color: #090d16; color: #ffffff;" data-bs-theme="dark">
               <div class="d-flex align-items-center justify-content-between mb-3">
                 <div class="badge rounded-pill bg-dark text-white border border-secondary px-3 py-1 fw-semibold d-inline-flex align-items-center gap-1">
@@ -166,7 +214,7 @@ const altPath = lang === 'en' ? '/demo/chromatic-glow/' : '/en/demo/chromatic-gl
       </section>
 
       <!-- 5-Layer Breakdown Section -->
-      <section class="card surface-card border rounded-4 shadow-sm mb-5 p-4 p-md-5">
+      <section class="card surface-card border rounded-4 shadow-sm mb-5 p-4 p-md-5 reveal">
         <h2 class="h4 fw-bold mb-3 d-flex align-items-center gap-2">
           <Icon name="material-symbols:layers" class="material-symbols-rounded text-accent fs-4" aria-hidden="true" />
           <span>{demo.layerBreakdown}</span>
@@ -186,43 +234,21 @@ const altPath = lang === 'en' ? '/demo/chromatic-glow/' : '/en/demo/chromatic-gl
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td class="fw-semibold">{demo.layerTopChroma}</td>
-                <td><code class="text-info">0 -4px 4px rgba(0, 220, 255, 0.9)</code></td>
-                <td><code class="text-primary">0 -3px 4px rgba(0, 160, 245, 0.9)</code></td>
-                <td><span class="badge bg-info-subtle text-info border">頂部青藍色散</span></td>
-              </tr>
-              <tr>
-                <td class="fw-semibold">{demo.layerBottomChroma}</td>
-                <td><code class="text-warning">0 4px 4px rgba(255, 120, 0, 0.9)</code></td>
-                <td><code class="text-danger">0 3px 4px rgba(249, 115, 22, 0.92)</code></td>
-                <td><span class="badge bg-warning-subtle text-warning border">底部暖橘色散</span></td>
-              </tr>
-              <tr>
-                <td class="fw-semibold">{demo.layerCoreGlow}</td>
-                <td><code>0 0 20px rgba(255, 255, 255, 0.9)</code></td>
-                <td><code>0 0 14px rgba(15, 23, 42, 0.16)</code></td>
-                <td><span class="badge bg-secondary-subtle text-secondary border">核心輪廓錨定</span></td>
-              </tr>
-              <tr>
-                <td class="fw-semibold">{demo.layerMidBloom}</td>
-                <td><code>0 0 45px rgba(255, 255, 255, 0.6)</code></td>
-                <td><code>0 0 35px rgba(79, 70, 229, 0.2)</code></td>
-                <td><span class="badge bg-primary-subtle text-primary border">中層光暈光譜</span></td>
-              </tr>
-              <tr>
-                <td class="fw-semibold">{demo.layerAmbientGlow}</td>
-                <td><code>0 0 90px rgba(255, 255, 255, 0.3)</code></td>
-                <td><code>0 0 75px rgba(14, 165, 233, 0.15)</code></td>
-                <td><span class="badge bg-info-subtle text-info border">外圍環境輝光</span></td>
-              </tr>
+              {shadowLayers.map((layer) => (
+                <tr>
+                  <td class="fw-semibold">{layer.name}</td>
+                  <td><code class={layer.darkClass || undefined}>{layer.dark}</code></td>
+                  <td><code class={layer.lightClass || undefined}>{layer.light}</code></td>
+                  <td><span class={`badge ${layer.badgeClass}`}>{layer.effect}</span></td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
       </section>
 
       <!-- Integration & Usage Guide -->
-      <section class="card surface-card border rounded-4 shadow-sm mb-5 p-4 p-md-5">
+      <section class="card surface-card border rounded-4 shadow-sm mb-5 p-4 p-md-5 reveal">
         <h2 class="h4 fw-bold mb-3 d-flex align-items-center gap-2">
           <Icon name="material-symbols:code" class="material-symbols-rounded text-accent fs-4" aria-hidden="true" />
           <span>{demo.integrationGuide}</span>
@@ -235,7 +261,7 @@ const altPath = lang === 'en' ? '/demo/chromatic-glow/' : '/en/demo/chromatic-gl
         <div class="code-block-wrapper position-relative border rounded-3 overflow-hidden bg-body-tertiary p-3">
           <div class="d-flex align-items-center justify-content-between mb-2 pb-2 border-bottom">
             <span class="font-monospace small text-secondary">Astro Component Usage</span>
-            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-0 px-2 small" id="copy-astro-snippet">
+            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-0 px-2 small" id="copy-astro-snippet" data-copied={demo.copied}>
               <Icon name="material-symbols:content-copy" class="material-symbols-rounded icon-xs me-1" aria-hidden="true" />
               <span>{demo.copyCode}</span>
             </button>
@@ -254,66 +280,6 @@ const altPath = lang === 'en' ? '/demo/chromatic-glow/' : '/en/demo/chromatic-gl
   </main>
 
   <script>
-    import { getPreferencesState, setThemeMode } from '../../scripts/themeManager';
-
-    (function () {
-      const textInput = document.getElementById('custom-text-input') as HTMLInputElement | null;
-      const previewEl = document.getElementById('preview-text-element');
-      const heroText = document.getElementById('hero-display-text');
-      const themeBtn = document.getElementById('demo-theme-toggle');
-      const radioSubtle = document.getElementById('intensity-subtle') as HTMLInputElement | null;
-      const radioStandard = document.getElementById('intensity-standard') as HTMLInputElement | null;
-      const radioIntense = document.getElementById('intensity-intense') as HTMLInputElement | null;
-      const copyBtn = document.getElementById('copy-astro-snippet');
-
-      // Live text typing
-      if (textInput && previewEl) {
-        textInput.addEventListener('input', function () {
-          const val = textInput.value.trim() || 'CHROMATIC GLOW';
-          previewEl.textContent = val;
-          if (heroText) heroText.textContent = val;
-        });
-      }
-
-      // Intensity variants
-      function updateIntensity() {
-        if (!previewEl) return;
-        previewEl.classList.remove('text-glow-aberration', 'text-glow-aberration-subtle', 'text-glow-aberration-intense');
-        if (radioSubtle && radioSubtle.checked) {
-          previewEl.classList.add('text-glow-aberration-subtle');
-        } else if (radioIntense && radioIntense.checked) {
-          previewEl.classList.add('text-glow-aberration-intense');
-        } else {
-          previewEl.classList.add('text-glow-aberration');
-        }
-      }
-
-      if (radioSubtle) radioSubtle.addEventListener('change', updateIntensity);
-      if (radioStandard) radioStandard.addEventListener('change', updateIntensity);
-      if (radioIntense) radioIntense.addEventListener('change', updateIntensity);
-
-      // Theme toggle in demo (synced with global themeManager)
-      if (themeBtn) {
-        themeBtn.addEventListener('click', function () {
-          const { resolvedTheme } = getPreferencesState();
-          setThemeMode(resolvedTheme === 'dark' ? 'light' : 'dark');
-        });
-      }
-
-      // Copy snippet
-      if (copyBtn) {
-        copyBtn.addEventListener('click', function () {
-          const snippet = document.getElementById('astro-snippet-text');
-          if (!snippet) return;
-          navigator.clipboard.writeText(snippet.innerText).then(function () {
-            const original = copyBtn.innerHTML;
-            copyBtn.innerHTML = '<span class="text-success fw-bold">✓ Copied!</span>';
-            setTimeout(function () {
-              copyBtn.innerHTML = original;
-            }, 2000);
-          });
-        });
-      }
-    })();
+    import '../../scripts/chromaticGlowDemo';
   </script>
 </Base>

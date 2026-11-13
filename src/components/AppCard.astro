@@ -2,26 +2,21 @@
 import { Icon } from 'astro-icon/components';
 import type { CollectionEntry } from 'astro:content';
 import { t, localePath, pick, type Lang } from '../i18n/ui';
+import AppStatusBadge from './AppStatusBadge.astro';
 interface Props { app: CollectionEntry<'apps'>; lang: Lang }
 const { app, lang } = Astro.props;
 const ui = t(lang).beta;
 const d = app.data;
 const href = localePath(lang, `/apps-dev/${app.id}/`);
 ---
-<a class="surface-card" href={href}>
+<a class="surface-card reveal" href={href}>
   <div class="d-flex gap-3 align-items-center mb-3">
     {d.icon
       ? <img class="app-icon app-icon-sm" src={d.icon.replace(/\.webp$/, '-sm.webp')} alt={`${d.name} icon`} width="56" height="56" loading="lazy" decoding="async" />
       : <div class="app-icon app-icon-sm app-icon-fallback" aria-hidden="true">{d.name.charAt(0)}</div>}
     <div>
       <h3 class="mb-1">{d.name}</h3>
-      <span class={`status-badge s-${d.status}`}>
-        {d.status === 'released' && <Icon name="lucide:circle-check" class="ui-icon icon-xs" aria-hidden="true" />}
-        {(d.status === 'closed-beta' || d.status === 'open-beta') && <Icon name="lucide:flask-conical" class="ui-icon icon-xs" aria-hidden="true" />}
-        {d.status === 'coming-soon' && <Icon name="lucide:hourglass" class="ui-icon icon-xs" aria-hidden="true" />}
-        {d.status === 'paused' && <Icon name="lucide:circle-pause" class="ui-icon icon-xs" aria-hidden="true" />}
-        <span>{ui.statusLabels[d.status]}</span>
-      </span>
+      <AppStatusBadge status={d.status} lang={lang} />
     </div>
   </div>
   <p>{pick(d.tagline, lang)}</p>

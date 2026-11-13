@@ -2,6 +2,7 @@
 import { Icon } from 'astro-icon/components';
 import type { CollectionEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import AppStatusBadge from './AppStatusBadge.astro';
 import ScrollSequence, { type ScrollStep } from './ScrollSequence.astro';
 import ScreenshotGallery from './ScreenshotGallery.astro';
 import { t, localePath, pick, type Lang } from '../i18n/ui';
@@ -47,13 +48,13 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
 <Base lang={lang} title={`${d.name} - ${ui.title}`} description={tagline} image={ogImage} imageAlt={`${d.name} preview`} jsonLd={jsonLd} altPath={altPath}>
   <main class="page" data-pagefind-body>
     <div class="container page-narrow">
-      <a href={localePath(lang, '/apps-dev/')} class="meta mb-3 back-link" data-pagefind-ignore>
+      <a href={localePath(lang, '/apps-dev/')} class="meta mb-3 back-link hero-enter hero-enter-fade" data-pagefind-ignore>
         <Icon name="lucide:arrow-left" class="ui-icon icon-sm" aria-hidden="true" />
         <span>{ui.back}</span>
       </a>
 
       <!-- 1. Hero -->
-      <header class="app-hero mb-3">
+      <header class="app-hero mb-3 hero-enter enter-delay-1">
         {d.icon
           ? <img class="app-icon" src={d.icon} alt={`${d.name} icon`} width="96" height="96" data-pagefind-meta="image[src]" />
           : <div class="app-icon app-icon-fallback" aria-hidden="true">{d.name.charAt(0)}</div>}
@@ -61,13 +62,7 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
           <h1 class="mb-1 scroll-gradient-text" style="font-weight:800" data-pagefind-meta="title">{d.name}</h1>
           <p class="mb-2" style="color:var(--text-secondary)">{tagline}</p>
           <div class="meta">
-            <span class={`status-badge s-${d.status}`}>
-              {d.status === 'released' && <Icon name="lucide:circle-check" class="ui-icon icon-xs" aria-hidden="true" />}
-              {(d.status === 'closed-beta' || d.status === 'open-beta') && <Icon name="lucide:flask-conical" class="ui-icon icon-xs" aria-hidden="true" />}
-              {d.status === 'coming-soon' && <Icon name="lucide:hourglass" class="ui-icon icon-xs" aria-hidden="true" />}
-              {d.status === 'paused' && <Icon name="lucide:circle-pause" class="ui-icon icon-xs" aria-hidden="true" />}
-              <span>{ui.statusLabels[d.status]}</span>
-            </span>
+            <AppStatusBadge status={d.status} lang={lang} />
             <span><Icon name="lucide:tag" class="ui-icon icon-xs" aria-hidden="true" /><span>{ui.version} {d.version}</span></span>
             <span><Icon name="lucide:smartphone" class="ui-icon icon-xs" aria-hidden="true" /><span>Android {d.minAndroid}+</span></span>
           </div>
@@ -75,14 +70,14 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
       </header>
 
       <!-- Prominent install buttons -->
-      <div class="cta-row mb-2" data-pagefind-ignore>
+      <div class="cta-row mb-2 hero-enter enter-delay-2" data-pagefind-ignore>
         <a class="btn-install" href="#install"><Icon name="simple-icons:googleplay" class="ui-icon me-1" aria-hidden="true" /> {ui.join}</a>
         {d.githubUrl && <a class="btn-ghost" href={d.githubUrl} target="_blank" rel="noopener"><Icon name="simple-icons:github" class="ui-icon me-1" aria-hidden="true" /> {ui.githubBtn}</a>}
       </div>
       
 
       <!-- 2. Introduction -->
-      <section class="section-block reveal">
+      <section class="section-block reveal reveal-fade">
         <div class="prose"><p set:html={desc.replace(/\n/g, '<br />')} /></div>
       </section>
     </div>
@@ -117,12 +112,12 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
       )}
 
       <!-- 5. Specs -->
-      <section class="section-block reveal">
-        <h2 class="block-title">
+      <section class="section-block">
+        <h2 class="block-title reveal">
           <Icon name="lucide:clipboard-check" class="ui-icon text-accent" aria-hidden="true" />
           <span>{ui.specs}</span>
         </h2>
-        <table class="spec-table">
+        <table class="spec-table reveal reveal-fade delay-1">
           <tbody>
             <tr><th><Icon name="lucide:package" class="ui-icon icon-xs" aria-hidden="true" />{ui.packageLabel}</th><td><code>{d.packageName}</code></td></tr>
             <tr><th><Icon name="lucide:tag" class="ui-icon icon-xs" aria-hidden="true" />{ui.version}</th><td>{d.version}</td></tr>
@@ -131,19 +126,19 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
             {d.specs.map((s) => <tr><th>{pick(s.label, lang)}</th><td>{s.value}</td></tr>)}
           </tbody>
         </table>
-        {d.tech.length > 0 && <div class="chip-row mt-3">{d.tech.map((x) => <span class="chip chip-muted">{x}</span>)}</div>}
-        {(d.permissions ?? []).length > 0 && <div class="chip-row mt-3">{(d.permissions ?? []).map((x) => <span class="chip chip-muted"><code>{x}</code></span>)}</div>}
+        {d.tech.length > 0 && <div class="chip-row mt-3 reveal reveal-fade delay-2">{d.tech.map((x) => <span class="chip chip-muted">{x}</span>)}</div>}
+        {(d.permissions ?? []).length > 0 && <div class="chip-row mt-3 reveal reveal-fade delay-2">{(d.permissions ?? []).map((x) => <span class="chip chip-muted"><code>{x}</code></span>)}</div>}
       </section>
 
       <!-- 6 & 7. Installation + beta instructions -->
-      <section class="section-block reveal" id="install">
-        <h2 class="block-title">
+      <section class="section-block" id="install">
+        <h2 class="block-title reveal">
           <Icon name="lucide:list-checks" class="ui-icon text-accent" aria-hidden="true" />
           <span>{ui.stepsTitle}</span>
         </h2>
-        <ol class="steps">
+        <ol class="steps stagger-group">
           {steps.map((st) => (
-            <li>
+            <li class="reveal">
               <div>
                 <h3>
                   <Icon name={`lucide:${st.icon}`} class="ui-icon step-icon" aria-hidden="true" />
@@ -164,39 +159,43 @@ const altPath = localePath(lang === 'en' ? 'zh-Hant' : 'en', `/apps-dev/${app.id
 
       <!-- 8. FAQ -->
       {d.faq.length > 0 && (
-        <section class="section-block reveal">
-          <h2 class="block-title">
+        <section class="section-block">
+          <h2 class="block-title reveal">
             <Icon name="lucide:circle-help" class="ui-icon text-accent" aria-hidden="true" />
             <span>{ui.faq}</span>
           </h2>
-          {d.faq.map((x) => (
-            <details class="faq">
-              <summary>
-                <span>{pick(x.q, lang)}</span>
-                <Icon name="lucide:chevron-down" class="ui-icon faq-arrow" aria-hidden="true" />
-              </summary>
-              <p>{pick(x.a, lang)}</p>
-            </details>
-          ))}
+          <div class="stagger-group">
+            {d.faq.map((x) => (
+              <details class="faq reveal">
+                <summary>
+                  <span>{pick(x.q, lang)}</span>
+                  <Icon name="lucide:chevron-down" class="ui-icon faq-arrow" aria-hidden="true" />
+                </summary>
+                <p>{pick(x.a, lang)}</p>
+              </details>
+            ))}
+          </div>
         </section>
       )}
 
       <!-- 9. Changelog -->
-      <section class="section-block reveal">
-        <h2 class="block-title">
+      <section class="section-block">
+        <h2 class="block-title reveal">
           <Icon name="lucide:rotate-ccw" class="ui-icon text-accent" aria-hidden="true" />
           <span>{ui.changelog}</span>
         </h2>
-        {d.changelog.map((c) => (
-          <div class="changelog-entry">
-            <h3 class="d-flex align-items-center gap-2">
-              <Icon name="lucide:git-commit-horizontal" class="ui-icon icon-xs text-accent" aria-hidden="true" />
-              <span>{c.version}</span>
-              <span class="meta d-inline">{c.date}</span>
-            </h3>
-            <ul>{c.notes.map((n) => <li>{pick(n, lang)}</li>)}</ul>
-          </div>
-        ))}
+        <div class="stagger-group">
+          {d.changelog.map((c) => (
+            <div class="changelog-entry reveal">
+              <h3 class="d-flex align-items-center gap-2">
+                <Icon name="lucide:git-commit-horizontal" class="ui-icon icon-xs text-accent" aria-hidden="true" />
+                <span>{c.version}</span>
+                <span class="meta d-inline">{c.date}</span>
+              </h3>
+              <ul>{c.notes.map((n) => <li>{pick(n, lang)}</li>)}</ul>
+            </div>
+          ))}
+        </div>
       </section>
 
       <!-- 10. Feedback and links -->

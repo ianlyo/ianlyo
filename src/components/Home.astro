@@ -4,13 +4,13 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { t, localePath, type Lang } from '../i18n/ui';
 import { SITE } from '../config/site';
-import { sortPosts, readingTime, formatDate } from '../utils/blog';
+import { resolvePostsForLang, readingTime, formatDate } from '../utils/blog';
 import AppCard from './AppCard.astro';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const ui = t(lang);
 const apps = (await getCollection('apps')).filter((a) => !a.data.hidden && a.data.status !== 'paused').slice(0, 3);
-const posts = sortPosts(await getCollection('blog')).slice(0, 3);
+const posts = resolvePostsForLang(await getCollection('blog'), lang).slice(0, 3);
 const f = ui.filters;
 const jsonLd = [
   { '@context': 'https://schema.org', '@type': 'WebSite', name: SITE.name, url: SITE.url, inLanguage: lang },
@@ -22,9 +22,9 @@ const jsonLd = [
   <div class="container">
     <div class="row align-items-center hero-grid">
       <div class="col-12 hero-copy">
-        <h1 class="hero-title">{ui.hero.title1}<br /><em>{ui.hero.title2}</em></h1>
-        <p class="lead">{ui.hero.lead}</p>
-        <div class="hero-stats" aria-label="GitHub activity">
+        <h1 class="hero-title hero-enter">{ui.hero.title1}<br /><em>{ui.hero.title2}</em></h1>
+        <p class="lead hero-enter enter-delay-1">{ui.hero.lead}</p>
+        <div class="hero-stats hero-enter enter-delay-2" aria-label="GitHub activity">
           <div class="stat-box">
             <Icon name="lucide:folder" class="stat-icon" aria-hidden="true" />
             <div class="stat-box-info">
@@ -47,7 +47,7 @@ const jsonLd = [
             </div>
           </div>
         </div>
-        <div class="hero-actions">
+        <div class="hero-actions hero-enter enter-delay-3">
           <a href={localePath(lang, '/apps-dev/')} class="btn btn-primary d-inline-flex align-items-center gap-2">
             <span>{ui.hero.cta1}</span>
             <Icon name="lucide:arrow-right" class="ui-icon icon-sm" aria-hidden="true" />
@@ -62,7 +62,7 @@ const jsonLd = [
           </a>
         </div>
       </div>
-      <div class="col-12 hero-contribution">
+      <div class="col-12 hero-contribution hero-enter-scale enter-delay-3">
         <div class="contribution-card">
           <div class="contribution-header justify-content-end">
             <a href={SITE.github.reposUrl} target="_blank" rel="noopener" class="contribution-github-link" aria-label={`${SITE.github.user} on GitHub`}><Icon name="simple-icons:github" class="ui-icon me-1" aria-hidden="true" /><span>{SITE.github.user}</span></a>
@@ -79,8 +79,8 @@ const jsonLd = [
 <main>
   <section class="section-block" id="beta-preview">
     <div class="container">
-      <p class="eyebrow mb-2">{ui.home.betaEyebrow}</p>
-      <div class="d-flex justify-content-between align-items-end mb-3 flex-wrap gap-2">
+      <p class="eyebrow mb-2 reveal reveal-fade">{ui.home.betaEyebrow}</p>
+      <div class="d-flex justify-content-between align-items-end mb-3 flex-wrap gap-2 reveal delay-1">
         <h2 class="block-title mb-0">
           <Icon name="lucide:layout-grid" class="ui-icon text-accent" aria-hidden="true" />
           <span>{ui.home.betaTitle}</span>
@@ -97,25 +97,26 @@ const jsonLd = [
   {posts.length > 0 && (
     <section class="section-block" id="blog-preview">
       <div class="container">
-        <p class="eyebrow mb-2">{ui.home.blogEyebrow}</p>
-        <div class="d-flex justify-content-between align-items-end mb-3 flex-wrap gap-2">
+        <p class="eyebrow mb-2 reveal reveal-fade">{ui.home.blogEyebrow}</p>
+        <div class="d-flex justify-content-between align-items-end mb-3 flex-wrap gap-2 reveal delay-1">
           <h2 class="block-title mb-0">
             <Icon name="lucide:newspaper" class="ui-icon text-accent" aria-hidden="true" />
             <span>{ui.home.blogTitle}</span>
           </h2>
-          <a href="/blog/" class="section-link font-weight-semibold">
+          <a href={localePath(lang, '/blog/')} class="section-link font-weight-semibold">
             <span>{ui.home.blogAll}</span>
             <Icon name="lucide:arrow-right" class="ui-icon icon-sm" aria-hidden="true" />
           </a>
         </div>
         <div class="card-grid">
-          {posts.map((p) => (
-            <a class="surface-card" href={`/blog/${p.id}/`}>
-              <h3>{p.data.title}</h3>
-              <p>{p.data.description}</p>
+          {posts.map((item) => (
+            <a class="surface-card reveal" href={localePath(lang, `/blog/${item.slug}/`)}>
+              <h3>{item.post.data.title}</h3>
+              <p>{item.post.data.description}</p>
               <div class="meta mt-2">
-                <span><Icon name="lucide:calendar" class="ui-icon icon-xs" aria-hidden="true" />{formatDate(p.data.pubDate, lang)}</span>
-                <span><Icon name="lucide:clock" class="ui-icon icon-xs" aria-hidden="true" />{readingTime(p.body)} {ui.blog.readingTime}</span>
+                <span><Icon name="lucide:calendar" class="ui-icon icon-xs" aria-hidden="true" />{formatDate(item.post.data.pubDate, lang)}</span>
+                <span><Icon name="lucide:clock" class="ui-icon icon-xs" aria-hidden="true" />{readingTime(item.post.body)} {ui.blog.readingTime}</span>
+                {item.isFallback && <span class="chip chip-muted">{ui.blog.originalBadge}</span>}
               </div>
             </a>
           ))}
@@ -139,7 +140,7 @@ const jsonLd = [
     data-view-label={ui.projects.viewRepo}
   >
     <div class="container">
-      <div class="section-heading">
+      <div class="section-heading reveal">
         <div>
           <p class="eyebrow mb-2">{ui.home.browse}</p>
           <h2 id="projects-title" class="d-flex align-items-center gap-2">
@@ -157,7 +158,7 @@ const jsonLd = [
           ['python', 'terminal', '03', f.cli],
           ['web', 'monitor-smartphone', '04', f.web],
         ].map(([key, icon, num, text]) => (
-          <button class:list={['capability-item', 'category-filter', { 'is-active': key === 'all' }]} type="button" data-category={key}>
+          <button class:list={['capability-item', 'category-filter', 'reveal', { 'is-active': key === 'all' }]} type="button" data-category={key}>
             <div class="capability-header">
               <span class="capability-number">{num}</span>
               <div class="capability-icon"><Icon name={`lucide:${icon}`} class="ui-icon" aria-hidden="true" /></div>
@@ -168,7 +169,7 @@ const jsonLd = [
         ))}
       </div>
 
-      <div class="project-tools" role="search">
+      <div class="project-tools reveal reveal-fade delay-1" role="search">
         <label class="visually-hidden" for="project-search">{ui.projects.searchLabel}</label>
         <div class="project-search-wrapper">
           <Icon name="lucide:search" class="ui-icon project-search-icon" aria-hidden="true" />
