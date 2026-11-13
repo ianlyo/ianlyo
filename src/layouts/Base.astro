@@ -253,10 +253,21 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
         </p>
         <div class="footer-links">
           {otherPath && (
-            <a href={otherPath} hreflang={otherLang} class="d-inline-flex align-items-center gap-1" data-lang-switch={otherLang}>
+            <label class="footer-lang-select-wrap d-inline-flex align-items-center gap-1">
               <Icon name="lucide:languages" class="ui-icon icon-xs" aria-hidden="true" />
-              <span>{ui.langSwitch}</span>
-            </a>
+              <select
+                class="footer-lang-select"
+                aria-label={ui.langSwitch}
+                data-lang-select
+              >
+                <option value={lang} data-href={path} selected>
+                  {lang === 'zh-Hant' ? '繁體中文' : 'English'}
+                </option>
+                <option value={otherLang} data-href={otherPath}>
+                  {otherLang === 'zh-Hant' ? '繁體中文' : 'English'}
+                </option>
+              </select>
+            </label>
           )}
           <a href="/rss.xml" class="d-inline-flex align-items-center gap-1"><Icon name="lucide:rss" class="ui-icon icon-xs" aria-hidden="true" /><span>{ui.footer.rss}</span></a>
           <a href="#main" class="d-inline-flex align-items-center gap-1"><span>{ui.footer.top}</span><Icon name="lucide:arrow-up" class="ui-icon icon-xs" aria-hidden="true" /></a>
@@ -500,6 +511,25 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
             }
           });
         });
+
+        var selects = document.querySelectorAll('[data-lang-select]');
+        selects.forEach(function (sel) {
+          if (sel.dataset.bound === 'true') return;
+          sel.dataset.bound = 'true';
+          sel.addEventListener('change', function () {
+            var opt = sel.options[sel.selectedIndex];
+            var target = sel.value;
+            var href = opt ? opt.getAttribute('data-href') : '';
+            if (target) {
+              try {
+                localStorage.setItem('preferred-locale', target);
+              } catch (e) {}
+            }
+            if (href) {
+              window.location.href = href;
+            }
+          });
+        });
       }
 
       function setupScrollProgress() {
@@ -610,5 +640,24 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
       document.addEventListener('astro:page-load', init);
     })();
   </script>
+  <style>
+    .footer-lang-select-wrap {
+      color: inherit;
+    }
+    .footer-lang-select {
+      color: inherit;
+      background-color: transparent;
+      border: 1px solid var(--border, rgba(128, 128, 128, 0.25));
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-size: inherit;
+      line-height: 1.4;
+      cursor: pointer;
+    }
+    .footer-lang-select option {
+      background-color: var(--bg, #ffffff);
+      color: var(--text, #111111);
+    }
+  </style>
 </body>
 </html>
