@@ -225,6 +225,25 @@ export function resetAllPreferences(): PreferencesState {
   return applyPreferences({ withTransition: true });
 }
 
+function isDomStateStale(state: PreferencesState): boolean {
+  const root = document.documentElement;
+  return (
+    root.getAttribute('data-bs-theme') !== state.resolvedTheme ||
+    root.getAttribute('data-color-theme') !== state.colorTheme ||
+    root.getAttribute('data-reduce-motion') !== (state.resolvedReduceMotion ? 'true' : 'false') ||
+    root.getAttribute('data-font-scale') !== state.fontScale ||
+    root.getAttribute('data-high-contrast') !== (state.highContrast ? 'true' : 'false') ||
+    root.getAttribute('data-progress-bar') !== (state.progressBar ? 'true' : 'false')
+  );
+}
+
+export function syncPreferencesIfStale(dispatch = true): void {
+  const state = getPreferencesState();
+  if (isDomStateStale(state)) {
+    applyPreferences({ withTransition: false, dispatch });
+  }
+}
+
 export function initThemeManager(): void {
   applyPreferences({ withTransition: false, dispatch: false });
 
@@ -249,5 +268,28 @@ export function initThemeManager(): void {
     if (!event.key || Object.values(STORAGE_KEYS).includes(event.key as (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS])) {
       applyPreferences({ withTransition: false });
     }
+  });
+
+  // Sync immediately when returning via browser Back/Forward cache (bfcache) or switching tabs
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+      applyPreferences({ withTransition: false, dispatch: true });
+    } else {
+      syncPreferencesIfStale(true);
+    }
+  });
+
+  window.addEventListener('focus', () => {
+    syncPreferencesIfStale(true);
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      syncPreferencesIfStale(true);
+    }
+  });
+
+  document.addEventListener('astro:after-swap', () => {
+    applyPreferences({ withTransition: false, dispatch: true });
   });
 }
