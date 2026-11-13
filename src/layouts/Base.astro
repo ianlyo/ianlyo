@@ -161,12 +161,6 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
       <a href={SITE.github.reposUrl} target="_blank" rel="noopener" class="nav-action-icon" aria-label="GitHub" title="GitHub">
         <Icon name="simple-icons:github" class="nav-icon" aria-hidden="true" />
       </a>
-      {otherPath && (
-        <a href={otherPath} hreflang={otherLang} class="lang-switch" data-lang-switch={otherLang}>
-          <Icon name="lucide:languages" class="nav-icon" aria-hidden="true" />
-          <span>{ui.langSwitch}</span>
-        </a>
-      )}
     </div>
 
     <!-- Right controls (Search on mobile + Theme toggle on all) -->
@@ -258,6 +252,12 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
           © <span id="current-year"></span> {SITE.name}
         </p>
         <div class="footer-links">
+          {otherPath && (
+            <a href={otherPath} hreflang={otherLang} class="d-inline-flex align-items-center gap-1" data-lang-switch={otherLang}>
+              <Icon name="lucide:languages" class="ui-icon icon-xs" aria-hidden="true" />
+              <span>{ui.langSwitch}</span>
+            </a>
+          )}
           <a href="/rss.xml" class="d-inline-flex align-items-center gap-1"><Icon name="lucide:rss" class="ui-icon icon-xs" aria-hidden="true" /><span>{ui.footer.rss}</span></a>
           <a href="#main" class="d-inline-flex align-items-center gap-1"><span>{ui.footer.top}</span><Icon name="lucide:arrow-up" class="ui-icon icon-xs" aria-hidden="true" /></a>
         </div>
