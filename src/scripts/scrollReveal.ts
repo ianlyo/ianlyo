@@ -121,24 +121,38 @@ export function initScrollReveal(): void {
 
   const observer = getObserver();
   const vh = window.innerHeight || document.documentElement.clientHeight || 800;
+  const aboveView: HTMLElement[] = [];
   const inViewBatch: HTMLElement[] = [];
+  const belowView: HTMLElement[] = [];
 
+  // Batch all layout reads before any DOM mutations to avoid layout thrashing
   elements.forEach((el) => {
     if (el.dataset.revealQueued === '1') return;
-    el.dataset.revealQueued = '1';
-
     const rect = el.getBoundingClientRect();
-    // Elements already scrolled above the viewport should appear without waiting
     if (rect.bottom <= 0) {
-      settleRevealElement(el);
+      aboveView.push(el);
     } else if (rect.top < vh * 0.94 && rect.bottom > 0) {
       inViewBatch.push(el);
     } else {
-      observer?.observe(el);
+      belowView.push(el);
     }
   });
 
+  // Batch DOM writes and observer registrations
+  aboveView.forEach((el) => {
+    el.dataset.revealQueued = '1';
+    settleRevealElement(el);
+  });
+
+  belowView.forEach((el) => {
+    el.dataset.revealQueued = '1';
+    observer?.observe(el);
+  });
+
   if (inViewBatch.length > 0) {
+    inViewBatch.forEach((el) => {
+      el.dataset.revealQueued = '1';
+    });
     // Wait two frames so freshly inserted DOM elements paint their initial opacity: 0 state
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {

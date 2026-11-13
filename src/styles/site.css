@@ -300,10 +300,10 @@ details.faq .faq-arrow { color: var(--text-muted); transition: transform .25s va
 details.faq[open] { border-color: var(--border-hover); box-shadow: var(--shadow-sm); }
 details.faq[open] .faq-arrow { transform: rotate(180deg); color: var(--accent-primary); }
 details.faq p { margin: .6rem 0 0; color: var(--text-secondary); }
-details.faq[open] p { animation: faqReveal .28s var(--ease-out-expo) backwards; }
+details.faq[open] p { animation: faqReveal .32s var(--ease-graceful) backwards; }
 @keyframes faqReveal {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translate3d(0, -6px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 .changelog-entry { border-left: 2px solid var(--border-strong); padding: 0 0 1.2rem 1.1rem; margin-left: .3rem; position: relative; }
 .changelog-entry::before { content: ''; position: absolute; left: -6px; top: .35rem; width: 10px; height: 10px; border-radius: 50%; background: var(--accent-primary); }
@@ -555,7 +555,7 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
 }
 
 .nav-drawer.is-open .nav-drawer-item {
-  animation: drawerItemFadeIn 0.38s var(--ease-out-expo) backwards;
+  animation: drawerItemFadeIn 0.42s var(--ease-graceful) backwards;
 }
 .nav-drawer.is-open .nav-drawer-list li:nth-child(1) .nav-drawer-item { animation-delay: 0.04s; }
 .nav-drawer.is-open .nav-drawer-list li:nth-child(2) .nav-drawer-item { animation-delay: 0.08s; }
@@ -791,7 +791,7 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
 .search-box .pagefind-ui__result {
   border: 1px solid var(--border-subtle); border-radius: var(--radius-md, 14px); background: var(--bg-surface);
   padding: 1rem 1.25rem; margin-bottom: .85rem; transition: border-color .2s, background .2s, transform .2s ease;
-  animation: searchResultEnter 0.42s var(--ease-out-expo) backwards;
+  animation: searchResultEnter 0.46s var(--ease-graceful) backwards;
 }
 .search-box .pagefind-ui__result:nth-child(1) { animation-delay: 0.02s; }
 .search-box .pagefind-ui__result:nth-child(2) { animation-delay: 0.06s; }
@@ -842,8 +842,8 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
 
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 0.22s;
-  animation-timing-function: var(--ease-out-expo);
+  animation-duration: 0.28s;
+  animation-timing-function: var(--ease-fade);
 }
 
 /* ==========================================================================
@@ -853,7 +853,7 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
 @keyframes heroEnterUp {
   from {
     opacity: 0;
-    transform: translate3d(0, 16px, 0);
+    transform: translate3d(0, 18px, 0);
   }
   to {
     opacity: 1;
@@ -864,7 +864,7 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
 @keyframes heroEnterScale {
   from {
     opacity: 0;
-    transform: translate3d(0, 12px, 0) scale(0.97);
+    transform: translate3d(0, 14px, 0) scale(0.975);
   }
   to {
     opacity: 1;
@@ -882,22 +882,22 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
 }
 
 .hero-enter {
-  animation: heroEnterUp 0.62s var(--ease-out-expo) var(--enter-delay, 0ms) backwards;
+  animation: heroEnterUp 0.68s var(--ease-graceful) var(--enter-delay, 0ms) backwards;
 }
 
 .hero-enter-scale {
-  animation: heroEnterScale 0.68s var(--ease-out-expo) var(--enter-delay, 0ms) backwards;
+  animation: heroEnterScale 0.72s var(--ease-graceful) var(--enter-delay, 0ms) backwards;
 }
 
 .hero-enter-fade {
-  animation: heroEnterFade 0.5s ease var(--enter-delay, 0ms) backwards;
+  animation: heroEnterFade 0.62s var(--ease-fade) var(--enter-delay, 0ms) backwards;
 }
 
-.enter-delay-1 { --enter-delay: 70ms; }
-.enter-delay-2 { --enter-delay: 140ms; }
-.enter-delay-3 { --enter-delay: 210ms; }
-.enter-delay-4 { --enter-delay: 280ms; }
-.enter-delay-5 { --enter-delay: 350ms; }
+.enter-delay-1 { --enter-delay: 80ms; }
+.enter-delay-2 { --enter-delay: 160ms; }
+.enter-delay-3 { --enter-delay: 240ms; }
+.enter-delay-4 { --enter-delay: 320ms; }
+.enter-delay-5 { --enter-delay: 400ms; }
 
 /* ==========================================================================
    Apple-Style Scroll-Triggered Fade-In & Slide-Up (.reveal)
@@ -906,7 +906,6 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
 .reveal:not(.is-visible):not(.is-settled) {
   opacity: 0;
   transform: translate3d(0, var(--reveal-distance), 0);
-  will-change: opacity, transform;
 }
 
 .reveal.reveal-fade:not(.is-visible):not(.is-settled) {
@@ -914,7 +913,7 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
 }
 
 .reveal.reveal-scale:not(.is-visible):not(.is-settled) {
-  transform: translate3d(0, 12px, 0) scale(0.96);
+  transform: translate3d(0, 12px, 0) scale(0.965);
 }
 
 .reveal.reveal-left:not(.is-visible):not(.is-settled) {
@@ -927,13 +926,14 @@ svg.material-symbols-rounded { width: 1em; height: 1em; flex-shrink: 0; fill: cu
 
 .reveal:not(.is-settled) {
   transition:
-    opacity var(--reveal-duration) var(--ease-out-expo) var(--reveal-delay, 0ms),
-    transform var(--reveal-duration) var(--ease-out-expo) var(--reveal-delay, 0ms);
+    opacity var(--reveal-duration) var(--ease-fade) var(--reveal-delay, 0ms),
+    transform var(--reveal-duration) var(--ease-graceful) var(--reveal-delay, 0ms);
 }
 
 .reveal.is-visible:not(.is-settled) {
   opacity: 1;
   transform: translate3d(0, 0, 0) scale(1);
+  will-change: opacity, transform;
 }
 
 /* Staggered Delay Classes */

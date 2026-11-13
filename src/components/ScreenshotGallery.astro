@@ -281,7 +281,7 @@ const serializedScreenshots = screenshots.map((s) => ({
     box-sizing: border-box;
     opacity: 0.72;
     transform: scale(0.94);
-    transition: transform 0.4s var(--ease-out-expo), opacity 0.4s ease;
+    transition: transform 0.45s var(--ease-graceful), opacity 0.45s var(--ease-fade);
   }
   .gallery-slide.is-focused {
     opacity: 1;
@@ -291,15 +291,15 @@ const serializedScreenshots = screenshots.map((s) => ({
   /* Staggered entrance animation when scrolled into view */
   .apple-gallery:not(.is-revealed) .screenshot-card {
     opacity: 0;
-    transform: translate3d(0, 26px, 0) scale(0.94);
+    transform: translate3d(0, 22px, 0) scale(0.95);
   }
   .apple-gallery.is-revealed .screenshot-card {
-    animation: galleryCardRise 0.65s var(--ease-out-expo) calc(var(--slide-idx, 0) * 65ms) backwards;
+    animation: galleryCardRise 0.7s var(--ease-graceful) calc(var(--slide-idx, 0) * 70ms) backwards;
   }
   @keyframes galleryCardRise {
     from {
       opacity: 0;
-      transform: translate3d(0, 26px, 0) scale(0.94);
+      transform: translate3d(0, 22px, 0) scale(0.95);
     }
     to {
       opacity: 1;
