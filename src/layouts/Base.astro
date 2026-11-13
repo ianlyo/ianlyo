@@ -1,4 +1,5 @@
 ---
+import '@fontsource-variable/chiron-goround-tc';
 import { Icon } from 'astro-icon/components';
 import { t, localePath, switchLangPath, type Lang } from '../i18n/ui';
 import { SITE } from '../config/site';
@@ -116,16 +117,6 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
   </script>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="/fonts/plus-jakarta-sans/result.css" media="print" onload="this.media='all'" />
-  <link rel="stylesheet" href="/fonts/genjyuugothic/regular/result.css" media="print" onload="this.media='all'" />
-  <link rel="stylesheet" href="/fonts/genjyuugothic/medium/result.css" media="print" onload="this.media='all'" />
-  <link rel="stylesheet" href="/fonts/genjyuugothic/bold/result.css" media="print" onload="this.media='all'" />
-  <noscript>
-    <link rel="stylesheet" href="/fonts/plus-jakarta-sans/result.css" />
-    <link rel="stylesheet" href="/fonts/genjyuugothic/regular/result.css" />
-    <link rel="stylesheet" href="/fonts/genjyuugothic/medium/result.css" />
-    <link rel="stylesheet" href="/fonts/genjyuugothic/bold/result.css" />
-  </noscript>
   <link rel="stylesheet" href="/assets/css/style.css?v=2.7" />
   <link rel="stylesheet" href="/assets/css/site.css?v=2.5" />
 </head>
