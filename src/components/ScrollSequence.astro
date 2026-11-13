@@ -367,6 +367,19 @@ const zoomData = (z: ScrollStep['zoom']) => (z ? JSON.stringify(typeof z === 'ob
       overflow-wrap: break-word;
     }
   }
+
+  /* Reduced motion (enabled via Settings): no pinning/zoom, show all steps and keep media visible */
+  .scroll-sequence.is-static { height: auto; overflow: visible; }
+  .scroll-sequence.is-static::after { display: none; }
+  .scroll-sequence.is-static .stage { position: static; padding: 3.5rem 2.5rem; align-items: start; }
+  .scroll-sequence.is-static .text-layer { position: static; display: block; pointer-events: auto; }
+  .scroll-sequence.is-static .text-step { opacity: 1 !important; transform: none !important; margin: 0 0 2.5rem; max-width: 36rem; }
+  .scroll-sequence.is-static .media-layer { position: sticky; top: 5.5rem; height: auto; padding-top: 0; }
+  @media (max-width: 768px) {
+    .scroll-sequence.is-static .stage { padding: 2.5rem 1rem; gap: 1.5rem; }
+    .scroll-sequence.is-static .media-layer { position: static; order: -1; }
+    .scroll-sequence.is-static .text-step { margin: 0 auto 1.25rem; }
+  }
 </style>
 
 <script>
@@ -490,6 +503,16 @@ const zoomData = (z: ScrollStep['zoom']) => (z ? JSON.stringify(typeof z === 'ob
 
     const roots = document.querySelectorAll<HTMLElement>('.scroll-sequence');
     if (!roots.length) return;
+
+    const reduce = document.documentElement.getAttribute('data-reduce-motion') === 'true';
+    if (reduce) {
+      roots.forEach((r) => {
+        r.classList.add('is-static');
+        const firstVideo = r.querySelector<HTMLVideoElement>('.media-frame video');
+        if (firstVideo) firstVideo.controls = true;
+      });
+      return;
+    }
 
     seqCtx = gsap.context(() => {
       roots.forEach((root) => {

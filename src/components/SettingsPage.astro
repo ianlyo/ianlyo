@@ -1,0 +1,441 @@
+---
+import Base from '../layouts/Base.astro';
+import { Icon } from 'astro-icon/components';
+import { t, localePath, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const ui = t(lang);
+const s = ui.settings;
+const zhUrl = '/settings/';
+const enUrl = '/en/settings/';
+---
+
+<Base lang={lang} title={s.title} description={s.lead} altPath={lang === 'en' ? zhUrl : enUrl}>
+  <main class="settings-page container py-5">
+    <header class="settings-header">
+      <h1>{s.title}</h1>
+      <p class="settings-lead">{s.lead}</p>
+    </header>
+
+    <div class="settings-sections">
+      <!-- Appearance & Language -->
+      <section class="settings-card" aria-labelledby="settings-appearance-heading">
+        <div class="settings-card-header">
+          <Icon name="lucide:palette" class="settings-section-icon" aria-hidden="true" />
+          <h2 id="settings-appearance-heading">{s.appearanceTitle}</h2>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-info">
+            <span class="settings-label">{s.themeLabel}</span>
+            <span class="settings-desc">{s.themeDesc}</span>
+          </div>
+          <div class="settings-segmented" role="group" aria-label={s.themeLabel} data-setting-group="theme">
+            <button type="button" class="seg-btn" data-value="auto">{s.themeAuto}</button>
+            <button type="button" class="seg-btn" data-value="light">{s.themeLight}</button>
+            <button type="button" class="seg-btn" data-value="dark">{s.themeDark}</button>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-info">
+            <span class="settings-label">{s.langLabel}</span>
+            <span class="settings-desc">{s.langDesc}</span>
+          </div>
+          <div class="settings-segmented" role="group" aria-label={s.langLabel} data-setting-group="lang" data-zh-url={zhUrl} data-en-url={enUrl}>
+            <button type="button" class:list={['seg-btn', { 'is-active': lang === 'zh-Hant' }]} data-value="zh-Hant">繁體中文</button>
+            <button type="button" class:list={['seg-btn', { 'is-active': lang === 'en' }]} data-value="en">English</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Accessibility & Reading -->
+      <section class="settings-card" aria-labelledby="settings-a11y-heading">
+        <div class="settings-card-header">
+          <Icon name="lucide:accessibility" class="settings-section-icon" aria-hidden="true" />
+          <h2 id="settings-a11y-heading">{s.a11yTitle}</h2>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-info">
+            <span class="settings-label">{s.motionLabel}</span>
+            <span class="settings-desc">{s.motionDesc}</span>
+          </div>
+          <div class="settings-segmented" role="group" aria-label={s.motionLabel} data-setting-group="motion">
+            <button type="button" class="seg-btn" data-value="off">{s.motionOff}</button>
+            <button type="button" class="seg-btn" data-value="on">{s.motionOn}</button>
+            <button type="button" class="seg-btn" data-value="system">{s.motionSystem}</button>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-info">
+            <span class="settings-label">{s.fontScaleLabel}</span>
+            <span class="settings-desc">{s.fontScaleDesc}</span>
+          </div>
+          <div class="settings-segmented" role="group" aria-label={s.fontScaleLabel} data-setting-group="fontScale">
+            <button type="button" class="seg-btn" data-value="normal">{s.fontNormal}</button>
+            <button type="button" class="seg-btn" data-value="large">{s.fontLarge}</button>
+            <button type="button" class="seg-btn" data-value="xlarge">{s.fontXlarge}</button>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-info">
+            <label class="settings-label" for="toggle-high-contrast">{s.contrastLabel}</label>
+            <span class="settings-desc">{s.contrastDesc}</span>
+          </div>
+          <button
+            type="button"
+            id="toggle-high-contrast"
+            class="switch-btn"
+            role="switch"
+            aria-checked="false"
+            data-setting-switch="highContrast"
+          >
+            <span class="switch-thumb"></span>
+          </button>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-info">
+            <label class="settings-label" for="toggle-progress-bar">{s.progressBarLabel}</label>
+            <span class="settings-desc">{s.progressBarDesc}</span>
+          </div>
+          <button
+            type="button"
+            id="toggle-progress-bar"
+            class="switch-btn"
+            role="switch"
+            aria-checked="true"
+            data-setting-switch="progressBar"
+          >
+            <span class="switch-thumb"></span>
+          </button>
+        </div>
+      </section>
+
+      <div class="settings-actions">
+        <button type="button" id="settings-reset-btn" class="reset-btn">
+          <Icon name="lucide:rotate-ccw" class="ui-icon icon-xs" aria-hidden="true" />
+          <span>{s.resetBtn}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="settings-toast" id="settings-toast" role="status" aria-live="polite" data-saved={s.savedToast} data-reset={s.resetToast}></div>
+  </main>
+</Base>
+
+<style>
+  .settings-page {
+    max-width: 50rem;
+    margin: 0 auto;
+    padding-top: 6rem !important;
+    padding-bottom: 4rem !important;
+  }
+  .settings-header {
+    margin-bottom: 2rem;
+  }
+  .settings-header h1 {
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.5rem;
+  }
+  .settings-lead {
+    color: var(--text-secondary, rgba(128, 128, 128, 0.9));
+    font-size: 1rem;
+    margin: 0;
+  }
+  .settings-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .settings-card {
+    background: var(--bg-surface, var(--bs-body-bg));
+    border: 1px solid var(--border, rgba(128, 128, 128, 0.2));
+    border-radius: var(--radius-lg, 20px);
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  }
+  .settings-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.14));
+  }
+  .settings-section-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--accent-primary, #4f46e5);
+  }
+  .settings-card-header h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.12));
+  }
+  .settings-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0.25rem;
+  }
+  .settings-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+    min-width: 0;
+  }
+  .settings-label {
+    font-weight: 600;
+    font-size: 0.98rem;
+  }
+  .settings-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary, rgba(128, 128, 128, 0.88));
+    line-height: 1.45;
+  }
+  .settings-segmented {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border-radius: 12px;
+    background: var(--bg-surface-subtle, rgba(128, 128, 128, 0.1));
+    border: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.15));
+    flex-shrink: 0;
+  }
+  .seg-btn {
+    border: none;
+    background: transparent;
+    color: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.42rem 0.78rem;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+    white-space: nowrap;
+  }
+  .seg-btn:hover {
+    background: rgba(128, 128, 128, 0.12);
+  }
+  .seg-btn.is-active {
+    background: var(--accent-primary, #4f46e5);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.28);
+  }
+  .switch-btn {
+    position: relative;
+    width: 48px;
+    height: 28px;
+    border-radius: 999px;
+    border: 1px solid var(--border, rgba(128, 128, 128, 0.3));
+    background: rgba(128, 128, 128, 0.25);
+    padding: 2px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+  .switch-btn[aria-checked='true'] {
+    background: var(--accent-primary, #4f46e5);
+    border-color: var(--accent-primary, #4f46e5);
+  }
+  .switch-thumb {
+    display: block;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .switch-btn[aria-checked='true'] .switch-thumb {
+    transform: translateX(20px);
+  }
+  .settings-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .reset-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.55rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--border, rgba(128, 128, 128, 0.3));
+    background: transparent;
+    color: inherit;
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.18s ease;
+  }
+  .reset-btn:hover {
+    background: rgba(128, 128, 128, 0.1);
+  }
+  .settings-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 2rem;
+    transform: translate(-50%, 16px);
+    padding: 0.55rem 1.15rem;
+    border-radius: 999px;
+    background: rgba(24, 24, 28, 0.92);
+    color: #fff;
+    font-size: 0.88rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 3000;
+  }
+  .settings-toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  @media (max-width: 680px) {
+    .settings-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .settings-segmented {
+      width: 100%;
+    }
+    .seg-btn {
+      flex: 1;
+      text-align: center;
+    }
+  }
+</style>
+
+<script>
+  function initSettingsPage() {
+    const page = document.querySelector<HTMLElement>('.settings-page');
+    if (!page || page.dataset.bound === '1') return;
+    page.dataset.bound = '1';
+
+    const toast = document.getElementById('settings-toast');
+    let toastTimer: number | undefined;
+    const showToast = (msg?: string) => {
+      if (!toast || !msg) return;
+      toast.textContent = msg;
+      toast.classList.add('is-visible');
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => toast.classList.remove('is-visible'), 1800);
+    };
+
+    const setGroupActive = (groupName: string, value: string) => {
+      const group = page.querySelector<HTMLElement>(`[data-setting-group="${groupName}"]`);
+      if (!group) return;
+      group.querySelectorAll<HTMLButtonElement>('.seg-btn').forEach((btn) => {
+        btn.classList.toggle('is-active', btn.dataset.value === value);
+      });
+    };
+
+    const applyTheme = (val: string) => {
+      localStorage.setItem('theme', val);
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const resolved = val === 'auto' ? (prefersDark ? 'dark' : 'light') : val;
+      document.documentElement.setAttribute('data-bs-theme', resolved);
+      setGroupActive('theme', val);
+    };
+
+    const applyMotion = (val: string) => {
+      localStorage.setItem('pref-reduce-motion', val);
+      const sysReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isReduced = val === 'on' || (val === 'system' && sysReduce);
+      document.documentElement.setAttribute('data-reduce-motion', isReduced ? 'true' : 'false');
+      setGroupActive('motion', val);
+    };
+
+    const applyFontScale = (val: string) => {
+      localStorage.setItem('pref-font-scale', val);
+      document.documentElement.setAttribute('data-font-scale', val);
+      setGroupActive('fontScale', val);
+    };
+
+    const applySwitch = (name: 'highContrast' | 'progressBar', enabled: boolean) => {
+      const btn = page.querySelector<HTMLButtonElement>(`[data-setting-switch="${name}"]`);
+      if (btn) btn.setAttribute('aria-checked', enabled ? 'true' : 'false');
+      if (name === 'highContrast') {
+        localStorage.setItem('pref-high-contrast', enabled ? 'true' : 'false');
+        document.documentElement.setAttribute('data-high-contrast', enabled ? 'true' : 'false');
+      } else {
+        localStorage.setItem('pref-progress-bar', enabled ? 'true' : 'false');
+        document.documentElement.setAttribute('data-progress-bar', enabled ? 'true' : 'false');
+      }
+    };
+
+    // Sync initial UI state from localStorage
+    setGroupActive('theme', localStorage.getItem('theme') || 'auto');
+    setGroupActive('motion', localStorage.getItem('pref-reduce-motion') || 'off');
+    setGroupActive('fontScale', localStorage.getItem('pref-font-scale') || 'normal');
+    applySwitch('highContrast', localStorage.getItem('pref-high-contrast') === 'true');
+    applySwitch('progressBar', localStorage.getItem('pref-progress-bar') !== 'false');
+
+    // Bind segmented groups
+    page.querySelectorAll<HTMLElement>('[data-setting-group]').forEach((group) => {
+      const groupName = group.dataset.settingGroup;
+      group.addEventListener('click', (e) => {
+        const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.seg-btn');
+        if (!btn || !btn.dataset.value) return;
+        const val = btn.dataset.value;
+        if (groupName === 'theme') {
+          applyTheme(val);
+          showToast(toast?.dataset.saved);
+        } else if (groupName === 'motion') {
+          applyMotion(val);
+          showToast(toast?.dataset.saved);
+        } else if (groupName === 'fontScale') {
+          applyFontScale(val);
+          showToast(toast?.dataset.saved);
+        } else if (groupName === 'lang') {
+          localStorage.setItem('preferred-locale', val);
+          const target = val === 'en' ? group.dataset.enUrl : group.dataset.zhUrl;
+          if (target && window.location.pathname !== target) {
+            window.location.href = target;
+          }
+        }
+      });
+    });
+
+    // Bind switches
+    page.querySelectorAll<HTMLButtonElement>('[data-setting-switch]').forEach((btn) => {
+      const name = btn.dataset.settingSwitch as 'highContrast' | 'progressBar';
+      btn.addEventListener('click', () => {
+        const next = btn.getAttribute('aria-checked') !== 'true';
+        applySwitch(name, next);
+        showToast(toast?.dataset.saved);
+      });
+    });
+
+    // Reset button
+    const resetBtn = document.getElementById('settings-reset-btn');
+    resetBtn?.addEventListener('click', () => {
+      applyTheme('auto');
+      applyMotion('off');
+      applyFontScale('normal');
+      applySwitch('highContrast', false);
+      applySwitch('progressBar', true);
+      showToast(toast?.dataset.reset);
+    });
+  }
+
+  initSettingsPage();
+  document.addEventListener('astro:page-load', initSettingsPage);
+</script>

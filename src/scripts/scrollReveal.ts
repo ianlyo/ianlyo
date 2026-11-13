@@ -14,8 +14,8 @@
 export function initScrollReveal(): void {
   if (typeof window === 'undefined') return;
 
-  // Respect user accessibility settings for reduced motion
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Respect user accessibility settings for reduced motion (controlled via Settings page)
+  const prefersReducedMotion = document.documentElement.getAttribute('data-reduce-motion') === 'true';
   const elements = document.querySelectorAll<HTMLElement>('.reveal:not(.is-visible)');
 
   if (elements.length === 0) return;

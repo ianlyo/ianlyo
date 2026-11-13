@@ -91,6 +91,21 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
         var theme = !savedTheme || savedTheme === 'auto' ? (prefersDark ? 'dark' : 'light') : savedTheme;
         document.documentElement.setAttribute('data-bs-theme', theme);
 
+        // 1b. Accessibility & reading preferences initialization
+        var motionPref = localStorage.getItem('pref-reduce-motion') || 'off';
+        var sysReduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var isReduced = motionPref === 'on' || (motionPref === 'system' && sysReduce);
+        document.documentElement.setAttribute('data-reduce-motion', isReduced ? 'true' : 'false');
+
+        var fontScale = localStorage.getItem('pref-font-scale') || 'normal';
+        document.documentElement.setAttribute('data-font-scale', fontScale);
+
+        var highContrast = localStorage.getItem('pref-high-contrast') === 'true';
+        document.documentElement.setAttribute('data-high-contrast', highContrast ? 'true' : 'false');
+
+        var progressBarPref = localStorage.getItem('pref-progress-bar');
+        document.documentElement.setAttribute('data-progress-bar', progressBarPref === 'false' ? 'false' : 'true');
+
         // 2. Language auto-detection & preference routing
         var savedLang = localStorage.getItem('preferred-locale');
         if (!savedLang) {
@@ -171,6 +186,9 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
       <button class="nav-icon-btn" id="share-btn" type="button" aria-label={ui.nav.share} title={ui.nav.share} data-share-title={pageTitle} data-share-text={pageDesc} data-share-url={canonical} data-copied={ui.nav.shareCopied}>
         <Icon name="lucide:share-2" class="nav-icon" aria-hidden="true" />
       </button>
+      <a href={localePath(lang, '/settings/')} class:list={['nav-icon-btn', { active: isActive('/settings') }]} aria-label={ui.nav.settings} title={ui.nav.settings}>
+        <Icon name="lucide:settings" class="nav-icon" aria-hidden="true" />
+      </a>
       <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme">
         <Icon name="lucide:sun-medium" class="nav-icon" aria-hidden="true" />
       </button>
@@ -227,6 +245,10 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
       <hr class="nav-drawer-divider" />
 
       <div class="nav-drawer-secondary">
+        <a href={localePath(lang, '/settings/')} class:list={['nav-drawer-item', { active: isActive('/settings') }]}>
+          <Icon name="lucide:settings" class="nav-icon" aria-hidden="true" />
+          <span>{ui.nav.settings}</span>
+        </a>
         {otherPath && (
           <a href={otherPath} hreflang={otherLang} class="nav-drawer-item lang-switch" data-lang-switch={otherLang}>
             <Icon name="lucide:languages" class="nav-icon" aria-hidden="true" />
@@ -269,6 +291,7 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
               </select>
             </label>
           )}
+          <a href={localePath(lang, '/settings/')} class="d-inline-flex align-items-center gap-1"><Icon name="lucide:settings" class="ui-icon icon-xs" aria-hidden="true" /><span>{ui.nav.settings}</span></a>
           <a href="/rss.xml" class="d-inline-flex align-items-center gap-1"><Icon name="lucide:rss" class="ui-icon icon-xs" aria-hidden="true" /><span>{ui.footer.rss}</span></a>
           <a href="#main" class="d-inline-flex align-items-center gap-1"><span>{ui.footer.top}</span><Icon name="lucide:arrow-up" class="ui-icon icon-xs" aria-hidden="true" /></a>
         </div>
@@ -439,16 +462,32 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
       box-shadow: 0 0 12px rgba(129, 140, 248, 0.55), 0 2px 8px rgba(56, 189, 248, 0.35);
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .scroll-progress-bar {
-        display: none !important;
-      }
-      .reveal {
-        opacity: 1 !important;
-        transform: none !important;
-        transition: none !important;
-        will-change: auto !important;
-      }
+    html[data-font-scale='large'] {
+      font-size: 112.5%;
+    }
+    html[data-font-scale='xlarge'] {
+      font-size: 125%;
+    }
+
+    html[data-high-contrast='true'] {
+      --border: rgba(128, 128, 128, 0.55);
+      --border-subtle: rgba(128, 128, 128, 0.45);
+    }
+    html[data-high-contrast='true'] :focus-visible {
+      outline: 2.5px solid var(--accent-primary, #4f46e5) !important;
+      outline-offset: 2px;
+    }
+
+    html[data-progress-bar='false'] .scroll-progress-bar,
+    html[data-reduce-motion='true'] .scroll-progress-bar {
+      display: none !important;
+    }
+
+    html[data-reduce-motion='true'] .reveal {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+      will-change: auto !important;
     }
   </style>
   <script is:inline>
