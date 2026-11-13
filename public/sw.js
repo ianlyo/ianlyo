@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ian-site-v3';
+const CACHE_NAME = 'ian-site-v4';
 const STATIC_ASSETS = ['/manifest.json'];
 
 self.addEventListener('install', (event) => {
@@ -19,7 +19,7 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
   if (request.url.includes('api.github.com')) return; // cached by the page (localStorage)
-  if (request.url.endsWith('.css')) return;
+  if (new URL(request.url).pathname.endsWith('.css')) return;
 
   // HTML pages: network first so new blog posts / app updates appear immediately.
   if (request.mode === 'navigate') {
