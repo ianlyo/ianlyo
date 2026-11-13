@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { Icon } from 'astro-icon/components';
 import { t, localePath, type Lang } from '../i18n/ui';
+import { COLOR_THEMES, DEFAULT_COLOR_THEME } from '../config/themes';
 
 interface Props {
   lang: Lang;
@@ -45,9 +46,48 @@ const enUrl = '/en/settings/';
             <span class="settings-desc">{s.themeDesc}</span>
           </div>
           <div class="settings-segmented" role="group" aria-label={s.themeLabel} data-setting-group="theme">
-            <button type="button" class="seg-btn" data-value="auto">{s.themeAuto}</button>
-            <button type="button" class="seg-btn" data-value="light">{s.themeLight}</button>
-            <button type="button" class="seg-btn" data-value="dark">{s.themeDark}</button>
+            <button type="button" class="seg-btn seg-btn-icon" data-value="auto">
+              <Icon name="lucide:monitor" class="ui-icon icon-xs" aria-hidden="true" />
+              <span>{s.themeAuto}</span>
+            </button>
+            <button type="button" class="seg-btn seg-btn-icon" data-value="light">
+              <Icon name="lucide:sun" class="ui-icon icon-xs" aria-hidden="true" />
+              <span>{s.themeLight}</span>
+            </button>
+            <button type="button" class="seg-btn seg-btn-icon" data-value="dark">
+              <Icon name="lucide:moon" class="ui-icon icon-xs" aria-hidden="true" />
+              <span>{s.themeDark}</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="settings-row settings-row-stacked color-picker-row">
+          <div class="settings-info">
+            <span class="settings-label color-picker-heading" id="color-theme-label">
+              <span>{s.colorThemeLabel}</span>
+              <span class="color-picker-sep" aria-hidden="true">-</span>
+              <span class="color-picker-current" id="color-theme-current-name">
+                {s.colorThemes[DEFAULT_COLOR_THEME].name}
+              </span>
+            </span>
+          </div>
+          <div class="color-swatch-list" role="radiogroup" aria-labelledby="color-theme-label" data-color-theme-group>
+            {COLOR_THEMES.map((theme) => {
+              const info = s.colorThemes[theme.id];
+              return (
+                <button
+                  type="button"
+                  class="color-swatch-btn"
+                  role="radio"
+                  aria-checked="false"
+                  aria-label={info.name}
+                  title={info.name}
+                  data-color-theme-btn={theme.id}
+                  data-color-name={info.name}
+                  style={`--swatch-light:${theme.light.accent};--swatch-dark:${theme.dark.accent};`}
+                />
+              );
+            })}
           </div>
         </div>
 
@@ -210,7 +250,7 @@ const enUrl = '/en/settings/';
   .settings-section-icon {
     width: 1.25rem;
     height: 1.25rem;
-    color: var(--accent-primary, #4f46e5);
+    color: var(--accent-primary);
   }
   .settings-card-header h2 {
     font-size: 1.15rem;
@@ -224,6 +264,11 @@ const enUrl = '/en/settings/';
     gap: 1.25rem;
     padding: 1rem 0;
     border-bottom: 1px solid var(--border-subtle, rgba(128, 128, 128, 0.12));
+  }
+  .settings-row-stacked {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.9rem;
   }
   .settings-row:last-child {
     border-bottom: none;
@@ -267,20 +312,88 @@ const enUrl = '/en/settings/';
     transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
     white-space: nowrap;
   }
+  .seg-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.38rem;
+  }
   .seg-btn:hover {
     background: rgba(128, 128, 128, 0.12);
   }
   .seg-btn.is-active {
-    background: var(--accent-primary, #4f46e5);
-    color: #fff;
-    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.28);
+    background: var(--accent-primary);
+    color: var(--accent-text, #ffffff);
+    font-weight: 600;
+    box-shadow: 0 2px 10px var(--accent-glow);
   }
+
+  /* Minimalist Circular Color Swatches */
+  .color-picker-row {
+    gap: 0.9rem;
+  }
+  .color-picker-heading {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .color-picker-sep,
+  .color-picker-current {
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .color-swatch-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.35rem 0.25rem;
+  }
+  .color-swatch-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(15, 23, 42, 0.14);
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    background: var(--swatch-light);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.22);
+    transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.18s ease;
+  }
+  :global([data-bs-theme="dark"]) .color-swatch-btn {
+    background: var(--swatch-dark);
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.38);
+  }
+  .color-swatch-btn:hover {
+    transform: scale(1.08);
+  }
+  .color-swatch-btn:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 4px;
+  }
+  .color-swatch-btn.is-active {
+    box-shadow:
+      inset 0 2px 4px rgba(0, 0, 0, 0.2),
+      0 0 0 3px var(--bg-surface),
+      0 0 0 5.5px var(--accent-primary);
+  }
+  :global([data-bs-theme="dark"]) .color-swatch-btn.is-active {
+    box-shadow:
+      inset 0 2px 5px rgba(0, 0, 0, 0.35),
+      0 0 0 3px var(--bg-surface),
+      0 0 0 5.5px var(--accent-primary);
+  }
+
   .switch-btn {
     position: relative;
     width: 48px;
     height: 28px;
     border-radius: 999px;
-    border: 1px solid var(--border, rgba(128, 128, 128, 0.3));
+    border: 1px solid var(--border-strong, rgba(128, 128, 128, 0.3));
     background: rgba(128, 128, 128, 0.25);
     padding: 2px;
     cursor: pointer;
@@ -288,8 +401,8 @@ const enUrl = '/en/settings/';
     transition: background-color 0.2s ease, border-color 0.2s ease;
   }
   .switch-btn[aria-checked='true'] {
-    background: var(--accent-primary, #4f46e5);
-    border-color: var(--accent-primary, #4f46e5);
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
   }
   .switch-thumb {
     display: block;
@@ -313,16 +426,17 @@ const enUrl = '/en/settings/';
     gap: 0.45rem;
     padding: 0.55rem 1rem;
     border-radius: 10px;
-    border: 1px solid var(--border, rgba(128, 128, 128, 0.3));
+    border: 1px solid var(--border-strong, rgba(128, 128, 128, 0.3));
     background: transparent;
     color: inherit;
     font-size: 0.88rem;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.18s ease;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
   }
   .reset-btn:hover {
-    background: rgba(128, 128, 128, 0.1);
+    background: var(--accent-subtle);
+    border-color: var(--border-hover);
   }
   .settings-toast {
     position: fixed;
@@ -359,6 +473,21 @@ const enUrl = '/en/settings/';
 </style>
 
 <script>
+  import {
+    getPreferencesState,
+    setThemeMode,
+    setColorTheme,
+    setReduceMotion,
+    setFontScale,
+    setHighContrast,
+    setProgressBar,
+    resetAllPreferences,
+    type PreferencesState,
+    type ReduceMotionPref,
+    type FontScalePref,
+  } from '../scripts/themeManager';
+  import type { ColorThemeId, ThemeMode } from '../config/themes';
+
   function initSettingsPage() {
     const page = document.querySelector<HTMLElement>('.settings-page');
     if (!page || page.dataset.bound === '1') return;
@@ -382,46 +511,34 @@ const enUrl = '/en/settings/';
       });
     };
 
-    const applyTheme = (val: string) => {
-      localStorage.setItem('theme', val);
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const resolved = val === 'auto' ? (prefersDark ? 'dark' : 'light') : val;
-      document.documentElement.setAttribute('data-bs-theme', resolved);
-      setGroupActive('theme', val);
+    const syncUI = (state: PreferencesState) => {
+      setGroupActive('theme', state.themeMode);
+      setGroupActive('motion', state.reduceMotion);
+      setGroupActive('fontScale', state.fontScale);
+
+      const colorNameEl = document.getElementById('color-theme-current-name');
+      page.querySelectorAll<HTMLButtonElement>('[data-color-theme-btn]').forEach((btn) => {
+        const isActive = btn.dataset.colorThemeBtn === state.colorTheme;
+        btn.classList.toggle('is-active', isActive);
+        btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
+        if (isActive && colorNameEl && btn.dataset.colorName) {
+          colorNameEl.textContent = btn.dataset.colorName;
+        }
+      });
+
+      const hcBtn = page.querySelector<HTMLButtonElement>('[data-setting-switch="highContrast"]');
+      hcBtn?.setAttribute('aria-checked', state.highContrast ? 'true' : 'false');
+
+      const pbBtn = page.querySelector<HTMLButtonElement>('[data-setting-switch="progressBar"]');
+      pbBtn?.setAttribute('aria-checked', state.progressBar ? 'true' : 'false');
     };
 
-    const applyMotion = (val: string) => {
-      localStorage.setItem('pref-reduce-motion', val);
-      const sysReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const isReduced = val === 'on' || (val === 'system' && sysReduce);
-      document.documentElement.setAttribute('data-reduce-motion', isReduced ? 'true' : 'false');
-      setGroupActive('motion', val);
-    };
+    syncUI(getPreferencesState());
 
-    const applyFontScale = (val: string) => {
-      localStorage.setItem('pref-font-scale', val);
-      document.documentElement.setAttribute('data-font-scale', val);
-      setGroupActive('fontScale', val);
-    };
-
-    const applySwitch = (name: 'highContrast' | 'progressBar', enabled: boolean) => {
-      const btn = page.querySelector<HTMLButtonElement>(`[data-setting-switch="${name}"]`);
-      if (btn) btn.setAttribute('aria-checked', enabled ? 'true' : 'false');
-      if (name === 'highContrast') {
-        localStorage.setItem('pref-high-contrast', enabled ? 'true' : 'false');
-        document.documentElement.setAttribute('data-high-contrast', enabled ? 'true' : 'false');
-      } else {
-        localStorage.setItem('pref-progress-bar', enabled ? 'true' : 'false');
-        document.documentElement.setAttribute('data-progress-bar', enabled ? 'true' : 'false');
-      }
-    };
-
-    // Sync initial UI state from localStorage
-    setGroupActive('theme', localStorage.getItem('theme') || 'auto');
-    setGroupActive('motion', localStorage.getItem('pref-reduce-motion') || 'off');
-    setGroupActive('fontScale', localStorage.getItem('pref-font-scale') || 'normal');
-    applySwitch('highContrast', localStorage.getItem('pref-high-contrast') === 'true');
-    applySwitch('progressBar', localStorage.getItem('pref-progress-bar') !== 'false');
+    window.addEventListener('site:preferences-change', (e) => {
+      const detail = (e as CustomEvent<PreferencesState>).detail;
+      if (detail) syncUI(detail);
+    });
 
     // Bind segmented groups
     page.querySelectorAll<HTMLElement>('[data-setting-group]').forEach((group) => {
@@ -431,16 +548,18 @@ const enUrl = '/en/settings/';
         if (!btn || !btn.dataset.value) return;
         const val = btn.dataset.value;
         if (groupName === 'theme') {
-          applyTheme(val);
+          setThemeMode(val as ThemeMode);
           showToast(toast?.dataset.saved);
         } else if (groupName === 'motion') {
-          applyMotion(val);
+          setReduceMotion(val as ReduceMotionPref);
           showToast(toast?.dataset.saved);
         } else if (groupName === 'fontScale') {
-          applyFontScale(val);
+          setFontScale(val as FontScalePref);
           showToast(toast?.dataset.saved);
         } else if (groupName === 'lang') {
-          localStorage.setItem('preferred-locale', val);
+          try {
+            localStorage.setItem('preferred-locale', val);
+          } catch {}
           const target = val === 'en' ? group.dataset.enUrl : group.dataset.zhUrl;
           if (target && window.location.pathname !== target) {
             window.location.href = target;
@@ -449,12 +568,23 @@ const enUrl = '/en/settings/';
       });
     });
 
+    // Bind Color Theme swatch grid
+    const colorGroup = page.querySelector<HTMLElement>('[data-color-theme-group]');
+    colorGroup?.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-color-theme-btn]');
+      const themeId = btn?.dataset.colorThemeBtn as ColorThemeId | undefined;
+      if (!themeId) return;
+      setColorTheme(themeId);
+      showToast(toast?.dataset.saved);
+    });
+
     // Bind switches
     page.querySelectorAll<HTMLButtonElement>('[data-setting-switch]').forEach((btn) => {
       const name = btn.dataset.settingSwitch as 'highContrast' | 'progressBar';
       btn.addEventListener('click', () => {
         const next = btn.getAttribute('aria-checked') !== 'true';
-        applySwitch(name, next);
+        if (name === 'highContrast') setHighContrast(next);
+        else setProgressBar(next);
         showToast(toast?.dataset.saved);
       });
     });
@@ -472,11 +602,7 @@ const enUrl = '/en/settings/';
     // Reset button
     const resetBtn = document.getElementById('settings-reset-btn');
     resetBtn?.addEventListener('click', () => {
-      applyTheme('auto');
-      applyMotion('off');
-      applyFontScale('normal');
-      applySwitch('highContrast', false);
-      applySwitch('progressBar', true);
+      resetAllPreferences();
       showToast(toast?.dataset.reset);
     });
   }

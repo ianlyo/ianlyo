@@ -253,21 +253,23 @@ const altPath = lang === 'en' ? '/demo/chromatic-glow/' : '/en/demo/chromatic-gl
     </div>
   </main>
 
-  <script is:inline>
+  <script>
+    import { getPreferencesState, setThemeMode } from '../../scripts/themeManager';
+
     (function () {
-      const textInput = document.getElementById('custom-text-input');
+      const textInput = document.getElementById('custom-text-input') as HTMLInputElement | null;
       const previewEl = document.getElementById('preview-text-element');
       const heroText = document.getElementById('hero-display-text');
       const themeBtn = document.getElementById('demo-theme-toggle');
-      const radioSubtle = document.getElementById('intensity-subtle');
-      const radioStandard = document.getElementById('intensity-standard');
-      const radioIntense = document.getElementById('intensity-intense');
+      const radioSubtle = document.getElementById('intensity-subtle') as HTMLInputElement | null;
+      const radioStandard = document.getElementById('intensity-standard') as HTMLInputElement | null;
+      const radioIntense = document.getElementById('intensity-intense') as HTMLInputElement | null;
       const copyBtn = document.getElementById('copy-astro-snippet');
 
       // Live text typing
       if (textInput && previewEl) {
-        textInput.addEventListener('input', function (e) {
-          const val = e.target.value.trim() || 'CHROMATIC GLOW';
+        textInput.addEventListener('input', function () {
+          const val = textInput.value.trim() || 'CHROMATIC GLOW';
           previewEl.textContent = val;
           if (heroText) heroText.textContent = val;
         });
@@ -290,14 +292,11 @@ const altPath = lang === 'en' ? '/demo/chromatic-glow/' : '/en/demo/chromatic-gl
       if (radioStandard) radioStandard.addEventListener('change', updateIntensity);
       if (radioIntense) radioIntense.addEventListener('change', updateIntensity);
 
-      // Theme toggle in demo
+      // Theme toggle in demo (synced with global themeManager)
       if (themeBtn) {
         themeBtn.addEventListener('click', function () {
-          const doc = document.documentElement;
-          const current = doc.getAttribute('data-bs-theme') || 'light';
-          const next = current === 'dark' ? 'light' : 'dark';
-          doc.setAttribute('data-bs-theme', next);
-          localStorage.setItem('theme', next);
+          const { resolvedTheme } = getPreferencesState();
+          setThemeMode(resolvedTheme === 'dark' ? 'light' : 'dark');
         });
       }
 

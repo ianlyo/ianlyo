@@ -11,14 +11,14 @@ Goal: change text or content without touching layout code. Each kind of informat
 
 | 想修改的內容 | 檔案 | 備註 |
 |---|---|---|
-| 網站名稱、作者、GitHub 帳號、主題色、預設分享圖、RSS 標題 | [`src/config/site.ts`](../src/config/site.ts) | 全站共用，改一處即可 |
+| 網站名稱、作者、GitHub 帳號、主題色、預設分享圖、RSS 標題 | [`src/config/site.ts`](../src/config/site.ts) 與 [`src/config/themes.ts`](../src/config/themes.ts) | 全站共用，改一處即可 |
 | 所有介面文字（導覽列、首頁標語、按鈕、Beta 步驟、頁尾、搜尋框等），中英文 | [`src/i18n/ui.ts`](../src/i18n/ui.ts) | `'zh-Hant'` 與 `en` 兩區塊需同步修改 |
 | 部落格文章 | `src/content/blog/*.md` | 範本：`templates/new-blog-post.md` |
 | Android App 資訊（版本、連結、功能、FAQ、更新紀錄） | `src/content/apps/*.yaml` | 範本：`templates/new-android-app.yaml` |
 | Android App 截圖展示（Apple 風格輪播） | 圖片放 `public/apps/<id>/`，清單於 `src/content/apps/<id>.yaml` | 由 `src/components/ScreenshotGallery.astro` 自動渲染 |
 | 隱私權政策頁 | `public/myfiles/privacy/<App>/index.html` | 純 HTML |
 | 網域 | `astro.config.mjs` 的 `site`、`public/CNAME`、`src/config/site.ts` 的 `url` | 三處需一致 |
-| 樣式 | `public/assets/css/site.css`、`style.css` | 僅視覺調整時才需要 |
+| 樣式與色彩主題 | `src/styles/themes.css`、`src/styles/site.css`、`src/styles/style.css` | 支援 6 種色系搭配淺色/深色模式 |
 
 ## 2. 修改介面文字 / Editing UI text
 
@@ -42,7 +42,7 @@ Goal: change text or content without touching layout code. Each kind of informat
 2. 在頁面中用 `ui.區塊.鍵名` 取用，**不要在 `.astro` 內直接寫死文字**。
 3. 新增文字：先在 `zh-Hant` 與 `en` 各加一個鍵，再於元件使用。
 
-> 注意：`public/assets/js/script.js` 內仍有少數由瀏覽器動態產生的英文訊息（如 GitHub 載入失敗、"No repositories match your filters."），修改請直接編輯該檔。
+> 注意：動態載入的 GitHub 專案區塊邏輯位於 `src/scripts/siteCore.ts`，所需多語系文字已整合至 `src/i18n/ui.ts` 的 `projects` 區塊。
 
 ## 3. 修改全站設定 / Editing site settings
 

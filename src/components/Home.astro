@@ -62,7 +62,7 @@ const f = ui.filters;
             <a href={SITE.github.reposUrl} target="_blank" rel="noopener" class="contribution-github-link" aria-label={`${SITE.github.user} on GitHub`}><Icon name="simple-icons:github" class="ui-icon me-1" aria-hidden="true" /><span>{SITE.github.user}</span></a>
           </div>
           <div class="contribution-graph-wrapper">
-            <img class="contribution-graph" id="contribution-graph-img" src={SITE.github.contributionChartUrl} alt={`${SITE.github.user} GitHub contribution graph`} width="663" height="104" loading="lazy" decoding="async" />
+            <img class="contribution-graph" id="contribution-graph-img" src={SITE.github.contributionChartUrl} data-github-user={SITE.github.user} alt={`${SITE.github.user} GitHub contribution graph`} width="663" height="104" loading="lazy" decoding="async" />
           </div>
         </div>
       </div>
@@ -118,7 +118,20 @@ const f = ui.filters;
     </section>
   )}
 
-  <section id="projects" class="projects-section">
+  <section
+    id="projects"
+    class="projects-section"
+    data-github-user={SITE.github.user}
+    data-repo-single={ui.projects.repoCountSingle}
+    data-repo-plural={ui.projects.repoCountPlural}
+    data-no-matches={ui.projects.noMatches}
+    data-show-all={ui.projects.showAll}
+    data-show-less={ui.projects.showLess}
+    data-load-error={ui.projects.loadError}
+    data-load-error-link={ui.projects.loadErrorLink}
+    data-default-desc={ui.projects.defaultRepoDesc}
+    data-view-label={ui.projects.viewRepo}
+  >
     <div class="container">
       <div class="section-heading">
         <div>

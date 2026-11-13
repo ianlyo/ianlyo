@@ -329,10 +329,7 @@ a:hover {
     .site-nav {
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
-        --nav-bg: rgba(248, 250, 252, 0.96);
-    }
-    [data-bs-theme="dark"] .site-nav {
-        --nav-bg: rgba(9, 13, 22, 0.96);
+        background: color-mix(in srgb, var(--bg-base) 96%, transparent);
     }
     .site-nav.is-hidden {
         transform: translateY(calc(-100% - 10px));

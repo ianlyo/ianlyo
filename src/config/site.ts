@@ -7,6 +7,7 @@
  *
  * 注意：網域 (`site`) 仍定義在 astro.config.mjs 與 public/CNAME；此處 `url` 需保持一致。
  */
+export * from './themes';
 const githubUser = 'ianlyo';
 
 export const SITE = {

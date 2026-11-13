@@ -3,9 +3,11 @@ import '@fontsource-variable/chiron-goround-tc';
 import '../styles/bootstrap-used.css';
 import '../styles/style.css';
 import '../styles/site.css';
+import '../styles/themes.css';
 import { Icon } from 'astro-icon/components';
 import { t, localePath, switchLangPath, type Lang } from '../i18n/ui';
 import { SITE } from '../config/site';
+import { COLOR_THEMES, DEFAULT_COLOR_THEME } from '../config/themes';
 
 interface Props {
   title?: string;
@@ -46,9 +48,12 @@ const zhPath = lang === 'en' ? otherPath : Astro.url.pathname;
 const enPath = lang === 'en' ? Astro.url.pathname : otherPath;
 const path = Astro.url.pathname;
 const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/';
+const themeMetaMap = Object.fromEntries(
+  COLOR_THEMES.map((item) => [item.id, { light: item.light.themeColor, dark: item.dark.themeColor }])
+);
 ---
 <!doctype html>
-<html lang={lang} data-bs-theme="light">
+<html lang={lang} data-bs-theme="light" data-color-theme={DEFAULT_COLOR_THEME}>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -82,14 +87,23 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
   {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
   <!-- Anti-FOUC Theme & Auto Locale Detection Script -->
-  <script is:inline define:vars={{ currentLang: lang, enTarget: enPath, zhTarget: zhPath }}>
+  <script is:inline define:vars={{ currentLang: lang, enTarget: enPath, zhTarget: zhPath, themeMetaMap, defaultColorTheme: DEFAULT_COLOR_THEME }}>
     (function () {
       try {
-        // 1. Theme initialization
+        // 1. Theme & Color Palette initialization
         var savedTheme = localStorage.getItem('theme');
         var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        var theme = !savedTheme || savedTheme === 'auto' ? (prefersDark ? 'dark' : 'light') : savedTheme;
+        var theme = !savedTheme || savedTheme === 'auto' ? (prefersDark ? 'dark' : 'light') : (savedTheme === 'dark' ? 'dark' : 'light');
+        var savedColor = localStorage.getItem('pref-color-theme');
+        var colorTheme = savedColor && themeMetaMap[savedColor] ? savedColor : defaultColorTheme;
+
         document.documentElement.setAttribute('data-bs-theme', theme);
+        document.documentElement.setAttribute('data-color-theme', colorTheme);
+
+        var metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme && themeMetaMap[colorTheme]) {
+          metaTheme.setAttribute('content', themeMetaMap[colorTheme][theme]);
+        }
 
         // 1b. Accessibility & reading preferences initialization
         var motionPref = localStorage.getItem('pref-reduce-motion') || 'off';
@@ -189,7 +203,16 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
       <a href={localePath(lang, '/settings/')} class:list={['nav-icon-btn', { active: isActive('/settings') }]} aria-label={ui.nav.settings} title={ui.nav.settings}>
         <Icon name="lucide:settings" class="nav-icon" aria-hidden="true" />
       </a>
-      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme">
+      <button
+        class="theme-toggle"
+        id="theme-toggle"
+        type="button"
+        aria-label={ui.nav.themeToggleAuto}
+        title={ui.nav.themeToggleAuto}
+        data-label-auto={ui.nav.themeToggleAuto}
+        data-label-light={ui.nav.themeToggleLight}
+        data-label-dark={ui.nav.themeToggleDark}
+      >
         <Icon name="lucide:sun-medium" class="nav-icon" aria-hidden="true" />
       </button>
     </div>
@@ -300,403 +323,6 @@ const isActive = (p: string) => path.startsWith(localePath(lang, p)) && p !== '/
   </footer>
 
   <div class="share-toast" id="share-toast" role="status" aria-live="polite"></div>
-  <script is:inline>
-    (function () {
-      function bind() {
-        var btn = document.getElementById('share-btn');
-        if (!btn || btn.dataset.bound) return;
-        btn.dataset.bound = '1';
-        var toast = document.getElementById('share-toast');
-        function showToast(msg) {
-          if (!toast) return;
-          toast.textContent = msg;
-          toast.classList.add('is-visible');
-          clearTimeout(showToast.t);
-          showToast.t = setTimeout(function () { toast.classList.remove('is-visible'); }, 2000);
-        }
-        btn.addEventListener('click', async function () {
-          var data = { title: btn.dataset.shareTitle, text: btn.dataset.shareText, url: btn.dataset.shareUrl };
-          if (navigator.share) {
-            try {
-              await navigator.share(data);
-              return;
-            } catch (err) {
-              if (err && err.name === 'AbortError') return;
-            }
-          }
-          try {
-            await navigator.clipboard.writeText(data.url);
-            showToast(btn.dataset.copied);
-          } catch (e) {
-            window.prompt('', data.url);
-          }
-        });
-      }
-      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind); else bind();
-      document.addEventListener('astro:page-load', bind);
-    })();
-  </script>
-  <style is:global>
-    .share-toast {
-      position: fixed;
-      left: 50%;
-      bottom: 2rem;
-      transform: translate(-50%, 20px);
-      padding: 0.6rem 1.1rem;
-      border-radius: 999px;
-      background: rgba(30, 30, 34, 0.92);
-      color: #fff;
-      font-size: 0.9rem;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.25s ease, transform 0.25s ease;
-      z-index: 3000;
-    }
-    .share-toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
-  </style>
-  <script is:inline defer src="/assets/js/script.js?v=2.4"></script>
-  <script src="../scripts/scrollReveal.ts"></script>
-  <style is:global>
-    /* ==========================================================================
-       Apple-Style Scroll-Triggered Fade-In & Slide-Up (.reveal)
-       ========================================================================== */
-    .reveal {
-      opacity: 0;
-      transform: translateY(32px);
-      transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: opacity, transform;
-    }
-
-    .reveal.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Staggered Delay Classes */
-    .reveal-delay-100,
-    .reveal.delay-1,
-    .delay-1 {
-      transition-delay: 0.1s;
-    }
-
-    .reveal-delay-200,
-    .reveal.delay-2,
-    .delay-2 {
-      transition-delay: 0.2s;
-    }
-
-    .reveal-delay-300,
-    .reveal.delay-3,
-    .delay-3 {
-      transition-delay: 0.3s;
-    }
-
-    .reveal-delay-400,
-    .reveal.delay-4,
-    .delay-4 {
-      transition-delay: 0.4s;
-    }
-
-    /* Auto-stagger for grid items without explicit delay class */
-    .card-grid > .reveal:not([class*="delay"]):nth-child(1),
-    .stagger-group > .reveal:not([class*="delay"]):nth-child(1),
-    .project-grid > div:nth-child(1) .reveal {
-      transition-delay: 0.06s;
-    }
-    .card-grid > .reveal:not([class*="delay"]):nth-child(2),
-    .stagger-group > .reveal:not([class*="delay"]):nth-child(2),
-    .project-grid > div:nth-child(2) .reveal {
-      transition-delay: 0.14s;
-    }
-    .card-grid > .reveal:not([class*="delay"]):nth-child(3),
-    .stagger-group > .reveal:not([class*="delay"]):nth-child(3),
-    .project-grid > div:nth-child(3) .reveal {
-      transition-delay: 0.22s;
-    }
-    .card-grid > .reveal:not([class*="delay"]):nth-child(4),
-    .stagger-group > .reveal:not([class*="delay"]):nth-child(4),
-    .project-grid > div:nth-child(4) .reveal {
-      transition-delay: 0.30s;
-    }
-    .card-grid > .reveal:not([class*="delay"]):nth-child(5),
-    .stagger-group > .reveal:not([class*="delay"]):nth-child(5),
-    .project-grid > div:nth-child(5) .reveal {
-      transition-delay: 0.38s;
-    }
-    .card-grid > .reveal:not([class*="delay"]):nth-child(6),
-    .stagger-group > .reveal:not([class*="delay"]):nth-child(6),
-    .project-grid > div:nth-child(6) .reveal {
-      transition-delay: 0.46s;
-    }
-
-    .scroll-progress-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 3px;
-      width: 100%;
-      z-index: 1060;
-      pointer-events: none;
-      opacity: 0;
-      transform: scaleX(0);
-      transform-origin: left center;
-      transition: transform 0.08s linear, opacity 0.25s ease;
-      background: linear-gradient(90deg, rgba(79, 70, 229, 0.7) 0%, rgba(14, 165, 233, 0.78) 50%, rgba(168, 85, 247, 0.78) 100%);
-      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3), 0 1px 3px rgba(0, 0, 0, 0.08);
-    }
-
-    .scroll-progress-bar.is-visible {
-      opacity: 1;
-    }
-
-    /* 淺色模式：精準落影搭配電光靛藍柔和光暈，兼具立體感與清晰度 */
-    [data-bs-theme='light'] .scroll-progress-bar {
-      background: linear-gradient(90deg, rgba(79, 70, 229, 0.7) 0%, rgba(14, 165, 233, 0.78) 50%, rgba(168, 85, 247, 0.78) 100%);
-      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.32), 0 1px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    /* 深色模式：未來科技感霓虹極光光暈 (Neon Glow)，在深色底上深邃優雅 */
-    [data-bs-theme='dark'] .scroll-progress-bar {
-      background: linear-gradient(90deg, rgba(129, 140, 248, 0.8) 0%, rgba(56, 189, 248, 0.85) 50%, rgba(192, 132, 252, 0.85) 100%);
-      box-shadow: 0 0 12px rgba(129, 140, 248, 0.55), 0 2px 8px rgba(56, 189, 248, 0.35);
-    }
-
-    html[data-font-scale='large'] {
-      font-size: 112.5%;
-    }
-    html[data-font-scale='xlarge'] {
-      font-size: 125%;
-    }
-
-    html[data-high-contrast='true'] {
-      --border: rgba(128, 128, 128, 0.55);
-      --border-subtle: rgba(128, 128, 128, 0.45);
-    }
-    html[data-high-contrast='true'] :focus-visible {
-      outline: 2.5px solid var(--accent-primary, #4f46e5) !important;
-      outline-offset: 2px;
-    }
-
-    html[data-progress-bar='false'] .scroll-progress-bar,
-    html[data-reduce-motion='true'] .scroll-progress-bar {
-      display: none !important;
-    }
-
-    html[data-reduce-motion='true'] .reveal {
-      opacity: 1 !important;
-      transform: none !important;
-      transition: none !important;
-      will-change: auto !important;
-    }
-  </style>
-  <script is:inline>
-    (function () {
-      var scrollListenerBound = false;
-
-      function setupNavDrawer() {
-        var openBtn = document.getElementById('nav-drawer-open');
-        var closeBtn = document.getElementById('nav-drawer-close');
-        var backdrop = document.getElementById('nav-drawer-backdrop');
-        var drawer = document.getElementById('nav-drawer');
-        if (!drawer || !openBtn || !backdrop || drawer.dataset.bound === 'true') return;
-        drawer.dataset.bound = 'true';
-
-        function openDrawer() {
-          drawer.classList.add('is-open');
-          backdrop.classList.add('is-open');
-          drawer.removeAttribute('inert');
-          drawer.setAttribute('aria-hidden', 'false');
-          openBtn.setAttribute('aria-expanded', 'true');
-          document.body.style.overflow = 'hidden';
-        }
-
-        function closeDrawer() {
-          drawer.classList.remove('is-open');
-          backdrop.classList.remove('is-open');
-          drawer.setAttribute('inert', '');
-          drawer.setAttribute('aria-hidden', 'true');
-          openBtn.setAttribute('aria-expanded', 'false');
-          document.body.style.overflow = '';
-        }
-
-        openBtn.addEventListener('click', openDrawer);
-        if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
-        backdrop.addEventListener('click', closeDrawer);
-
-        var drawerLinks = drawer.querySelectorAll('a');
-        drawerLinks.forEach(function (link) {
-          link.addEventListener('click', closeDrawer);
-        });
-
-        document.addEventListener('keydown', function (e) {
-          if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
-            closeDrawer();
-          }
-        });
-      }
-
-      function setupLangSwitch() {
-        var buttons = document.querySelectorAll('[data-lang-switch]');
-        buttons.forEach(function (btn) {
-          if (btn.dataset.bound === 'true') return;
-          btn.dataset.bound = 'true';
-          btn.addEventListener('click', function () {
-            var target = btn.getAttribute('data-lang-switch');
-            if (target) {
-              try {
-                localStorage.setItem('preferred-locale', target);
-              } catch (e) {}
-            }
-          });
-        });
-
-        var selects = document.querySelectorAll('[data-lang-select]');
-        selects.forEach(function (sel) {
-          if (sel.dataset.bound === 'true') return;
-          sel.dataset.bound = 'true';
-          sel.addEventListener('change', function () {
-            var opt = sel.options[sel.selectedIndex];
-            var target = sel.value;
-            var href = opt ? opt.getAttribute('data-href') : '';
-            if (target) {
-              try {
-                localStorage.setItem('preferred-locale', target);
-              } catch (e) {}
-            }
-            if (href) {
-              window.location.href = href;
-            }
-          });
-        });
-      }
-
-      function setupScrollProgress() {
-        var progressBar = document.getElementById('scroll-progress');
-        var gradientEls = Array.prototype.slice.call(
-          document.querySelectorAll('.hero-title em, .scroll-gradient-text, [data-scroll-gradient]')
-        ).filter(function (el) {
-          return el.getAttribute('data-gsap-gradient') !== 'true';
-        });
-        var cachedMetrics = [];
-        var docHeight = 0;
-        var vh = 800;
-        var ticking = false;
-
-        function measure() {
-          vh = window.innerHeight || document.documentElement.clientHeight || 800;
-          docHeight = Math.max(0, document.documentElement.scrollHeight - vh);
-          var scroll = window.scrollY || document.documentElement.scrollTop || 0;
-          cachedMetrics = gradientEls.map(function (el, idx) {
-            var rect = el.getBoundingClientRect();
-            var absTop = rect.top + scroll;
-            return {
-              el: el,
-              absTop: absTop,
-              height: rect.height,
-              isHero: absTop < vh * 0.85,
-              phaseOffset: (idx % 4) * 0.15,
-              lastGradX: ''
-            };
-          });
-        }
-
-        function applyGradientProgress(item, ratio) {
-          var r = Math.min(1, Math.max(0, ratio));
-          var phase = (r + item.phaseOffset) % 1;
-          var gradX = (phase * 100).toFixed(1) + '%';
-          if (item.lastGradX === gradX) return;
-          item.lastGradX = gradX;
-          var gradY = (50 + Math.sin(phase * Math.PI * 2) * 50).toFixed(1) + '%';
-          item.el.style.setProperty('--hero-grad-x', gradX);
-          item.el.style.setProperty('--hero-grad-y', gradY);
-        }
-
-        function update() {
-          var scroll = window.scrollY || document.documentElement.scrollTop || 0;
-          if (progressBar) {
-            var progress = docHeight > 0 ? Math.min(1, Math.max(0, scroll / docHeight)) : 0;
-            progressBar.style.transform = 'scaleX(' + progress.toFixed(4) + ')';
-            if (scroll > 8) {
-              progressBar.classList.add('is-visible');
-            } else {
-              progressBar.classList.remove('is-visible');
-            }
-          }
-          for (var i = 0; i < cachedMetrics.length; i++) {
-            var item = cachedMetrics[i];
-            var rectTop = item.absTop - scroll;
-            // Skip elements far outside the viewport to save CPU/GPU
-            if (rectTop > vh + 100 || rectTop + item.height < -100) continue;
-            var ratio;
-            if (item.isHero) {
-              var range = Math.max(vh * 0.65, 320);
-              ratio = scroll / range;
-            } else {
-              var total = vh + item.height;
-              ratio = total > 0 ? (vh - rectTop) / total : 0;
-            }
-            applyGradientProgress(item, ratio);
-          }
-          ticking = false;
-        }
-
-        window.requestAnimationFrame(function () {
-          measure();
-          update();
-        });
-
-        if (!scrollListenerBound) {
-          scrollListenerBound = true;
-          window.addEventListener('scroll', function () {
-            if (!ticking) {
-              window.requestAnimationFrame(update);
-              ticking = true;
-            }
-          }, { passive: true });
-          var resizeTimeout;
-          window.addEventListener('resize', function () {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(function () {
-              measure();
-              update();
-            }, 150);
-          }, { passive: true });
-        }
-      }
-
-      function init() {
-        setupNavDrawer();
-        setupLangSwitch();
-        setupScrollProgress();
-      }
-
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-      } else {
-        init();
-      }
-      document.addEventListener('astro:page-load', init);
-    })();
-  </script>
-  <style>
-    .footer-lang-select-wrap {
-      color: inherit;
-    }
-    .footer-lang-select {
-      color: inherit;
-      background-color: transparent;
-      border: 1px solid var(--border, rgba(128, 128, 128, 0.25));
-      border-radius: 6px;
-      padding: 2px 6px;
-      font-size: inherit;
-      line-height: 1.4;
-      cursor: pointer;
-    }
-    .footer-lang-select option {
-      background-color: var(--bg, #ffffff);
-      color: var(--text, #111111);
-    }
-  </style>
+  <script src="../scripts/siteCore.ts"></script>
 </body>
 </html>

@@ -1,0 +1,489 @@
+/* ==========================================================================
+   Multi-Theme Color System (Paired with Light & Dark Modes)
+   & Global Accessibility / UI Preference Tokens
+   ========================================================================== */
+
+:root,
+[data-bs-theme="light"] {
+  --drawer-bg: rgba(255, 255, 255, 0.96);
+  --progress-bar-gradient: linear-gradient(90deg, rgba(79, 70, 229, 0.75) 0%, rgba(14, 165, 233, 0.82) 50%, rgba(168, 85, 247, 0.82) 100%);
+  --progress-bar-shadow: 0 2px 8px rgba(79, 70, 229, 0.32), 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+[data-bs-theme="dark"] {
+  --drawer-bg: rgba(15, 22, 35, 0.96);
+  --progress-bar-gradient: linear-gradient(90deg, rgba(129, 140, 248, 0.85) 0%, rgba(56, 189, 248, 0.88) 50%, rgba(192, 132, 252, 0.88) 100%);
+  --progress-bar-shadow: 0 0 12px rgba(129, 140, 248, 0.55), 0 2px 8px rgba(56, 189, 248, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   1. Electric Indigo (Default)
+   -------------------------------------------------------------------------- */
+[data-color-theme="indigo"][data-bs-theme="light"] {
+  --bg-base: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-subtle: #f1f5f9;
+  --bg-card-hover: #ffffff;
+  --accent-primary: #4f46e5;
+  --accent-primary-hover: #4338ca;
+  --accent-text: #ffffff;
+  --accent-subtle: rgba(79, 70, 229, 0.09);
+  --accent-glow: rgba(79, 70, 229, 0.24);
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --border-hover: rgba(79, 70, 229, 0.45);
+  --active-card-shadow: 0 8px 24px -4px rgba(79, 70, 229, 0.22), 0 0 0 1.5px var(--accent-primary);
+  --nav-bg: rgba(248, 250, 252, 0.86);
+  --nav-border: rgba(226, 232, 240, 0.7);
+  --drawer-bg: rgba(255, 255, 255, 0.96);
+  --hero-title-gradient: linear-gradient(115deg, #4f46e5 0%, #0284c7 24%, #7c3aed 50%, #db2777 74%, #4f46e5 100%);
+  --hero-ambient-glow: radial-gradient(circle at 85% 15%, rgba(79, 70, 229, 0.1) 0%, transparent 60%),
+                       radial-gradient(circle at 10% 80%, rgba(14, 165, 233, 0.08) 0%, transparent 50%);
+  --progress-bar-gradient: linear-gradient(90deg, rgba(79, 70, 229, 0.78) 0%, rgba(14, 165, 233, 0.84) 50%, rgba(168, 85, 247, 0.84) 100%);
+  --progress-bar-shadow: 0 2px 8px rgba(79, 70, 229, 0.32), 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+[data-color-theme="indigo"][data-bs-theme="dark"] {
+  --bg-base: #090d16;
+  --bg-surface: #0f1623;
+  --bg-surface-subtle: #0c121d;
+  --bg-card-hover: #151e30;
+  --accent-primary: #818cf8;
+  --accent-primary-hover: #a5b4fc;
+  --accent-text: #090d16;
+  --accent-subtle: rgba(129, 140, 248, 0.14);
+  --accent-glow: rgba(129, 140, 248, 0.3);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --border-hover: rgba(129, 140, 248, 0.5);
+  --active-card-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.55), 0 0 16px var(--accent-glow), 0 0 0 1.5px var(--accent-primary);
+  --nav-bg: rgba(9, 13, 22, 0.86);
+  --nav-border: rgba(255, 255, 255, 0.12);
+  --drawer-bg: rgba(15, 22, 35, 0.96);
+  --hero-title-gradient: linear-gradient(115deg, #818cf8 0%, #38bdf8 24%, #c084fc 50%, #f472b6 74%, #818cf8 100%);
+  --hero-ambient-glow: radial-gradient(circle at 85% 15%, rgba(129, 140, 248, 0.14) 0%, transparent 65%),
+                       radial-gradient(circle at 10% 80%, rgba(56, 189, 248, 0.09) 0%, transparent 50%);
+  --progress-bar-gradient: linear-gradient(90deg, rgba(129, 140, 248, 0.85) 0%, rgba(56, 189, 248, 0.88) 50%, rgba(192, 132, 252, 0.88) 100%);
+  --progress-bar-shadow: 0 0 12px rgba(129, 140, 248, 0.55), 0 2px 8px rgba(56, 189, 248, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   2. Ocean Cyan (極光海洋)
+   -------------------------------------------------------------------------- */
+[data-color-theme="ocean"][data-bs-theme="light"] {
+  --bg-base: #f5f9fc;
+  --bg-surface: #ffffff;
+  --bg-surface-subtle: #eaf3f9;
+  --bg-card-hover: #ffffff;
+  --text-primary: #0c1b2a;
+  --text-secondary: #3b536b;
+  --text-muted: #526a82;
+  --accent-primary: #0284c7;
+  --accent-primary-hover: #0369a1;
+  --accent-text: #ffffff;
+  --accent-subtle: rgba(2, 132, 199, 0.1);
+  --accent-glow: rgba(2, 132, 199, 0.25);
+  --border-subtle: #dbe7f1;
+  --border-strong: #bed2e3;
+  --border-hover: rgba(2, 132, 199, 0.45);
+  --active-card-shadow: 0 8px 24px -4px rgba(2, 132, 199, 0.22), 0 0 0 1.5px var(--accent-primary);
+  --nav-bg: rgba(245, 249, 252, 0.86);
+  --nav-border: rgba(219, 231, 241, 0.72);
+  --drawer-bg: rgba(248, 252, 255, 0.96);
+  --hero-title-gradient: linear-gradient(115deg, #0284c7 0%, #06b6d4 28%, #2563eb 58%, #0d9488 82%, #0284c7 100%);
+  --hero-ambient-glow: radial-gradient(circle at 85% 15%, rgba(2, 132, 199, 0.11) 0%, transparent 60%),
+                       radial-gradient(circle at 12% 80%, rgba(6, 182, 212, 0.09) 0%, transparent 50%);
+  --progress-bar-gradient: linear-gradient(90deg, rgba(2, 132, 199, 0.82) 0%, rgba(6, 182, 212, 0.88) 50%, rgba(59, 130, 246, 0.85) 100%);
+  --progress-bar-shadow: 0 2px 8px rgba(2, 132, 199, 0.32), 0 1px 4px rgba(0, 0, 0, 0.1);
+  --glow-mid: rgba(2, 132, 199, 0.22);
+  --glow-ambient: rgba(6, 182, 212, 0.16);
+  --theme-toggle-bg: rgba(234, 243, 249, 0.95);
+  --theme-toggle-border: #bed2e3;
+}
+
+[data-color-theme="ocean"][data-bs-theme="dark"] {
+  --bg-base: #071018;
+  --bg-surface: #0c1926;
+  --bg-surface-subtle: #091420;
+  --bg-card-hover: #122335;
+  --text-primary: #eef7ff;
+  --text-secondary: #93b0c8;
+  --text-muted: #84a2bc;
+  --accent-primary: #38bdf8;
+  --accent-primary-hover: #7dd3fc;
+  --accent-text: #06121d;
+  --accent-subtle: rgba(56, 189, 248, 0.14);
+  --accent-glow: rgba(56, 189, 248, 0.3);
+  --border-subtle: rgba(186, 230, 253, 0.1);
+  --border-strong: rgba(186, 230, 253, 0.2);
+  --border-hover: rgba(56, 189, 248, 0.5);
+  --active-card-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.55), 0 0 16px var(--accent-glow), 0 0 0 1.5px var(--accent-primary);
+  --nav-bg: rgba(7, 16, 24, 0.86);
+  --nav-border: rgba(186, 230, 253, 0.14);
+  --drawer-bg: rgba(12, 25, 38, 0.96);
+  --hero-title-gradient: linear-gradient(115deg, #38bdf8 0%, #22d3ee 28%, #60a5fa 58%, #2dd4bf 82%, #38bdf8 100%);
+  --hero-ambient-glow: radial-gradient(circle at 85% 15%, rgba(56, 189, 248, 0.15) 0%, transparent 65%),
+                       radial-gradient(circle at 10% 80%, rgba(34, 211, 238, 0.1) 0%, transparent 50%);
+  --progress-bar-gradient: linear-gradient(90deg, rgba(56, 189, 248, 0.88) 0%, rgba(34, 211, 238, 0.9) 50%, rgba(96, 165, 250, 0.88) 100%);
+  --progress-bar-shadow: 0 0 12px rgba(56, 189, 248, 0.55), 0 2px 8px rgba(34, 211, 238, 0.35);
+  --theme-toggle-bg: rgba(18, 35, 53, 0.95);
+  --theme-toggle-border: rgba(186, 230, 253, 0.16);
+}
+
+/* --------------------------------------------------------------------------
+   3. Emerald Mint (翡翠森林)
+   -------------------------------------------------------------------------- */
+[data-color-theme="emerald"][data-bs-theme="light"] {
+  --bg-base: #f5fbf8;
+  --bg-surface: #ffffff;
+  --bg-surface-subtle: #e9f5ef;
+  --bg-card-hover: #ffffff;
+  --text-primary: #0b2219;
+  --text-secondary: #3a5b4e;
+  --text-muted: #507164;
+  --accent-primary: #059669;
+  --accent-primary-hover: #047857;
+  --accent-text: #ffffff;
+  --accent-subtle: rgba(5, 150, 105, 0.1);
+  --accent-glow: rgba(5, 150, 105, 0.24);
+  --border-subtle: #d6ebe1;
+  --border-strong: #b6d9c9;
+  --border-hover: rgba(5, 150, 105, 0.45);
+  --active-card-shadow: 0 8px 24px -4px rgba(5, 150, 105, 0.22), 0 0 0 1.5px var(--accent-primary);
+  --nav-bg: rgba(245, 251, 248, 0.86);
+  --nav-border: rgba(214, 235, 225, 0.72);
+  --drawer-bg: rgba(248, 253, 250, 0.96);
+  --hero-title-gradient: linear-gradient(115deg, #059669 0%, #0d9488 28%, #0284c7 58%, #16a34a 82%, #059669 100%);
+  --hero-ambient-glow: radial-gradient(circle at 85% 15%, rgba(5, 150, 105, 0.11) 0%, transparent 60%),
+                       radial-gradient(circle at 12% 80%, rgba(20, 184, 166, 0.09) 0%, transparent 50%);
+  --progress-bar-gradient: linear-gradient(90deg, rgba(5, 150, 105, 0.82) 0%, rgba(20, 184, 166, 0.88) 50%, rgba(14, 165, 233, 0.84) 100%);
+  --progress-bar-shadow: 0 2px 8px rgba(5, 150, 105, 0.32), 0 1px 4px rgba(0, 0, 0, 0.1);
+  --glow-mid: rgba(5, 150, 105, 0.22);
+  --glow-ambient: rgba(20, 184, 166, 0.16);
+  --theme-toggle-bg: rgba(233, 245, 239, 0.95);
+  --theme-toggle-border: #b6d9c9;
+}
+
+[data-color-theme="emerald"][data-bs-theme="dark"] {
+  --bg-base: #07120e;
+  --bg-surface: #0c1d17;
+  --bg-surface-subtle: #091712;
+  --bg-card-hover: #122921;
+  --text-primary: #ecfbf4;
+  --text-secondary: #92b8a8;
+  --text-muted: #80a897;
+  --accent-primary: #34d399;
+  --accent-primary-hover: #6ee7b7;
+  --accent-text: #041911;
+  --accent-subtle: rgba(52, 211, 153, 0.14);
+  --accent-glow: rgba(52, 211, 153, 0.28);
+  --border-subtle: rgba(167, 243, 208, 0.1);
+  --border-strong: rgba(167, 243, 208, 0.2);
+  --border-hover: rgba(52, 211, 153, 0.5);
+  --active-card-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.55), 0 0 16px var(--accent-glow), 0 0 0 1.5px var(--accent-primary);
+  --nav-bg: rgba(7, 18, 14, 0.86);
+  --nav-border: rgba(167, 243, 208, 0.14);
+  --drawer-bg: rgba(12, 29, 23, 0.96);
+  --hero-title-gradient: linear-gradient(115deg, #34d399 0%, #2dd4bf 28%, #38bdf8 58%, #4ade80 82%, #34d399 100%);
+  --hero-ambient-glow: radial-gradient(circle at 85% 15%, rgba(52, 211, 153, 0.14) 0%, transparent 65%),
+                       radial-gradient(circle at 10% 80%, rgba(45, 212, 191, 0.09) 0%, transparent 50%);
+  --progress-bar-gradient: linear-gradient(90deg, rgba(52, 211, 153, 0.88) 0%, rgba(45, 212, 191, 0.9) 50%, rgba(56, 189, 248, 0.86) 100%);
+  --progress-bar-shadow: 0 0 12px rgba(52, 211, 153, 0.5), 0 2px 8px rgba(45, 212, 191, 0.35);
+  --theme-toggle-bg: rgba(18, 41, 33, 0.95);
+  --theme-toggle-border: rgba(167, 243, 208, 0.16);
+}
+
+/* --------------------------------------------------------------------------
+   4. Crimson Rose (緋紅櫻花)
+   -------------------------------------------------------------------------- */
+[data-color-theme="rose"][data-bs-theme="light"] {
+  --bg-base: #fdf7f8;
+  --bg-surface: #ffffff;
+  --bg-surface-subtle: #faecef;
+  --bg-card-hover: #ffffff;
+  --text-primary: #270e15;
+  --text-secondary: #68424d;
+  --text-muted: #7e5763;
+  --accent-primary: #e11d48;
+  --accent-primary-hover: #be123c;
+  --accent-text: #ffffff;
+  --accent-subtle: rgba(225, 29, 72, 0.09);
+  --accent-glow: rgba(225, 29, 72, 0.24);
+  --border-subtle: #f1dce1;
+  --border-strong: #e2bec7;
+  --border-hover: rgba(225, 29, 72, 0.45);
+  --active-card-shadow: 0 8px 24px -4px rgba(225, 29, 72, 0.22), 0 0 0 1.5px var(--accent-primary);
+  --nav-bg: rgba(253, 247, 248, 0.86);
+  --nav-border: rgba(241, 220, 225, 0.72);
+  --drawer-bg: rgba(255, 250, 251, 0.96);
+  --hero-title-gradient: linear-gradient(115deg, #e11d48 0%, #db2777 28%, #f97316 58%, #9333ea 84%, #e11d48 100%);
+  --hero-ambient-glow: radial-gradient(circle at 85% 15%, rgba(225, 29, 72, 0.1) 0%, transparent 60%),
+                       radial-gradient(circle at 12% 80%, rgba(236, 72, 153, 0.08) 0%, transparent 50%);
+  --progress-bar-gradient: linear-gradient(90deg, rgba(225, 29, 72, 0.82) 0%, rgba(236, 72, 153, 0.86) 50%, rgba(249, 115, 22, 0.84) 100%);
+  --progress-bar-shadow: 0 2px 8px rgba(225, 29, 72, 0.3), 0 1px 4px rgba(0, 0, 0, 0.1);
+  --glow-mid: rgba(225, 29, 72, 0.22);
+  --glow-ambient: rgba(236, 72, 153, 0.16);
+  --theme-toggle-bg: rgba(250, 236, 239, 0.95);
+  --theme-toggle-border: #e2bec7;
+}
+
+[data-color-theme="rose"][data-bs-theme="dark"] {
+  --bg-base: #13080c;
+  --bg-surface: #1e0e15;
+  --bg-surface-subtle: #180a10;
+  --bg-card-hover: #29131d;
+  --text-primary: #fdf2f4;
+  --text-secondary: #c79ea9;
+  --text-muted: #b08894;
+  --accent-primary: #fb7185;
+  --accent-primary-hover: #fda4af;
+  --accent-text: #1c070d;
+  --accent-subtle: rgba(251, 113, 133, 0.14);
+  --accent-glow: rgba(251, 113, 133, 0.3);
+  --border-subtle: rgba(254, 205, 211, 0.1);
+  --border-strong: rgba(254, 205, 211, 0.2);
+  --border-hover: rgba(251, 113, 133, 0.5);
+  --active-card-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.55), 0 0 16px var(--accent-glow), 0 0 0 1.5px var(--accent-primary);
+  --nav-bg: rgba(19, 8, 12, 0.86);
+  --nav-border: rgba(254, 205, 211, 0.14);
+  --drawer-bg: rgba(30, 14, 21, 0.96);
+  --hero-title-gradient: linear-gradient(115deg, #fb7185 0%, #f472b6 28%, #fb923c 58%, #c084fc 84%, #fb7185 100%);
+  --hero-ambient-glow: radial-gradient(circle at 85% 15%, rgba(251, 113, 133, 0.14) 0%, transparent 65%),
+                       radial-gradient(circle at 10% 80%, rgba(244, 114, 182, 0.09) 0%, transparent 50%);
+  --progress-bar-gradient: linear-gradient(90deg, rgba(251, 113, 133, 0.88) 0%, rgba(244, 114, 182, 0.9) 50%, rgba(251, 146, 60, 0.86) 100%);
+  --progress-bar-shadow: 0 0 12px rgba(251, 113, 133, 0.52), 0 2px 8px rgba(244, 114, 182, 0.35);
+  --theme-toggle-bg: rgba(41, 19, 29, 0.95);
+  --theme-toggle-border: rgba(254, 205, 211, 0.16);
+}
+
+/* --------------------------------------------------------------------------
+   5. Sunset Amber (流金琥珀)
+   -------------------------------------------------------------------------- */
+[data-color-theme="amber"][data-bs-theme="light"] {
+  --bg-base: #fcfaf5;
+  --bg-surface: #ffffff;
+  --bg-surface-subtle: #f7f1e3;
+  --bg-card-hover: #ffffff;
+  --text-primary: #241908;
+  --text-secondary: #624e33;
+  --text-muted: #786245;
+  --accent-primary: #d97706;
+  --accent-primary-hover: #b45309;
+  --accent-text: #ffffff;
+  --accent-subtle: rgba(217, 119, 6, 0.1);
+  --accent-glow: rgba(217, 119, 6, 0.25);
+  --border-subtle: #ede3cd;
+  --border-strong: #dbc9a4;
+  --border-hover: rgba(217, 119, 6, 0.45);
+  --active-card-shadow: 0 8px 24px -4px rgba(217, 119, 6, 0.22), 0 0 0 1.5px var(--accent-primary);
+  --nav-bg: rgba(252, 250, 245, 0.86);
+  --nav-border: rgba(237, 227, 205, 0.72);
+  --drawer-bg: rgba(255, 253, 248, 0.96);
+  --hero-title-gradient: linear-gradient(115deg, #d97706 0%, #ea580c 28%, #e11d48 58%, #ca8a04 84%, #d97706 100%);
+  --hero-ambient-glow: radial-gradient(circle at 85% 15%, rgba(217, 119, 6, 0.11) 0%, transparent 60%),
+                       radial-gradient(circle at 12% 80%, rgba(249, 115, 22, 0.08) 0%, transparent 50%);
+  --progress-bar-gradient: linear-gradient(90deg, rgba(217, 119, 6, 0.84) 0%, rgba(249, 115, 22, 0.88) 50%, rgba(225, 29, 72, 0.84) 100%);
+  --progress-bar-shadow: 0 2px 8px rgba(217, 119, 6, 0.32), 0 1px 4px rgba(0, 0, 0, 0.1);
+  --glow-mid: rgba(217, 119, 6, 0.22);
+  --glow-ambient: rgba(249, 115, 22, 0.16);
+  --theme-toggle-bg: rgba(247, 241, 227, 0.95);
+  --theme-toggle-border: #dbc9a4;
+}
+
+[data-color-theme="amber"][data-bs-theme="dark"] {
+  --bg-base: #120e07;
+  --bg-surface: #1d170c;
+  --bg-surface-subtle: #171209;
+  --bg-card-hover: #292011;
+  --text-primary: #fef9ec;
+  --text-secondary: #cbb994;
+  --text-muted: #b39f78;
+  --accent-primary: #fbbf24;
+  --accent-primary-hover: #fcd34d;
+  --accent-text: #1a1204;
+  --accent-subtle: rgba(251, 191, 36, 0.14);
+  --accent-glow: rgba(251, 191, 36, 0.28);
+  --border-subtle: rgba(253, 230, 138, 0.1);
+  --border-strong: rgba(253, 230, 138, 0.2);
+  --border-hover: rgba(251, 191, 36, 0.5);
+  --active-card-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.55), 0 0 16px var(--accent-glow), 0 0 0 1.5px var(--accent-primary);
+  --nav-bg: rgba(18, 14, 7, 0.86);
+  --nav-border: rgba(253, 230, 138, 0.14);
+  --drawer-bg: rgba(29, 23, 12, 0.96);
+  --hero-title-gradient: linear-gradient(115deg, #fbbf24 0%, #fb923c 28%, #fb7185 58%, #facc15 84%, #fbbf24 100%);
+  --hero-ambient-glow: radial-gradient(circle at 85% 15%, rgba(251, 191, 36, 0.13) 0%, transparent 65%),
+                       radial-gradient(circle at 10% 80%, rgba(251, 146, 60, 0.09) 0%, transparent 50%);
+  --progress-bar-gradient: linear-gradient(90deg, rgba(251, 191, 36, 0.88) 0%, rgba(251, 146, 60, 0.9) 50%, rgba(251, 113, 133, 0.86) 100%);
+  --progress-bar-shadow: 0 0 12px rgba(251, 191, 36, 0.48), 0 2px 8px rgba(251, 146, 60, 0.35);
+  --theme-toggle-bg: rgba(41, 32, 17, 0.95);
+  --theme-toggle-border: rgba(253, 230, 138, 0.16);
+}
+
+/* --------------------------------------------------------------------------
+   6. Cosmic Violet (星雲紫羅蘭)
+   -------------------------------------------------------------------------- */
+[data-color-theme="violet"][data-bs-theme="light"] {
+  --bg-base: #f9f7fd;
+  --bg-surface: #ffffff;
+  --bg-surface-subtle: #f1ecfa;
+  --bg-card-hover: #ffffff;
+  --text-primary: #1a102b;
+  --text-secondary: #51426d;
+  --text-muted: #685886;
+  --accent-primary: #7c3aed;
+  --accent-primary-hover: #6d28d9;
+  --accent-text: #ffffff;
+  --accent-subtle: rgba(124, 58, 237, 0.09);
+  --accent-glow: rgba(124, 58, 237, 0.24);
+  --border-subtle: #e5dcf5;
+  --border-strong: #cfc0ec;
+  --border-hover: rgba(124, 58, 237, 0.45);
+  --active-card-shadow: 0 8px 24px -4px rgba(124, 58, 237, 0.22), 0 0 0 1.5px var(--accent-primary);
+  --nav-bg: rgba(249, 247, 253, 0.86);
+  --nav-border: rgba(229, 220, 245, 0.72);
+  --drawer-bg: rgba(252, 250, 255, 0.96);
+  --hero-title-gradient: linear-gradient(115deg, #7c3aed 0%, #c026d3 28%, #4f46e5 58%, #ec4899 84%, #7c3aed 100%);
+  --hero-ambient-glow: radial-gradient(circle at 85% 15%, rgba(124, 58, 237, 0.11) 0%, transparent 60%),
+                       radial-gradient(circle at 12% 80%, rgba(217, 70, 239, 0.08) 0%, transparent 50%);
+  --progress-bar-gradient: linear-gradient(90deg, rgba(124, 58, 237, 0.82) 0%, rgba(217, 70, 239, 0.86) 50%, rgba(99, 102, 241, 0.84) 100%);
+  --progress-bar-shadow: 0 2px 8px rgba(124, 58, 237, 0.32), 0 1px 4px rgba(0, 0, 0, 0.1);
+  --glow-mid: rgba(124, 58, 237, 0.22);
+  --glow-ambient: rgba(217, 70, 239, 0.16);
+  --theme-toggle-bg: rgba(241, 236, 250, 0.95);
+  --theme-toggle-border: #cfc0ec;
+}
+
+[data-color-theme="violet"][data-bs-theme="dark"] {
+  --bg-base: #0d0916;
+  --bg-surface: #160f26;
+  --bg-surface-subtle: #110c1e;
+  --bg-card-hover: #201638;
+  --text-primary: #f6f2ff;
+  --text-secondary: #b1a3cc;
+  --text-muted: #9b8bb8;
+  --accent-primary: #c084fc;
+  --accent-primary-hover: #d8b4fe;
+  --accent-text: #140826;
+  --accent-subtle: rgba(192, 132, 252, 0.14);
+  --accent-glow: rgba(192, 132, 252, 0.3);
+  --border-subtle: rgba(233, 213, 255, 0.1);
+  --border-strong: rgba(233, 213, 255, 0.2);
+  --border-hover: rgba(192, 132, 252, 0.5);
+  --active-card-shadow: 0 8px 24px -2px rgba(0, 0, 0, 0.55), 0 0 16px var(--accent-glow), 0 0 0 1.5px var(--accent-primary);
+  --nav-bg: rgba(13, 9, 22, 0.86);
+  --nav-border: rgba(233, 213, 255, 0.14);
+  --drawer-bg: rgba(22, 15, 38, 0.96);
+  --hero-title-gradient: linear-gradient(115deg, #c084fc 0%, #e879f9 28%, #818cf8 58%, #f472b6 84%, #c084fc 100%);
+  --hero-ambient-glow: radial-gradient(circle at 85% 15%, rgba(192, 132, 252, 0.15) 0%, transparent 65%),
+                       radial-gradient(circle at 10% 80%, rgba(232, 121, 249, 0.09) 0%, transparent 50%);
+  --progress-bar-gradient: linear-gradient(90deg, rgba(192, 132, 252, 0.88) 0%, rgba(232, 121, 249, 0.9) 50%, rgba(129, 140, 248, 0.88) 100%);
+  --progress-bar-shadow: 0 0 12px rgba(192, 132, 252, 0.55), 0 2px 8px rgba(232, 121, 249, 0.35);
+  --theme-toggle-bg: rgba(32, 22, 56, 0.95);
+  --theme-toggle-border: rgba(233, 213, 255, 0.16);
+}
+
+/* --------------------------------------------------------------------------
+   Bootstrap Variable Bridges (sync Bootstrap components with active theme)
+   -------------------------------------------------------------------------- */
+[data-color-theme] {
+  --bs-primary: var(--accent-primary);
+  --bs-link-color: var(--accent-primary);
+  --bs-link-hover-color: var(--accent-primary-hover);
+  --bs-body-bg: var(--bg-base);
+  --bs-body-color: var(--text-primary);
+  --bs-border-color: var(--border-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   Scroll Progress Bar, Toast & Global Accessibility Preferences
+   -------------------------------------------------------------------------- */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  z-index: 1060;
+  pointer-events: none;
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.08s linear, opacity 0.25s ease;
+  background: var(--progress-bar-gradient);
+  box-shadow: var(--progress-bar-shadow);
+}
+
+.scroll-progress-bar.is-visible {
+  opacity: 1;
+}
+
+.share-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 2rem;
+  transform: translate(-50%, 20px);
+  padding: 0.6rem 1.15rem;
+  border-radius: 999px;
+  background: rgba(24, 24, 28, 0.92);
+  color: #fff;
+  font-size: 0.9rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 3000;
+}
+
+.share-toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.footer-lang-select-wrap {
+  color: inherit;
+}
+
+.footer-lang-select {
+  color: inherit;
+  background-color: transparent;
+  border: 1px solid var(--border-strong, rgba(128, 128, 128, 0.25));
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: inherit;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.footer-lang-select option {
+  background-color: var(--bg-surface, #ffffff);
+  color: var(--text-primary, #111111);
+}
+
+html[data-font-scale='large'] {
+  font-size: 112.5%;
+}
+
+html[data-font-scale='xlarge'] {
+  font-size: 125%;
+}
+
+html[data-high-contrast='true'] {
+  --border-subtle: rgba(128, 128, 128, 0.52);
+  --border-strong: rgba(128, 128, 128, 0.72);
+}
+
+html[data-high-contrast='true'] :focus-visible {
+  outline: 2.5px solid var(--accent-primary) !important;
+  outline-offset: 2px;
+}
+
+html[data-progress-bar='false'] .scroll-progress-bar,
+html[data-reduce-motion='true'] .scroll-progress-bar {
+  display: none !important;
+}
+
+html[data-reduce-motion='true'] .reveal {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+  will-change: auto !important;
+}

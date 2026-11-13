@@ -11,12 +11,12 @@
 
 | 修改項目 | 唯一正確的檔案位置 | 備註 |
 |---|---|---|
-| **全站設定**（作者名稱、網站標題、GitHub 帳號、社群連結、主題色） | [`src/config/site.ts`](../src/config/site.ts) | 修改後全站首頁、頁首、頁尾、頭像與 SEO 一併更新 |
+| **全站設定**（作者名稱、網站標題、GitHub 帳號、社群連結、主題色） | [`src/config/site.ts`](../src/config/site.ts) 與 [`src/config/themes.ts`](../src/config/themes.ts) | 修改後全站首頁、頁首、頁尾、頭像、主題色票與 SEO 一併更新 |
 | **介面文字與多語系**（按鈕、導覽列、區段標題、提示訊息、無障礙標籤） | [`src/i18n/ui.ts`](../src/i18n/ui.ts) | `'zh-Hant'` 與 `'en'` 必須維持相同鍵名，否則 TypeScript 會報錯 |
 | **Android App 資料**（版本、說明、功能列表、截圖清單、測試連結、FAQ、更新紀錄） | `src/content/apps/<app-id>.yaml` | 範本位於 `templates/new-android-app.yaml` |
 | **部落格文章** | `src/content/blog/<slug>.md` | 範本位於 `templates/new-blog-post.md` |
 | **靜態資源與圖片**（App 圖示、高解析截圖） | `public/apps/<app-id>/` | 網址直接對應 `/apps/<app-id>/...` |
-| **自訂樣式** | `public/assets/css/site.css` 或元件內部 `<style>` | 遵循既有 CSS 變數（支援亮色/暗色主題） |
+| **自訂樣式與多色彩主題** | `src/styles/themes.css`、`src/styles/site.css`、`src/styles/style.css` 或元件內部 `<style>` | 遵循既有 CSS 變數（支援 6 種色彩主題與淺色/深色模式） |
 
 ---
 
