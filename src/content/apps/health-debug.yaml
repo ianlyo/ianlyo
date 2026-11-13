@@ -92,6 +92,10 @@ faq:
     a:
       zh: 不會。所有資料只寫入裝置本機的 Health Connect，不會上傳或分享。詳情請參閱隱私權政策。
       en: No. All data is written to the on-device Health Connect store and never uploaded or shared. See the privacy policy for details.
+  - q: { zh: 有支援 iOS 嗎？, en: Is iOS supported? }
+    a:
+      zh: 目前僅正式上架於 Google Play。專案雖已包含 iOS 設定並於模擬器測試通過，但暫無 App Store 上架計畫。
+      en: Currently, it is only officially available on Google Play. While the project includes iOS configuration and has been verified on the simulator, there are no plans for an App Store release at this time.
 
 changelog:
   - version: "2.2.2"

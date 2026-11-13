@@ -1,0 +1,83 @@
+# ──────────────────────────────────────────────────────────────
+# OmniInstaller - app config
+# ──────────────────────────────────────────────────────────────
+name: OmniInstaller
+packageName: com.lnu.omniinstallerapk
+icon: /apps/omni-installer/app-icon.png
+status: closed-beta
+version: "1.2.0"
+minAndroid: "8.0"                            # minSdk 26
+targetAndroid: "16"                          # targetSdk 36
+
+tagline:
+  zh: 專為 Android 打造的現代化、全格式應用程式安裝與批次管理工具。
+  en: A modern, full-format Android package installer and batch manager.
+description:
+  zh: |
+    OmniInstaller 是一款基於 Kotlin 與 Jetpack Compose 開發的 Android 應用程式安裝與批次管理工具。
+    支援單一 APK 與各類分割包格式（.apk、.apks、.apkm、.xapk），自動將 .obb 擴充資料解壓至 /Android/obb/，並提供一般（免 Root）、Shizuku 及 Root（libsu）三種安裝引擎。
+    內建秒級 ZIP 標頭規格檢視、CPU 架構過濾、批次掃描與安裝後自動清理功能，打造流暢高效的 Android 套件管理體驗。
+  en: |
+    OmniInstaller is a lightweight, modern Android package installer and batch manager built with Kotlin and Jetpack Compose.
+    It supports standalone APKs and split bundle formats (.apk, .apks, .apkm, .xapk) with automatic .obb extraction to /Android/obb/, offering seamless installation workflows across Standard (rootless), Shizuku, and Root (libsu) engines.
+    Featuring fast ZIP header inspection, ABI filtering, batch storage scanning, and post-install cleanup, it delivers a reliable package management experience.
+
+features:
+  - title: { zh: 全格式與 OBB 自動處理, en: Full Format & OBB Support }
+    description:
+      zh: 支援 .apk、.apks、.apkm 與 .xapk。安裝 XAPK 時自動將 .obb 擴充資料解壓至 /Android/obb/<package_name>/，並依裝置 CPU 架構自動過濾相容的 Split APK。
+      en: Installs .apk, .apks, .apkm, and .xapk bundles. Automatically extracts .obb expansion assets to /Android/obb/<package_name>/ and filters compatible split APKs by device ABI.
+  - title: { zh: 三大安裝引擎, en: Three Installation Engines }
+    description:
+      zh: 提供一般模式（原生 PackageInstaller.Session 並優化返回堆疊）、Shizuku 模式（ADB Shell 靜默安裝），以及 Root 模式（libsu 支援 Magisk、KernelSU、APatch）。
+      en: Supports Standard (native PackageInstaller.Session with preserved task backstack), Shizuku (silent background install via ADB Shell), and Root (libsu for Magisk, KernelSU, and APatch).
+  - title: { zh: 進階 Root 安裝參數, en: Advanced Root Options }
+    description:
+      zh: Root 模式下支援降級安裝（-d）、測試套件（-t）、安裝來源偽裝（-i com.android.vending），以及繞過 Android 14+ 低 Target SDK 安裝限制。
+      en: In Root mode, supports downgrade installs (-d), test packages (-t), installer spoofing (-i com.android.vending), and bypassing Android 14+ low target SDK blocks.
+  - title: { zh: 安裝包規格檢視與批次管理, en: Package Inspector & Batch Manager }
+    description:
+      zh: 快速讀取 ZIP 標頭顯示版本差異（未安裝、相同、升級、降級）與 Split 分類標記；支援本機儲存掃描、搜尋排序、略過相同版本與安裝後自動刪除。
+      en: Fast ZIP header inspection showing version diffs (new, same, upgrade, downgrade) and split category tags, alongside storage scanning, search, sorting, and post-install cleanup.
+  - title: { zh: 系統整合與分享傳入, en: System & ShareSheet Integration }
+    description:
+      zh: 支援 Android 系統「開啟方式」與 ShareSheet 分享傳入（ACTION_VIEW、ACTION_SEND、ACTION_SEND_MULTIPLE），隨時從檔案管理器或通訊軟體直接安裝。
+      en: Integrates with Android ShareSheet and "Open with..." file associations (ACTION_VIEW, ACTION_SEND, ACTION_SEND_MULTIPLE) for direct installs from any file manager.
+
+screenshots: []
+
+specs:
+  - label: { zh: 安裝引擎, en: Install Engines }
+    value: Standard / Shizuku / Root (libsu)
+  - label: { zh: 支援格式, en: Supported Formats }
+    value: .apk, .apks, .apkm, .xapk (+ .obb)
+  - label: { zh: 開源授權, en: License }
+    value: GPL-3.0
+tech: [Kotlin, Jetpack Compose, Material 3, Coroutines, Room, DataStore, Shizuku API, libsu]
+
+faq:
+  - q: { zh: 沒有 Root 權限也可以使用嗎？, en: Can I use OmniInstaller without Root? }
+    a:
+      zh: 可以。一般模式使用 Android 原生 PackageInstaller.Session API，無需 Root；若搭配 Shizuku 還可免 Root 實現背景靜默安裝。
+      en: Yes. Standard mode uses Android's native PackageInstaller.Session API without Root, and pairing with Shizuku enables silent background installation without Root.
+  - q: { zh: 支援 Android 14+ 安裝舊版 Target SDK 的 APK 嗎？, en: Does it support bypassing Android 14+ low target SDK blocks? }
+    a:
+      zh: 在 Root（libsu）模式下支援透過 --bypass-low-target-sdk-block 參數繞過 Android 14+ 的低 Target SDK 安裝限制。
+      en: Yes, in Root (libsu) mode, OmniInstaller supports bypassing Android 14+ target SDK restrictions via --bypass-low-target-sdk-block.
+
+changelog:
+  - version: "1.2.0"
+    date: "2026-10-18"
+    notes:
+      - { zh: 新增 Twilight Peach 主題配色選項與全格式套件安裝支援。, en: Added Twilight Peach theme option and full-format package installation support. }
+      - { zh: 支援 Standard、Shizuku 與 Root (libsu) 三種安裝引擎與批次管理。, en: Supports Standard, Shizuku, and Root (libsu) install engines with batch management. }
+
+googleGroupUrl: "https://groups.google.com/g/testers-community"   # testers-community@googlegroups.com
+extraGroups:
+  - name: testify-dev-community
+    url: https://groups.google.com/g/testify-dev-community
+optInUrl: "https://play.google.com/apps/testing/com.lnu.omniinstallerapk"
+playStoreUrl: "https://play.google.com/store/apps/details?id=com.lnu.omniinstallerapk"
+githubUrl: "https://github.com/ianlyo/OmniInstaller-Android"
+feedbackUrl: "https://github.com/ianlyo/OmniInstaller-Android/issues"
+privacyUrl: ""

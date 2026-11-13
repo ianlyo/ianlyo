@@ -25,7 +25,7 @@ export const ui = {
     hero: {
       title1: '把日常問題',
       title2: '變成 App 與工具。',
-      lead: '我是 Ian，專注於軟體設計與跨平台應用開發。這裡是我的作品集、技術筆記，以及我設計與開發的 App 作品。',
+      lead: '我是 LNU，專注於軟體設計與跨平台應用開發。這裡是我的作品集、技術筆記，以及我設計與開發的 App 作品。',
       cta1: '探索 Apps',
       cta2: '閱讀部落格',
       cta3: '查看 GitHub',
@@ -169,7 +169,7 @@ export const ui = {
     hero: {
       title1: 'Turning everyday problems',
       title2: 'into apps & tools.',
-      lead: "I'm Ian, focusing on software design and cross-platform app development. This is my portfolio, technical notes, and featured apps & tools.",
+      lead: "I'm LNU, focusing on software design and cross-platform app development. This is my portfolio, technical notes, and featured apps & tools.",
       cta1: 'Explore Apps',
       cta2: 'Read the blog',
       cta3: 'View GitHub',

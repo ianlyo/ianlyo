@@ -13,10 +13,12 @@ export default defineConfig({
   redirects: {
     '/beta': '/apps-dev/',
     '/beta/health-debug': '/apps-dev/health-debug/',
-    '/beta/focus-log': '/apps-dev/focus-log/',
+    '/beta/omni-installer': '/apps-dev/omni-installer/',
+    '/beta/shopee-auto-coins': '/apps-dev/shopee-auto-coins/',
     '/en/beta': '/en/apps-dev/',
     '/en/beta/health-debug': '/en/apps-dev/health-debug/',
-    '/en/beta/focus-log': '/en/apps-dev/focus-log/',
+    '/en/beta/omni-installer': '/en/apps-dev/omni-installer/',
+    '/en/beta/shopee-auto-coins': '/en/apps-dev/shopee-auto-coins/',
   },
   i18n: {
     defaultLocale: 'zh-Hant',

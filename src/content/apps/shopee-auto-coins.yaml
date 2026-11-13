@@ -1,0 +1,83 @@
+# ──────────────────────────────────────────────────────────────
+# ShopeeAutoCoins - app config
+# ──────────────────────────────────────────────────────────────
+name: ShopeeAutoCoins
+packageName: com.lnu.shopeeautocoins
+icon: /apps/shopee-auto-coins/app-icon.png
+status: closed-beta
+version: "2.0.2"                            # versionCode 30
+minAndroid: "8.0"                            # minSdk 26
+targetAndroid: "17 (API 37)"                 # targetSdk 37
+
+tagline:
+  zh: Android 智慧型每日蝦皮自動簽到賺蝦幣助手與獨立進階排程鬧鐘。
+  en: Smart daily Shopee auto check-in assistant & independent scheduled alarm for Android.
+description:
+  zh: |
+    ShopeeAutoCoins（蝦皮自動簽）是一款專為 Android 開發的自動化工具，結合了「蝦皮每日定時自動簽到」與「獨立排程鬧鐘」功能。
+    首創整合 Shizuku / Root / Device Owner 底層特權螢幕控制，搭配環境光與距離感測器防誤觸保護，徹底擺脫傳統無障礙服務（AccessibilityService）容易被系統清理、耗電與操作延遲的問題。
+    本專案完全運行於裝置本地，無任何第三方追蹤分析工具，所有 Cookie 與登入 Session 均妥善隔離於 Android 原生 WebView 沙箱中。
+  en: |
+    ShopeeAutoCoins is an Android automation tool combining scheduled daily Shopee coin check-ins with an independent advanced alarm system.
+    It integrates Shizuku, Root (libsu), and Device Owner privileged screen control alongside ambient light and proximity sensor protection, eliminating the battery drain, lag, and reliability issues of traditional AccessibilityService approaches.
+    Everything runs strictly on-device with zero third-party analytics, keeping all cookies and login sessions isolated within Android's native WebView sandbox.
+
+features:
+  - title: { zh: 每日自動簽到與雙重排程, en: Daily Auto Check-in & Dual Scheduling }
+    description:
+      zh: 結合精確 AlarmManager 與 WorkManager 背景備援確保準時觸發；時間一到自動亮屏、載入簽到頁並執行簽到，支援網路瞬斷重試與完整本地簽到日誌。
+      en: Combines exact AlarmManager alarms with WorkManager fallback for reliable daily triggers, automatic screen wake, JS check-in execution, smart retries, and local check-in logs.
+  - title: { zh: 高權限無痛熄屏控制, en: Privileged Screen Control }
+    description:
+      zh: 無需依賴無障礙服務，支援 Shizuku API（推薦，免 Root）、Root（libsu）與 Device Owner（DevicePolicyManager）多層級特權自動降級策略，安全完成簽到後休眠。
+      en: Replaces AccessibilityService with a multi-tier privilege fallback across Shizuku API (rootless), Root (libsu), and Device Owner (DevicePolicyManager) for reliable screen-off control.
+  - title: { zh: 智慧環境與口袋防誤關保護, en: Smart Pocket & Sensor Protection }
+    description:
+      zh: 融合環境光感測器與距離感測器即時判定：放於口袋或包包時簽到完成立即熄屏；若偵測使用者正在操作手機，則自動跳過強制熄屏，絕不干擾正常使用。
+      en: Fuses light and proximity sensors to turn the screen off immediately when in a pocket or bag, while safely skipping screen-off if you are actively using the phone.
+  - title: { zh: 獨立多功能與惱人鬧鐘系統, en: Independent Smart & Annoying Alarm }
+    description:
+      zh: 採用 Material 3 滾輪時間選擇器與自訂重複週期，提供防賴床「惱人鬧鐘」滑動手勢、響鈴超時自動靜音保護，以及桌面動態快捷捷徑。
+      en: Features a Material 3 wheel time picker, custom repeat schedules, an anti-oversleep "Annoying Alarm" swipe-to-dismiss mode, auto-silence timeout, and dynamic app shortcuts.
+  - title: { zh: 開發者診斷面板, en: Developer Debug Dashboard }
+    description:
+      zh: 內建 Cookie / Session 憑證檢測、感測器即時採樣儀表板（Lux 光照與距離狀態）、動態 User-Agent 擷取與一鍵排程／特權熄屏測試。
+      en: Includes a WebView Cookie/Session inspector, live light & proximity sensor sampling, dynamic User-Agent fetching, and one-tap privilege lock & schedule testing.
+
+screenshots: []
+
+specs:
+  - label: { zh: 特權控制, en: Privilege Control }
+    value: Shizuku / Root (libsu) / Device Owner
+  - label: { zh: 排程機制, en: Scheduling }
+    value: AlarmManager + WorkManager
+  - label: { zh: 開源授權, en: License }
+    value: Apache-2.0
+tech: [Kotlin, Jetpack Compose, Material 3, WorkManager, Shizuku API, libsu, Jsoup, Gson]
+
+faq:
+  - q: { zh: 需要 Root 權限嗎？, en: Does ShopeeAutoCoins require Root? }
+    a:
+      zh: 不需要。推薦搭配免 Root 的 Shizuku 透過無線除錯授權即可實現自動熄屏控制；若裝置已 Root 亦支援 Magisk / KernelSU / APatch。
+      en: No. Pairing with rootless Shizuku via Wireless Debugging enables automatic screen-off control, while rooted devices (Magisk / KernelSU / APatch) are also supported.
+  - q: { zh: 帳號與 Cookie 資料安全嗎？, en: Are my account and cookies safe? }
+    a:
+      zh: 本專案不含任何第三方統計或遠端上報程式碼，所有登入憑證皆透過 Android 原生 WebKit CookieManager 隔離儲存於本機應用程式私有目錄中。
+      en: Yes. There are zero third-party analytics or remote telemetry. All login sessions and cookies remain isolated locally inside Android's native WebKit CookieManager.
+
+changelog:
+  - version: "2.0.2"
+    date: "2026-10-21"
+    notes:
+      - { zh: 新增動態 User-Agent 擷取與彈出式瀏覽器支援。, en: Added dynamic User-Agent scraping and popup browser support. }
+      - { zh: 完善獨立鬧鐘系統、環境光／距離感測器防誤觸與開發者診斷面板。, en: Enhanced independent alarm system, sensor pocket protection, and debug dashboard. }
+
+googleGroupUrl: "https://groups.google.com/g/testers-community"   # testers-community@googlegroups.com
+extraGroups:
+  - name: testify-dev-community
+    url: https://groups.google.com/g/testify-dev-community
+optInUrl: "https://play.google.com/apps/testing/com.lnu.shopeeautocoins"
+playStoreUrl: "https://play.google.com/store/apps/details?id=com.lnu.shopeeautocoins"
+githubUrl: "https://github.com/ianlyo/ShopeeAutoCoins-android"
+feedbackUrl: "https://github.com/ianlyo/ShopeeAutoCoins-android/issues"
+privacyUrl: ""

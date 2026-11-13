@@ -13,7 +13,7 @@ export const SITE = {
   /** 網站簡稱（標題尾綴、og:site_name、頁尾） */
   name: 'ianlyo',
   /** 作者顯示名稱（SEO / JSON-LD） */
-  author: 'Ian',
+  author: 'LNU',
   /** 正式網址（需與 astro.config.mjs 的 site 一致，結尾含 /） */
   url: 'https://linnu.dpdns.org/',
   /** 瀏覽器主題色 */
@@ -25,7 +25,7 @@ export const SITE = {
   /** RSS 標題 / 描述 */
   rss: {
     title: 'ianlyo - Technical Blog',
-    description: 'Software development notes, tutorials and project updates by Ian.',
+    description: 'Software development notes, tutorials and project updates by LNU.',
   },
   github: {
     user: githubUser,
