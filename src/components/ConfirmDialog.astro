@@ -1,0 +1,60 @@
+---
+import { Icon } from 'astro-icon/components';
+
+export interface Props {
+  id: string;
+  title: string;
+  description: string;
+  cancelText: string;
+  confirmText: string;
+  variant?: 'danger' | 'primary';
+  icon?: string;
+  confirmIcon?: string;
+}
+
+const {
+  id,
+  title,
+  description,
+  cancelText,
+  confirmText,
+  variant = 'danger',
+  icon = 'lucide:alert-triangle',
+  confirmIcon = 'lucide:trash-2',
+} = Astro.props;
+---
+
+<dialog
+  id={id}
+  class:list={['site-dialog', `site-dialog--${variant}`]}
+  role="alertdialog"
+  aria-modal="true"
+  aria-labelledby={`${id}-title`}
+  aria-describedby={`${id}-desc`}
+>
+  <div class="site-dialog-card">
+    <div class="site-dialog-header">
+      <span class="site-dialog-icon" aria-hidden="true">
+        <Icon name={icon} class="ui-icon icon-sm" />
+      </span>
+      <h2 id={`${id}-title`} class="site-dialog-title">{title}</h2>
+    </div>
+    <p id={`${id}-desc`} class="site-dialog-desc">{description}</p>
+    <div class="site-dialog-actions">
+      <button type="button" class="site-btn" data-dialog-cancel>
+        {cancelText}
+      </button>
+      <button
+        type="button"
+        class:list={[
+          'site-btn',
+          variant === 'danger' ? 'site-btn-danger' : 'site-btn-primary',
+        ]}
+        data-dialog-confirm
+      >
+        {confirmIcon && <Icon name={confirmIcon} class="ui-icon icon-xs" aria-hidden="true" />}
+        <span>{confirmText}</span>
+      </button>
+    </div>
+  </div>
+</dialog>

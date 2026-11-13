@@ -1,0 +1,23 @@
+---
+import { Icon } from 'astro-icon/components';
+
+export interface Props {
+  id: string;
+  label: string;
+  fallbackUrl: string;
+  class?: string;
+  icon?: string;
+}
+
+const { id, label, fallbackUrl, class: className, icon = 'lucide:arrow-left' } = Astro.props;
+---
+
+<button
+  type="button"
+  id={id}
+  class:list={['site-back-btn', className]}
+  data-fallback-url={fallbackUrl}
+>
+  <Icon name={icon} class="site-back-icon" aria-hidden="true" />
+  <span>{label}</span>
+</button>

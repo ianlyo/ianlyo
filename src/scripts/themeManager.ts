@@ -8,7 +8,7 @@ import {
   type ResolvedThemeMode,
   type ThemeMode,
 } from '../config/themes';
-import { fadeImageOnLoad, safeGetStorage, safeSetStorage } from './domUtils';
+import { fadeImageOnLoad, safeGetStorage, safeRemoveStorage, safeSetStorage } from './domUtils';
 
 export type ReduceMotionPref = 'off' | 'on' | 'system';
 export type FontScalePref = 'normal' | 'large' | 'xlarge';
@@ -212,12 +212,51 @@ export function setProgressBar(enabled: boolean): PreferencesState {
 }
 
 export function resetAllPreferences(): PreferencesState {
-  safeSetStorage(STORAGE_KEYS.theme, DEFAULT_THEME_MODE);
-  safeSetStorage(STORAGE_KEYS.colorTheme, DEFAULT_COLOR_THEME);
-  safeSetStorage(STORAGE_KEYS.reduceMotion, 'off');
-  safeSetStorage(STORAGE_KEYS.fontScale, 'normal');
-  safeSetStorage(STORAGE_KEYS.highContrast, 'false');
-  safeSetStorage(STORAGE_KEYS.progressBar, 'true');
+  Object.values(STORAGE_KEYS).forEach((key) => safeRemoveStorage(key));
+  return applyPreferences({ withTransition: true });
+}
+
+/** 清除所有本機儲存資料（localStorage、sessionStorage、Cookie、Cache Storage 與 Service Worker） */
+export async function clearAllLocalData(): Promise<PreferencesState> {
+  try {
+    localStorage.clear();
+  } catch {
+    /* 忽略受限環境錯誤 */
+  }
+
+  try {
+    sessionStorage.clear();
+  } catch {
+    /* 忽略受限環境錯誤 */
+  }
+
+  if (typeof document !== 'undefined' && document.cookie) {
+    document.cookie.split(';').forEach((entry) => {
+      const name = entry.split('=')[0]?.trim();
+      if (name) {
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+      }
+    });
+  }
+
+  if (typeof window !== 'undefined' && 'caches' in window) {
+    try {
+      const cacheNames = await caches.keys();
+      await Promise.all(cacheNames.map((name) => caches.delete(name)));
+    } catch {
+      /* 忽略 Cache Storage 存取限制 */
+    }
+  }
+
+  if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations.map((reg) => reg.unregister()));
+    } catch {
+      /* 忽略 Service Worker 存取限制 */
+    }
+  }
+
   return applyPreferences({ withTransition: true });
 }
 

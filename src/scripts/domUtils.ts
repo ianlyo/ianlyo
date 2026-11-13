@@ -26,6 +26,15 @@ export function safeSetStorage(key: string, value: string): void {
   }
 }
 
+/** 安全移除 localStorage 指定鍵值（忽略受限環境錯誤） */
+export function safeRemoveStorage(key: string): void {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    /* 忽略無痕模式或受限環境錯誤 */
+  }
+}
+
 /** 判斷目前是否啟用動態減少模式（同時考量網站設定與作業系統偏好） */
 export function isReducedMotionActive(): boolean {
   if (typeof document === 'undefined') return true;
@@ -131,4 +140,77 @@ export function registerPageLifecycle(hooks: (() => void) | PageLifecycleHooks):
   if (onBeforeSwap) {
     document.addEventListener('astro:before-swap', onBeforeSwap);
   }
+}
+
+export interface ConfirmDialogOptions {
+  dialogId: string;
+  triggerEl: HTMLElement | null;
+  onConfirm: () => void | Promise<void>;
+  signal?: AbortSignal;
+}
+
+/** 綁定共用 <dialog> 確認視窗的開啟、取消、遮罩點擊與確認回呼 */
+export function bindConfirmDialog({
+  dialogId,
+  triggerEl,
+  onConfirm,
+  signal,
+}: ConfirmDialogOptions): void {
+  const dialog = document.getElementById(dialogId) as HTMLDialogElement | null;
+  const cancelBtn = dialog?.querySelector<HTMLElement>('[data-dialog-cancel]');
+  const confirmBtn = dialog?.querySelector<HTMLElement>('[data-dialog-confirm]');
+
+  triggerEl?.addEventListener(
+    'click',
+    () => {
+      if (dialog && typeof dialog.showModal === 'function') {
+        dialog.showModal();
+      } else {
+        void onConfirm();
+      }
+    },
+    { signal }
+  );
+
+  cancelBtn?.addEventListener('click', () => dialog?.close(), { signal });
+
+  dialog?.addEventListener(
+    'click',
+    (e) => {
+      if (e.target === dialog) dialog.close();
+    },
+    { signal }
+  );
+
+  confirmBtn?.addEventListener(
+    'click',
+    () => {
+      dialog?.close();
+      void onConfirm();
+    },
+    { signal }
+  );
+
+  signal?.addEventListener('abort', () => {
+    if (dialog?.open) dialog.close();
+  });
+}
+
+/** 綁定返回上一頁按鈕（優先使用瀏覽器歷史紀錄，無歷史時導向 fallbackUrl） */
+export function bindBackButton(
+  buttonEl: HTMLElement | null,
+  onFallback: (url: string) => void,
+  signal?: AbortSignal
+): void {
+  buttonEl?.addEventListener(
+    'click',
+    () => {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        onFallback(buttonEl.dataset.fallbackUrl || '/');
+      }
+    },
+    { signal }
+  );
 }

@@ -1,6 +1,13 @@
 import { navigate } from 'astro:transitions/client';
-import { createToastNotifier, registerPageLifecycle, safeSetStorage } from './domUtils';
 import {
+  bindBackButton,
+  bindConfirmDialog,
+  createToastNotifier,
+  registerPageLifecycle,
+  safeSetStorage,
+} from './domUtils';
+import {
+  clearAllLocalData,
   getPreferencesState,
   resetAllPreferences,
   setColorTheme,
@@ -125,18 +132,27 @@ export function initSettingsPage(): void {
     });
   });
 
-  const backBtn = document.getElementById('settings-back-btn');
-  backBtn?.addEventListener('click', () => {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      void navigate(backBtn.dataset.fallbackUrl || '/');
-    }
-  });
+  bindBackButton(
+    document.getElementById('settings-back-btn'),
+    (url) => {
+      void navigate(url);
+    },
+    signal
+  );
 
   document.getElementById('settings-reset-btn')?.addEventListener('click', () => {
     resetAllPreferences();
     showToast(toast?.dataset.reset);
+  });
+
+  bindConfirmDialog({
+    dialogId: 'settings-confirm-dialog',
+    triggerEl: document.getElementById('settings-clear-data-btn'),
+    signal,
+    onConfirm: async () => {
+      await clearAllLocalData();
+      showToast(toast?.dataset.cleared);
+    },
   });
 }
 
